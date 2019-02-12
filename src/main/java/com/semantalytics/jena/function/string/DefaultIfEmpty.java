@@ -1,23 +1,21 @@
 package com.semantalytics.jena.function.string;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase2;
 
-public final class DefaultIfEmpty extends AbstractFunction implements StringFunction {
+import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.jena.sparql.expr.NodeValue.makeString;
 
-    protected DefaultIfEmpty() {
-        super(2, StringVocabulary.defaultIfEmpty.stringValue());
-    }
+public final class DefaultIfEmpty extends FunctionBase2 {
 
-    private DefaultIfEmpty(final DefaultIfEmpty defaultIfEmpty) {
-        super(defaultIfEmpty);
-    }
+    public static final String name = StringVocabulary.defaultIfEmpty.stringValue();
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
+    public NodeValue exec(final NodeValue arg0, final NodeValue arg1) {
       
-      final String string = assertStringLiteral(values[0]).stringValue();
-      final String defaultString = assertStringLiteral(values[1]).stringValue();
+      final String string = arg0.asString();
+      final String defaultString = arg1.asString();
       
-      return literal(StringUtils.defaultIfEmpty(string, defaultString));
+      return makeString(defaultIfEmpty(string, defaultString));
     }
 }

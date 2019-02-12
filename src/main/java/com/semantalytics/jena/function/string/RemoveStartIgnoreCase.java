@@ -9,14 +9,10 @@ import org.openrdf.model.Value;
 
 import static com.complexible.common.rdf.model.Values.*;
 
-public final class RemoveStartIgnoreCase extends AbstractFunction implements StringFunction {
+public final class RemoveStartIgnoreCase extends FunctionBase {
 
     protected RemoveStartIgnoreCase() {
         super(2, StringVocabulary.removeStartIgnoreCase.stringValue());
-    }
-
-    private RemoveStartIgnoreCase(final RemoveStartIgnoreCase removeStartIgnoreCase) {
-        super(removeStartIgnoreCase);
     }
 
     @Override
@@ -26,20 +22,5 @@ public final class RemoveStartIgnoreCase extends AbstractFunction implements Str
         final String remove = assertStringLiteral(values[1]).stringValue();
 
         return literal(StringUtils.removeStartIgnoreCase(string, remove));
-    }
-
-    @Override
-    public RemoveStartIgnoreCase copy() {
-        return new RemoveStartIgnoreCase(this);
-    }
-
-    @Override
-    public void accept(final ExpressionVisitor expressionVisitor) {
-        expressionVisitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return StringVocabulary.removeStartIgnoreCase.name();
     }
 }

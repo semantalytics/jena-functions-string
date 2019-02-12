@@ -1,23 +1,21 @@
 package com.semantalytics.jena.function.string;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase2;
 
-public final class ContainsNone extends AbstractFunction implements StringFunction {
+import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.jena.sparql.expr.NodeValue.*;
 
-    protected ContainsNone() {
-        super(2, StringVocabulary.containsNone.stringValue());
-    }
+public final class ContainsNone extends FunctionBase2 {
 
-    private ContainsNone(final ContainsNone containsNone) {
-        super(containsNone);
-    }
+    public static final String name = StringVocabulary.containsNone.stringValue();
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
+    public NodeValue exec(final NodeValue arg0, final NodeValue arg1) {
       
-      final String string = assertStringLiteral(values[0]).stringValue();
-      final String invalidChars = assertStringLiteral(values[1]).stringValue();
+      final String string = arg0.asString();
+      final String invalidChars = arg1.asString();
       
-      return literal(StringUtils.containsNone(string, invalidChars));
+      return makeBoolean(containsNone(string, invalidChars));
     }
 }

@@ -1,38 +1,21 @@
 package com.semantalytics.jena.function.string;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase2;
 
-public final class Contains extends AbstractFunction implements StringFunction {
+import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.jena.sparql.expr.NodeValue.*;
 
-    protected Contains() {
-        super(2, StringVocabulary.contains.stringValue());
-    }
+public final class Contains extends FunctionBase2 {
 
-    private Contains(final Contains contains) {
-        super(contains);
-    }
+    public static final String name = StringVocabulary.contains.stringValue();
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
+    public NodeValue exec(final NodeValue arg0, final NodeValue arg1) {
 
-        final String sequence = assertStringLiteral(values[0]).stringValue();
-        final String searchSequence = assertStringLiteral(values[1]).stringValue();
+        final String sequence = arg0.asString();
+        final String searchSequence = arg1.asString();
 
-        return literal(StringUtils.contains(sequence, searchSequence));
-    }
-
-    @Override
-    public Contains copy() {
-        return new Contains(this);
-    }
-
-    @Override
-    public void accept(final ExpressionVisitor expressionVisitor) {
-        expressionVisitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return StringVocabulary.contains.name();
+        return makeBoolean(contains(sequence, searchSequence));
     }
 }

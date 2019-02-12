@@ -9,14 +9,10 @@ import org.openrdf.model.Value;
 
 import static com.complexible.common.rdf.model.Values.*;
 
-public final class SubstringBetween extends AbstractFunction implements StringFunction {
+public final class SubstringBetween extends FunctionBase {
 
     protected SubstringBetween() {
         super(2, StringVocabulary.substringBetween.stringValue());
-    }
-
-    private SubstringBetween(final SubstringBetween substringBetween) {
-        super(substringBetween);
     }
 
     @Override
@@ -26,20 +22,5 @@ public final class SubstringBetween extends AbstractFunction implements StringFu
         final String separator = assertStringLiteral(values[1]).stringValue();
 
         return literal(StringUtils.substringBetween(string, separator));
-    }
-
-    @Override
-    public SubstringBetween copy() {
-        return new SubstringBetween(this);
-    }
-
-    @Override
-    public void accept(final ExpressionVisitor expressionVisitor) {
-        expressionVisitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return StringVocabulary.substringBetween.name();
     }
 }

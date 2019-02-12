@@ -9,36 +9,17 @@ import org.openrdf.model.Value;
 
 import static com.complexible.common.rdf.model.Values.literal;
 
-public final class Reverse extends AbstractFunction implements StringFunction {
+public final class Reverse extends FunctionBase {
 
     protected Reverse() {
         super(1, StringVocabulary.reverse.stringValue());
     }
 
-    private Reverse(final Reverse reverse) {
-        super(reverse);
-    }
-
     @Override
     protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
-      
-      final String string = assertStringLiteral(values[0]).stringValue();
-            
-      return literal(StringUtils.reverse(string));
-    }
 
-    @Override
-    public Reverse copy() {
-        return new Reverse(this);
-    }
+        final String string = assertStringLiteral(values[0]).stringValue();
 
-    @Override
-    public void accept(final ExpressionVisitor expressionVisitor) {
-        expressionVisitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return StringVocabulary.reverse.name();
+        return literal(StringUtils.reverse(string));
     }
 }

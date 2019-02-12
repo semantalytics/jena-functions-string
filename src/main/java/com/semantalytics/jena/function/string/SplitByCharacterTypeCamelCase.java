@@ -9,14 +9,10 @@ import com.google.common.base.Joiner;
 import org.apache.commons.lang3.StringUtils;
 import org.openrdf.model.Value;
 
-public final class SplitByCharacterTypeCamelCase extends AbstractFunction implements StringFunction {
+public final class SplitByCharacterTypeCamelCase extends FunctionBase {
 
     protected SplitByCharacterTypeCamelCase() {
         super(1, StringVocabulary.splitByCharacterTypeCamelCase.stringValue());
-    }
-
-    private SplitByCharacterTypeCamelCase(final SplitByCharacterTypeCamelCase splitByCharacterTypeCamelCase) {
-        super(splitByCharacterTypeCamelCase);
     }
 
     @Override
@@ -25,20 +21,5 @@ public final class SplitByCharacterTypeCamelCase extends AbstractFunction implem
         final String string = assertStringLiteral(values[0]).stringValue();
 
         return Values.literal(Joiner.on("\u001f").join(StringUtils.splitByCharacterTypeCamelCase(string)));
-    }
-
-    @Override
-    public SplitByCharacterTypeCamelCase copy() {
-        return new SplitByCharacterTypeCamelCase(this);
-    }
-
-    @Override
-    public void accept(final ExpressionVisitor expressionVisitor) {
-        expressionVisitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return StringVocabulary.splitByCharacterTypeCamelCase.name();
     }
 }

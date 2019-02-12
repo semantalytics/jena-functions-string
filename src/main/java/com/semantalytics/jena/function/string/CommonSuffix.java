@@ -1,38 +1,21 @@
 package com.semantalytics.jena.function.string;
 
-import com.google.common.base.Strings;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase2;
 
-public final class CommonSuffix extends AbstractFunction implements StringFunction {
+import static com.google.common.base.Strings.*;
+import static org.apache.jena.sparql.expr.NodeValue.*;
 
-    protected CommonSuffix() {
-        super(2, StringVocabulary.commonSuffix.stringValue());
-    }
+public final class CommonSuffix extends FunctionBase2 {
 
-    private CommonSuffix(final CommonSuffix commonSuffix) {
-        super(commonSuffix);
-    }
+    public static final String name = StringVocabulary.commonSuffix.stringValue();
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
+    public NodeValue exec(final NodeValue arg0, final NodeValue arg1) {
       
-      final String firstString = assertStringLiteral(values[0]).stringValue();
-      final String secondString = assertStringLiteral(values[1]).stringValue();
-      
-      return literal(Strings.commonSuffix(firstString, secondString));
-    }
+      final String firstString = arg0.asString();
+      final String secondString = arg1.asString();
 
-    @Override
-    public CommonSuffix copy() {
-        return new CommonSuffix(this);
-    }
-
-    @Override
-    public void accept(final ExpressionVisitor expressionVisitor) {
-        expressionVisitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return StringVocabulary.commonSuffix.name();
+      return makeString(commonSuffix(firstString, secondString));
     }
 }

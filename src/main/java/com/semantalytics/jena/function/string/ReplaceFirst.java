@@ -9,14 +9,10 @@ import org.openrdf.model.Value;
 
 import static com.complexible.common.rdf.model.Values.literal;
 
-public final class ReplaceFirst extends AbstractFunction implements StringFunction {
+public final class ReplaceFirst extends FunctionBase {
 
     protected ReplaceFirst() {
         super(3, StringVocabulary.replaceFirst.stringValue());
-    }
-
-    private ReplaceFirst(final ReplaceFirst replaceFirst) {
-        super(replaceFirst);
     }
 
     @Override
@@ -27,20 +23,5 @@ public final class ReplaceFirst extends AbstractFunction implements StringFuncti
         final String replacement = assertStringLiteral(values[2]).stringValue();
 
         return literal(StringUtils.replaceFirst(string, searchString, replacement));
-    }
-
-    @Override
-    public ReplaceFirst copy() {
-        return new ReplaceFirst(this);
-    }
-
-    @Override
-    public void accept(final ExpressionVisitor expressionVisitor) {
-        expressionVisitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return StringVocabulary.replaceFirst.name();
     }
 }

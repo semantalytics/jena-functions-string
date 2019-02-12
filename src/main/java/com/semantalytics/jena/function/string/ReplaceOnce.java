@@ -10,14 +10,10 @@ import com.complexible.stardog.plan.filter.functions.string.StringFunction;
 import org.apache.commons.lang3.StringUtils;
 import org.openrdf.model.Value;
 
-public final class ReplaceOnce extends AbstractFunction implements StringFunction {
+public final class ReplaceOnce extends FunctionBase {
 
     protected ReplaceOnce() {
         super(3, StringVocabulary.replaceOnce.stringValue());
-    }
-
-    private ReplaceOnce(final ReplaceOnce replaceOnce) {
-        super(replaceOnce);
     }
 
     @Override
@@ -28,20 +24,5 @@ public final class ReplaceOnce extends AbstractFunction implements StringFunctio
         final String replacement = assertStringLiteral(values[2]).stringValue();
 
         return Values.literal(StringUtils.replaceOnce(string, searchString, replacement));
-    }
-
-    @Override
-    public ReplaceOnce copy() {
-        return new ReplaceOnce(this);
-    }
-
-    @Override
-    public void accept(final ExpressionVisitor expressionVisitor) {
-        expressionVisitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return StringVocabulary.replaceOnce.name();
     }
 }

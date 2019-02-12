@@ -12,7 +12,7 @@ import java.util.Arrays;
 
 import static com.complexible.common.rdf.model.Values.literal;
 
-public final class PrependIfMissingIgnoreCase extends AbstractFunction implements StringFunction {
+public final class PrependIfMissingIgnoreCase extends FunctionBase {
 
     protected PrependIfMissingIgnoreCase() {
         super(Range.atLeast(2), StringVocabulary.prependIfMissingIgnoreCase.stringValue());
@@ -34,20 +34,5 @@ public final class PrependIfMissingIgnoreCase extends AbstractFunction implement
         final String[] suffixes = Arrays.stream(values).skip(2).map(Value::stringValue).toArray(String[]::new);
 
         return literal(StringUtils.prependIfMissingIgnoreCase(string, suffix, suffixes));
-    }
-
-    @Override
-    public PrependIfMissingIgnoreCase copy() {
-        return new PrependIfMissingIgnoreCase(this);
-    }
-
-    @Override
-    public void accept(final ExpressionVisitor expressionVisitor) {
-        expressionVisitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return StringVocabulary.prependIfMissingIgnoreCase.name();
     }
 }

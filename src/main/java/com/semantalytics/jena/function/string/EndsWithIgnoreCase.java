@@ -1,23 +1,21 @@
 package com.semantalytics.jena.function.string;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase2;
 
-public final class EndsWithIgnoreCase extends AbstractFunction implements StringFunction {
+import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.jena.sparql.expr.NodeValue.*;
 
-    protected EndsWithIgnoreCase() {
-        super(2, StringVocabulary.endsWithIgnoreCase.stringValue());
-    }
+public final class EndsWithIgnoreCase extends FunctionBase2 {
 
-    private EndsWithIgnoreCase(final EndsWithIgnoreCase endsWithIgnoreCase) {
-        super(endsWithIgnoreCase);
-    }
+    public static final String name = StringVocabulary.endsWithIgnoreCase.stringValue();
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
+    public NodeValue exec(final NodeValue arg0, final NodeValue arg1) {
 
-        final String string = assertStringLiteral(values[0]).stringValue();
-        final String suffix = assertStringLiteral(values[1]).stringValue();
+        final String string = arg0.asString();
+        final String suffix = arg0.asString();
 
-        return literal(StringUtils.endsWithIgnoreCase(string, suffix));
+        return makeBoolean(endsWithIgnoreCase(string, suffix));
     }
 }

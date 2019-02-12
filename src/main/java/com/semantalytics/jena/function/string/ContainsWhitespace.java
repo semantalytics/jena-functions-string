@@ -1,22 +1,18 @@
 package com.semantalytics.jena.function.string;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase1;
 
-public final class ContainsWhitespace extends AbstractFunction implements StringFunction {
+import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.jena.sparql.expr.NodeValue.*;
 
-    protected ContainsWhitespace() {
-        super(1, StringVocabulary.containsWhitespace.stringValue());
-    }
+public final class ContainsWhitespace extends FunctionBase1 {
 
-    private ContainsWhitespace(final ContainsWhitespace containsWhitespace) {
-        super(containsWhitespace);
-    }
+    public static final String name = StringVocabulary.containsWhitespace.stringValue();
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
-      
-      final String string = assertStringLiteral(values[0]).stringValue();
+    public NodeValue exec(final NodeValue arg0) {
 
-      return literal(StringUtils.containsWhitespace(string));
+      return makeBoolean(containsWhitespace(arg0.asString()));
     }
 }

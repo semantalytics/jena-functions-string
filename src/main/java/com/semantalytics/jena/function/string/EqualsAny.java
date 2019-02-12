@@ -2,28 +2,26 @@ package com.semantalytics.jena.function.string;
 
 import com.google.common.collect.Range;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase;
 
 import java.util.Arrays;
 
-public final class EqualsAny extends AbstractFunction implements StringFunction {
+public final class EqualsAny extends FunctionBase {
 
     protected EqualsAny() {
-        super(Range.atLeast(2), StringVocabulary.equalsAny.stringValue());
-    }
-
-    private EqualsAny(final EqualsAny equalsAny) {
-        super(equalsAny);
+        super(Range.atLeast(2), StringVocabulary.equalsAny.stringNodeValue());
     }
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
+    public NodeValue exec(final NodeValue... values) throws ExpressionEvaluationException {
 
-        for(final Value value : values) {
+        for(final NodeValue value : values) {
             assertStringLiteral(value);
         }
 
-        final String string = assertStringLiteral(values[0]).stringValue();
-        final String[] searchStrings = Arrays.stream(values).skip(1).map(Value::stringValue).toArray(String[]::new);
+        final String string = assertStringLiteral(values[0]).stringNodeValue();
+        final String[] searchStrings = Arrays.stream(values).skip(1).map(NodeValue::stringNodeValue).toArray(String[]::new);
 
         return literal(StringUtils.equalsAny(string, searchStrings));
     }

@@ -5,14 +5,14 @@ import com.complexible.stardog.plan.filter.ExpressionVisitor;
 import com.complexible.stardog.plan.filter.functions.AbstractFunction;
 import com.complexible.stardog.plan.filter.functions.string.StringFunction;
 import org.apache.commons.lang3.StringUtils;
-import org.openrdf.model.Value;
+import org.openrdf.model.NodeValue;
 
-import static com.complexible.common.rdf.model.Values.literal;
+import static com.complexible.common.rdf.model.NodeValues.literal;
 
-public final class JoinArrayWith extends AbstractFunction implements StringFunction {
+public final class JoinArrayWith extends FunctionBase {
 
     protected JoinArrayWith() {
-        super(2, StringVocabulary.joinArrayWith.stringValue());
+        super(2, StringVocabulary.joinArrayWith.stringNodeValue());
     }
 
     private JoinArrayWith(final JoinArrayWith join) {
@@ -20,27 +20,12 @@ public final class JoinArrayWith extends AbstractFunction implements StringFunct
     }
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
+    protected NodeValue internalEvaluate(final NodeValue... values) throws ExpressionEvaluationException {
 
 
-        final String separator = assertStringLiteral(values[0]).stringValue();
-        final String[] pieces = assertStringLiteral(values[1]).stringValue().split("\u001f");
+        final String separator = assertStringLiteral(values[0]).stringNodeValue();
+        final String[] pieces = assertStringLiteral(values[1]).stringNodeValue().split("\u001f");
 
         return literal(StringUtils.joinWith(separator, pieces));
-    }
-
-    @Override
-    public JoinArrayWith copy() {
-        return new JoinArrayWith(this);
-    }
-
-    @Override
-    public void accept(final ExpressionVisitor expressionVisitor) {
-        expressionVisitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return StringVocabulary.joinArrayWith.name();
     }
 }

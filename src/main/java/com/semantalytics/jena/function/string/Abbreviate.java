@@ -14,14 +14,14 @@ import java.util.List;
 
 public final class Abbreviate extends FunctionBase {
 
-    private static final String name = StringVocabulary.abbreviate.stringValue();
+    public static final String name = StringVocabulary.abbreviate.stringValue();
 
     @Override
     public NodeValue exec(List<NodeValue> args)  {
 
         if ( args == null )
             // The contract on the function interface is that this should not happen.
-            throw new ARQInternalErrorException(Lib.className(this)+": Null args list") ;
+            throw new ARQInternalErrorException(Lib.className(this) + ": Null args list") ;
 
         if (!Range.closed(2, 3).contains(args.size()))
             throw new ExprEvalException(Lib.className(this)+": Wrong number of arguments: Wanted 3, got "+args.size()) ;

@@ -13,40 +13,21 @@ import java.util.Arrays;
 
 import static com.complexible.common.rdf.model.Values.literal;
 
-public final class StripAll extends AbstractFunction implements StringFunction {
+public final class StripAll extends FunctionBase {
 
     protected StripAll() {
         super(Range.atLeast(1), StringVocabulary.stripAll.stringValue());
     }
 
-    private StripAll(final StripAll stripAll) {
-        super(stripAll);
-    }
-
     @Override
     protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
 
-        for(final Value value : values) {
+        for (final Value value : values) {
             assertStringLiteral(value).stringValue();
         }
 
         final String[] strings = Arrays.stream(values).map(Value::stringValue).toArray(String[]::new);
 
         return literal(Joiner.on("\u001f").join(StringUtils.stripAll(strings)));
-    }
-
-    @Override
-    public StripAll copy() {
-        return new StripAll(this);
-    }
-
-    @Override
-    public void accept(final ExpressionVisitor expressionVisitor) {
-        expressionVisitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return StringVocabulary.stripAll.name();
     }
 }

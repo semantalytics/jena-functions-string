@@ -1,44 +1,54 @@
 package com.semantalytics.jena.function.string;
 
-import com.complexible.stardog.plan.filter.ExpressionEvaluationException;
-import com.complexible.stardog.plan.filter.ExpressionVisitor;
-import com.complexible.stardog.plan.filter.functions.AbstractFunction;
-import com.complexible.stardog.plan.filter.functions.string.StringFunction;
 import com.google.common.collect.Range;
 import org.apache.commons.lang3.StringUtils;
-import org.openrdf.model.Value;
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.query.QueryBuildException;
+import org.apache.jena.sparql.ARQInternalErrorException;
+import org.apache.jena.sparql.expr.ExprEvalException;
+import org.apache.jena.sparql.expr.ExprList;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase;
 
-import static com.complexible.common.rdf.model.Values.*;
+import java.util.List;
 
-public final class AbbreviateWithMarker extends AbstractFunction implements StringFunction {
+public final class AbbreviateWithMarker extends FunctionBase {
 
-    protected AbbreviateWithMarker() {
-        super(Range.closed(3, 4), StringVocabulary.abbreviateWithMarker.stringValue());
-    }
+    public static final String name = StringVocabulary.abbreviateWithMarker.stringValue();
 
-    private AbbreviateWithMarker(final AbbreviateWithMarker abbreviateWithMarker) {
-        super(abbreviateWithMarker);
+    @Override
+    public NodeValue exec(List<NodeValue> args)  {
+
+        if ( args == null )
+            // The contract on the function interface is that this should not happen.
+            throw new ARQInternalErrorException(Lib.className(this)+": Null args list") ;
+
+        if (!Range.closed(2, 3).contains(args.size()))
+            throw new ExprEvalException(Lib.className(this)+": Wrong number of arguments: Wanted 3 or 4, got " + args.size()) ;
+
+      final String string = args.get(0).getString();
+      final String abbrevMarker = args.get(1).getString();
+      final int maxWidth = args.get(2).getInteger().intValue();
+
+      if(maxWidth <= 3) {
+          throw new ExprEvalException("maxWidth must be greater than 3. Found " + maxWidth);
+      }
+
+      switch(args.size()) {
+        case 3:
+            return NodeValue.makeString(StringUtils.abbreviate(string, abbrevMarker, maxWidth));
+        case 4:
+            final int offset = args.get(3).getInteger().intValue();
+            return NodeValue.makeString(StringUtils.abbreviate(string, abbrevMarker, offset, maxWidth));
+        default:
+            throw new ExprEvalException("function takes 3 or 4 arguments. Found " + args.size());
+        }
     }
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
-      
-      final String string = assertStringLiteral(values[0]).stringValue();
-      final String abbrevMarker = assertStringLiteral(values[1]).stringValue();
-      final int maxWidth = assertIntegerLiteral(values[2]).intValue();
-
-      if(maxWidth <= 3) {
-          throw new ExpressionEvaluationException("maxWidth must be greater than 3. Found " + maxWidth);
-      }
-
-      switch(values.length) {
-        case 3:
-            return literal(StringUtils.abbreviate(string, abbrevMarker, maxWidth));
-        case 4:
-            final int offset = assertIntegerLiteral(values[3]).intValue();
-            return literal(StringUtils.abbreviate(string, abbrevMarker, offset, maxWidth));
-        default:
-            throw new ExpressionEvaluationException("function takes 3 or 4 arguments. Found " + values.length);
+    public void checkBuild(String uri, ExprList args) {
+        if(!Range.closed(3, 4).contains(args.size())) {
+            throw new QueryBuildException("Function '" + Lib.className(this) + "' takes two or three arguments") ;
         }
     }
 }

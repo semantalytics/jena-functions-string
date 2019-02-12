@@ -9,14 +9,10 @@ import com.google.common.base.Joiner;
 import org.apache.commons.lang3.StringUtils;
 import org.openrdf.model.Value;
 
-public final class SplitByCharacterType extends AbstractFunction implements StringFunction {
+public final class SplitByCharacterType extends FunctionBase {
 
     protected SplitByCharacterType() {
         super(1, StringVocabulary.splitByCharacterType.stringValue());
-    }
-
-    private SplitByCharacterType(final SplitByCharacterType splitByCharacterType) {
-        super(splitByCharacterType);
     }
 
     @Override
@@ -26,19 +22,5 @@ public final class SplitByCharacterType extends AbstractFunction implements Stri
 
         return Values.literal(Joiner.on("\u001f").join(StringUtils.splitByCharacterType(string)));
     }
-
-    @Override
-    public SplitByCharacterType copy() {
-        return new SplitByCharacterType(this);
-    }
-
-    @Override
-    public void accept(final ExpressionVisitor expressionVisitor) {
-        expressionVisitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return StringVocabulary.splitByCharacterType.name();
-    }
 }
+

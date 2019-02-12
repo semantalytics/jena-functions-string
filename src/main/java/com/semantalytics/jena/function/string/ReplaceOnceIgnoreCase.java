@@ -8,14 +8,10 @@ import com.complexible.stardog.plan.filter.functions.string.StringFunction;
 import org.apache.commons.lang3.StringUtils;
 import org.openrdf.model.Value;
 
-public final class ReplaceOnceIgnoreCase extends AbstractFunction implements StringFunction {
+public final class ReplaceOnceIgnoreCase extends FunctionBase {
 
     protected ReplaceOnceIgnoreCase() {
         super(3, StringVocabulary.replaceOnceIgnoreCase.stringValue());
-    }
-
-    private ReplaceOnceIgnoreCase(final ReplaceOnceIgnoreCase replaceOnceIgnoreCase) {
-        super(replaceOnceIgnoreCase);
     }
 
     @Override
@@ -26,20 +22,5 @@ public final class ReplaceOnceIgnoreCase extends AbstractFunction implements Str
         final String replacement = assertStringLiteral(values[2]).stringValue();
 
         return Values.literal(StringUtils.replaceOnceIgnoreCase(string, searchString, replacement));
-    }
-
-    @Override
-    public ReplaceOnceIgnoreCase copy() {
-        return new ReplaceOnceIgnoreCase(this);
-    }
-
-    @Override
-    public void accept(final ExpressionVisitor expressionVisitor) {
-        expressionVisitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return StringVocabulary.replaceOnceIgnoreCase.name();
     }
 }

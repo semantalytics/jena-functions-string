@@ -9,37 +9,18 @@ import org.openrdf.model.Value;
 
 import static com.complexible.common.rdf.model.Values.literal;
 
-public final class Repeat extends AbstractFunction implements StringFunction {
+public final class Repeat extends FunctionBase {
 
     protected Repeat() {
         super(2, StringVocabulary.repeat.stringValue());
     }
 
-    private Repeat(final Repeat repeat) {
-        super(repeat);
-    }
-
     @Override
     protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
-      
-      final String string = assertStringLiteral(values[0]).stringValue();
-      final int count = assertIntegerLiteral(values[1]).integerValue().intValue();
 
-      return literal(Strings.repeat(string, count));
-    }
+        final String string = assertStringLiteral(values[0]).stringValue();
+        final int count = assertIntegerLiteral(values[1]).integerValue().intValue();
 
-    @Override
-    public Repeat copy() {
-        return new Repeat(this);
-    }
-
-    @Override
-    public void accept(final ExpressionVisitor expressionVisitor) {
-        expressionVisitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return StringVocabulary.repeat.name();
+        return literal(Strings.repeat(string, count));
     }
 }

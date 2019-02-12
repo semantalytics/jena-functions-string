@@ -1,23 +1,21 @@
 package com.semantalytics.jena.function.string;
 
-import com.google.common.base.Strings;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase2;
 
-public final class CommonPrefix extends AbstractFunction implements StringFunction {
+import static com.google.common.base.Strings.*;
+import static org.apache.jena.sparql.expr.NodeValue.*;
 
-    protected CommonPrefix() {
-        super(2, StringVocabulary.commonPrefix.stringValue());
-    }
+public final class CommonPrefix extends FunctionBase2 {
 
-    private CommonPrefix(final CommonPrefix commonPrefix) {
-        super(commonPrefix);
-    }
+    public static final String name = StringVocabulary.commonPrefix.stringValue();
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
+    public NodeValue exec(final NodeValue arg0, final NodeValue arg1) {
       
-      final String firstString = assertStringLiteral(values[0]).stringValue();
-      final String secondString = assertStringLiteral(values[1]).stringValue();
+      final String firstString = arg0.asString();
+      final String secondString = arg1.asString();
       
-      return literal(Strings.commonPrefix(firstString, secondString));
+      return makeString(commonPrefix(firstString, secondString));
     }
 }

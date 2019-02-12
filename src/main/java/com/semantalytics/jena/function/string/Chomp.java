@@ -1,22 +1,17 @@
 package com.semantalytics.jena.function.string;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase1;
 
-public final class Chomp extends AbstractFunction implements StringFunction {
+import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.jena.sparql.expr.NodeValue.*;
 
-    protected Chomp() {
-        super(1, StringVocabulary.chomp.stringValue());
-    }
+public final class Chomp extends FunctionBase1 {
 
-    private Chomp(final Chomp chomp) {
-        super(chomp);
-    }
+    public static final String name = StringVocabulary.chomp.stringValue();
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
-
-        final String string = assertStringLiteral(values[0]).stringValue();
-
-        return literal(StringUtils.chomp(string));
+    public NodeValue exec(final NodeValue arg0) {
+        return makeString(chomp(arg0.getString()));
     }
 }

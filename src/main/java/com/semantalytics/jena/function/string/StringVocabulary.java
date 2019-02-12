@@ -143,17 +143,12 @@ public enum StringVocabulary {
     ;
 
     public static final String NAMESPACE = "http://semantalytics.com/2017/09/ns/stardog/kibble/string/";
-    public final IRI iri;
-
-    StringVocabulary() {
-        iri = StardogValueFactory.instance().createIRI(NAMESPACE, name());
-    }
 
     public static String sparqlPrefix(String prefixName) {
         return "PREFIX " + prefixName + ": <" + NAMESPACE + "> ";
     }
 
     public String stringValue() {
-        return iri.stringValue();
+        return NAMESPACE + name();
     }
 }

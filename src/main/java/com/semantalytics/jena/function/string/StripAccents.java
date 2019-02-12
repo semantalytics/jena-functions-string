@@ -9,36 +9,17 @@ import org.openrdf.model.Value;
 
 import static com.complexible.common.rdf.model.Values.*;
 
-public final class StripAccents extends AbstractFunction implements StringFunction {
+public final class StripAccents extends FunctionBase {
 
     protected StripAccents() {
         super(1, StringVocabulary.stripAccents.stringValue());
     }
 
-    private StripAccents(final StripAccents stripAccents) {
-        super(stripAccents);
-    }
-
     @Override
     protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
-      
-      final String string = assertStringLiteral(values[0]).stringValue();
-            
-      return literal(StringUtils.stripAccents(string));
-    }
 
-    @Override
-    public StripAccents copy() {
-        return new StripAccents(this);
-    }
+        final String string = assertStringLiteral(values[0]).stringValue();
 
-    @Override
-    public void accept(final ExpressionVisitor expressionVisitor) {
-        expressionVisitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return StringVocabulary.stripAccents.name();
+        return literal(StringUtils.stripAccents(string));
     }
 }

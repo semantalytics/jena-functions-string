@@ -5,14 +5,14 @@ import com.complexible.stardog.plan.filter.ExpressionVisitor;
 import com.complexible.stardog.plan.filter.functions.AbstractFunction;
 import com.complexible.stardog.plan.filter.functions.string.StringFunction;
 import org.apache.commons.lang3.StringUtils;
-import org.openrdf.model.Value;
+import org.openrdf.model.NodeValue;
 
-import static com.complexible.common.rdf.model.Values.*;
+import static com.complexible.common.rdf.model.NodeValues.*;
 
-public final class IsAsciiPrintable extends AbstractFunction implements StringFunction {
+public final class IsAsciiPrintable extends FunctionBase {
 
     protected IsAsciiPrintable() {
-        super(1, StringVocabulary.isAsciiPrintable.stringValue());
+        super(1, StringVocabulary.isAsciiPrintable.stringNodeValue());
     }
 
     private IsAsciiPrintable(final IsAsciiPrintable isAsciiPrintable) {
@@ -20,25 +20,10 @@ public final class IsAsciiPrintable extends AbstractFunction implements StringFu
     }
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
+    protected NodeValue internalEvaluate(final NodeValue... values) throws ExpressionEvaluationException {
 
-        final String string = assertStringLiteral(values[0]).stringValue();
+        final String string = assertStringLiteral(values[0]).stringNodeValue();
 
         return literal(StringUtils.isAsciiPrintable(string));
-    }
-
-    @Override
-    public IsAsciiPrintable copy() {
-        return new IsAsciiPrintable(this);
-    }
-
-    @Override
-    public void accept(final ExpressionVisitor expressionVisitor) {
-        expressionVisitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return StringVocabulary.isAsciiPrintable.name();
     }
 }

@@ -1,38 +1,21 @@
 package com.semantalytics.jena.function.string;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase2;
 
-public final class Compare extends AbstractFunction implements StringFunction {
+import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.jena.sparql.expr.NodeValue.*;
 
-    protected Compare() {
-        super(2, StringVocabulary.compare.stringValue());
-    }
+public final class Compare extends FunctionBase2 {
 
-    private Compare(final Compare compare) {
-        super(compare);
-    }
+    public static final String name = StringVocabulary.compare.stringValue();
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
+    public NodeValue exec(final NodeValue arg0, final NodeValue arg1) {
 
-        final String string1 = assertStringLiteral(values[0]).stringValue();
-        final String string2 = assertStringLiteral(values[1]).stringValue();
+        final String string1 = arg0.asString();
+        final String string2 = arg1.asString();
 
-        return literal(StringUtils.compare(string1, string2));
-    }
-
-    @Override
-    public Compare copy() {
-        return new Compare(this);
-    }
-
-    @Override
-    public void accept(final ExpressionVisitor expressionVisitor) {
-        expressionVisitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return StringVocabulary.compare.name();
+        return makeInteger(compare(string1, string2));
     }
 }

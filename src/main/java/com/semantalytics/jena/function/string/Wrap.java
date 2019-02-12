@@ -10,14 +10,10 @@ import org.openrdf.model.Value;
 
 import static com.google.common.base.Preconditions.checkElementIndex;
 
-public final class Wrap extends AbstractFunction implements StringFunction {
+public final class Wrap extends FunctionBase {
 
     protected Wrap() {
         super(2, StringVocabulary.wrap.stringValue());
-    }
-
-    private Wrap(final Wrap wrap) {
-        super(wrap);
     }
 
     @Override
@@ -31,20 +27,5 @@ public final class Wrap extends AbstractFunction implements StringFunction {
         }
 
         return Values.literal(StringUtils.wrap(string, wrapWith.charAt(0)));
-    }
-
-    @Override
-    public Wrap copy() {
-        return new Wrap(this);
-    }
-
-    @Override
-    public void accept(final ExpressionVisitor expressionVisitor) {
-        expressionVisitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return StringVocabulary.wrap.name();
     }
 }

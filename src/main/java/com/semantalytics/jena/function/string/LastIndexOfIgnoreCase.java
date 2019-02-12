@@ -6,14 +6,14 @@ import com.complexible.stardog.plan.filter.functions.AbstractFunction;
 import com.complexible.stardog.plan.filter.functions.string.StringFunction;
 import com.google.common.collect.Range;
 import org.apache.commons.lang3.StringUtils;
-import org.openrdf.model.Value;
+import org.openrdf.model.NodeValue;
 
-import static com.complexible.common.rdf.model.Values.*;
+import static com.complexible.common.rdf.model.NodeValues.*;
 
-public final class LastIndexOfIgnoreCase extends AbstractFunction implements StringFunction {
+public final class LastIndexOfIgnoreCase extends FunctionBase {
 
     protected LastIndexOfIgnoreCase() {
-        super(Range.closed(2, 3), StringVocabulary.lastIndexOfIgnoreCase.stringValue());
+        super(Range.closed(2, 3), StringVocabulary.lastIndexOfIgnoreCase.stringNodeValue());
     }
 
     private LastIndexOfIgnoreCase(final LastIndexOfIgnoreCase lastIndexOfIgnoreCase) {
@@ -21,36 +21,21 @@ public final class LastIndexOfIgnoreCase extends AbstractFunction implements Str
     }
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
+    protected NodeValue internalEvaluate(final NodeValue... values) throws ExpressionEvaluationException {
 
-        final String string = assertStringLiteral(values[0]).stringValue();
-        final String searchString = assertStringLiteral(values[1]).stringValue();
+        final String string = assertStringLiteral(values[0]).stringNodeValue();
+        final String searchString = assertStringLiteral(values[1]).stringNodeValue();
 
-        switch(values.length) {
+        switch (values.length) {
             case 2: {
                 return literal(StringUtils.lastIndexOfIgnoreCase(string, searchString));
             }
             case 3: {
-                final int startPos = assertNumericLiteral(values[2]).intValue();
+                final int startPos = assertNumericLiteral(values[2]).intNodeValue();
                 return literal(StringUtils.lastIndexOfIgnoreCase(string, searchString, startPos));
             }
             default:
                 throw new ExpressionEvaluationException("function takes two or three arguments. Found " + values.length);
         }
-    }
-
-    @Override
-    public LastIndexOfIgnoreCase copy() {
-        return new LastIndexOfIgnoreCase(this);
-    }
-
-    @Override
-    public void accept(final ExpressionVisitor expressionVisitor) {
-        expressionVisitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return StringVocabulary.lastIndexOfIgnoreCase.name();
     }
 }

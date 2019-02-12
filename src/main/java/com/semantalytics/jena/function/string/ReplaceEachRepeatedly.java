@@ -8,20 +8,16 @@ import com.complexible.stardog.plan.filter.functions.string.StringFunction;
 import org.apache.commons.lang3.StringUtils;
 import org.openrdf.model.Value;
 
-public final class ReplaceEachRepeatedly extends AbstractFunction implements StringFunction {
+public final class ReplaceEachRepeatedly extends FunctionBase {
 
     protected ReplaceEachRepeatedly() {
         super(3, StringVocabulary.replaceEachRepeatedly.stringValue());
     }
 
-    private ReplaceEachRepeatedly(final ReplaceEachRepeatedly replaceEachRepeatedly) {
-        super(replaceEachRepeatedly);
-    }
-
     @Override
     protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
 
-        for(final Value value : values) {
+        for (final Value value : values) {
             assertStringLiteral(value);
         }
 
@@ -30,20 +26,5 @@ public final class ReplaceEachRepeatedly extends AbstractFunction implements Str
         final String[] replacementList = assertStringLiteral(values[2]).stringValue().split("\u001f");
 
         return Values.literal(StringUtils.replaceEachRepeatedly(string, searchList, replacementList));
-    }
-
-    @Override
-    public ReplaceEachRepeatedly copy() {
-        return new ReplaceEachRepeatedly(this);
-    }
-
-    @Override
-    public void accept(final ExpressionVisitor expressionVisitor) {
-        expressionVisitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return StringVocabulary.replaceEachRepeatedly.name();
     }
 }

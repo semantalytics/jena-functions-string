@@ -9,14 +9,10 @@ import org.openrdf.model.Value;
 
 import static com.complexible.common.rdf.model.Values.*;
 
-public final class Substring extends AbstractFunction implements StringFunction {
+public final class Substring extends FunctionBase {
 
     protected Substring() {
         super(2, StringVocabulary.substring.stringValue());
-    }
-
-    private Substring(final Substring substring) {
-        super(substring);
     }
 
     @Override
@@ -26,20 +22,5 @@ public final class Substring extends AbstractFunction implements StringFunction 
         final int start = assertIntegerLiteral(values[1]).intValue();
 
         return literal(StringUtils.substring(string, start));
-    }
-
-    @Override
-    public Substring copy() {
-        return new Substring(this);
-    }
-
-    @Override
-    public void accept(final ExpressionVisitor expressionVisitor) {
-        expressionVisitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return StringVocabulary.substring.name();
     }
 }

@@ -1,23 +1,21 @@
 package com.semantalytics.jena.function.string;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase2;
 
-public final class EndsWith extends AbstractFunction implements StringFunction {
+import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.jena.sparql.expr.NodeValue.*;
 
-    protected EndsWith() {
-        super(2, StringVocabulary.endsWith.stringValue());
-    }
+public final class EndsWith extends FunctionBase2 {
 
-    private EndsWith(final EndsWith endsWith) {
-        super(endsWith);
-    }
+    public static final String name = StringVocabulary.endsWith.stringValue();
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
+    public NodeValue exec(final NodeValue arg0, final NodeValue arg1) {
 
-        final String string = assertStringLiteral(values[0]).stringValue();
-        final String suffix = assertStringLiteral(values[1]).stringValue();
+        final String string = arg0.asString();
+        final String suffix = arg1.asString();
 
-        return literal(StringUtils.endsWith(string, suffix));
+        return makeBoolean(endsWith(string, suffix));
     }
 }

@@ -1,23 +1,17 @@
 package com.semantalytics.jena.function.string;
 
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase1;
 
-import org.apache.commons.lang3.StringUtils;
+import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.jena.sparql.expr.NodeValue.*;
 
-public final class Chop extends AbstractFunction implements StringFunction {
+public final class Chop extends FunctionBase1 {
 
-    protected Chop() {
-        super(1, StringVocabulary.chop.stringValue());
-    }
-
-    private Chop(final Chop chop) {
-        super(chop);
-    }
+    public static final String name = StringVocabulary.chop.stringValue();
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
-
-        final String string = assertStringLiteral(values[0]).stringValue();
-
-        return literal(StringUtils.chop(string));
+    public NodeValue exec(final NodeValue arg0) {
+        return makeString(chop(arg0.asString()));
     }
 }

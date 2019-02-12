@@ -10,14 +10,10 @@ import org.openrdf.model.Value;
 
 import static com.complexible.common.rdf.model.Values.*;
 
-public final class Right extends AbstractFunction implements StringFunction {
+public final class Right extends FunctionBase {
 
     protected Right() {
         super(2, StringVocabulary.right.stringValue());
-    }
-
-    private Right(final Right right) {
-        super(right);
     }
 
     @Override
@@ -27,20 +23,5 @@ public final class Right extends AbstractFunction implements StringFunction {
         final int length = assertNumericLiteral(values[1]).intValue();
 
         return literal(StringUtils.right(string, length));
-    }
-
-    @Override
-    public Right copy() {
-        return new Right(this);
-    }
-
-    @Override
-    public void accept(final ExpressionVisitor expressionVisitor) {
-        expressionVisitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return StringVocabulary.right.name();
     }
 }

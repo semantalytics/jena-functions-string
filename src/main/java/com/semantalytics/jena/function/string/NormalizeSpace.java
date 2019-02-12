@@ -1,17 +1,17 @@
 package com.semantalytics.jena.function.string;
 
-import com.complexible.common.rdf.model.Values;
+import com.complexible.common.rdf.model.NodeValues;
 import com.complexible.stardog.plan.filter.ExpressionEvaluationException;
 import com.complexible.stardog.plan.filter.ExpressionVisitor;
 import com.complexible.stardog.plan.filter.functions.AbstractFunction;
 import com.complexible.stardog.plan.filter.functions.string.StringFunction;
 import org.apache.commons.lang3.StringUtils;
-import org.openrdf.model.Value;
+import org.openrdf.model.NodeValue;
 
-public class NormalizeSpace extends AbstractFunction implements StringFunction {
+public class NormalizeSpace extends FunctionBase {
 
     protected NormalizeSpace() {
-        super(1, StringVocabulary.normalizeSpace.stringValue());
+        super(1, StringVocabulary.normalizeSpace.stringNodeValue());
     }
 
     private NormalizeSpace(final NormalizeSpace normalizeSpace) {
@@ -19,25 +19,10 @@ public class NormalizeSpace extends AbstractFunction implements StringFunction {
     }
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
+    protected NodeValue internalEvaluate(final NodeValue... values) throws ExpressionEvaluationException {
 
-        final String string = assertStringLiteral(values[0]).stringValue();
+        final String string = assertStringLiteral(values[0]).stringNodeValue();
 
-        return Values.literal(StringUtils.normalizeSpace(string));
-    }
-
-    @Override
-    public NormalizeSpace copy() {
-        return new NormalizeSpace(this);
-    }
-
-    @Override
-    public void accept(final ExpressionVisitor expressionVisitor) {
-        expressionVisitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return StringVocabulary.normalizeSpace.name();
+        return NodeValues.literal(StringUtils.normalizeSpace(string));
     }
 }

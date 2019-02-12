@@ -1,45 +1,21 @@
 package com.semantalytics.jena.function.string;
 
-import com.complexible.stardog.plan.filter.ExpressionEvaluationException;
-import com.complexible.stardog.plan.filter.ExpressionVisitor;
-import com.complexible.stardog.plan.filter.functions.AbstractFunction;
-import com.complexible.stardog.plan.filter.functions.string.StringFunction;
-import org.apache.commons.lang3.StringUtils;
-import org.openrdf.model.Value;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase2;
 
-import static com.complexible.common.rdf.model.Values.*;
+import static org.apache.commons.lang3.StringUtils.removeEnd;
+import static org.apache.jena.sparql.expr.NodeValue.makeString;
 
-public final class RemoveEnd extends AbstractFunction implements StringFunction {
+public final class RemoveEnd extends FunctionBase2 {
 
-    protected RemoveEnd() {
-        super(2, StringVocabulary.removeEnd.stringValue());
-    }
-
-    private RemoveEnd(final RemoveEnd removeEnd) {
-        super(removeEnd);
-    }
+    public static final String name = StringVocabulary.removeEnd.stringValue();
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
+    public NodeValue exec(final NodeValue arg0, final NodeValue arg1) {
 
-        final String string = assertStringLiteral(values[0]).stringValue();
-        final String remove = assertStringLiteral(values[1]).stringValue();
+        final String string = arg0.asString();
+        final String remove = arg1.asString();
 
-        return literal(StringUtils.removeEnd(string, remove));
-    }
-
-    @Override
-    public RemoveEnd copy() {
-        return new RemoveEnd(this);
-    }
-
-    @Override
-    public void accept(final ExpressionVisitor expressionVisitor) {
-        expressionVisitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return StringVocabulary.removeEnd.name();
+        return makeString(removeEnd(string, remove));
     }
 }

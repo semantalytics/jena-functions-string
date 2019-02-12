@@ -6,16 +6,16 @@ import com.complexible.stardog.plan.filter.functions.AbstractFunction;
 import com.complexible.stardog.plan.filter.functions.string.StringFunction;
 import com.google.common.collect.Range;
 import org.apache.commons.lang3.StringUtils;
-import org.openrdf.model.Value;
+import org.openrdf.model.NodeValue;
 
 import java.util.Arrays;
 
-import static com.complexible.common.rdf.model.Values.*;
+import static com.complexible.common.rdf.model.NodeValues.*;
 
-public final class LastIndexOfAny extends AbstractFunction implements StringFunction {
+public final class LastIndexOfAny extends FunctionBase {
 
     protected LastIndexOfAny() {
-        super(Range.atLeast(2), StringVocabulary.lastIndexOfAny.stringValue());
+        super(Range.atLeast(2), StringVocabulary.lastIndexOfAny.stringNodeValue());
     }
 
     private LastIndexOfAny(final LastIndexOfAny lastIndexOfAny) {
@@ -23,30 +23,15 @@ public final class LastIndexOfAny extends AbstractFunction implements StringFunc
     }
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
+    protected NodeValue internalEvaluate(final NodeValue... values) throws ExpressionEvaluationException {
 
-        for(final Value value : values) {
+        for (final NodeValue value : values) {
             assertStringLiteral(value);
         }
 
-        final String string = assertStringLiteral(values[0]).stringValue();
-        final String[] searchStrings = Arrays.stream(values).skip(1).map(Value::stringValue).toArray(String[]::new);
+        final String string = assertStringLiteral(values[0]).stringNodeValue();
+        final String[] searchStrings = Arrays.stream(values).skip(1).map(NodeValue::stringNodeValue).toArray(String[]::new);
 
         return literal(StringUtils.lastIndexOfAny(string, searchStrings));
-    }
-
-    @Override
-    public LastIndexOfAny copy() {
-        return new LastIndexOfAny(this);
-    }
-
-    @Override
-    public void accept(final ExpressionVisitor expressionVisitor) {
-        expressionVisitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return StringVocabulary.lastIndexOfAny.name();
     }
 }

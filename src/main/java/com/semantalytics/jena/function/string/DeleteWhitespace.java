@@ -1,15 +1,19 @@
 package com.semantalytics.jena.function.string;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase1;
 
-public final class DeleteWhitespace extends AbstractFunction implements StringFunction {
+import static org.apache.commons.lang3.StringUtils.deleteWhitespace;
+import static org.apache.jena.sparql.expr.NodeValue.makeString;
 
-    protected DeleteWhitespace() {
-        super(1, StringVocabulary.deleteWhitespace.stringValue());
-    }
+public final class DeleteWhitespace extends FunctionBase1 {
 
-    private DeleteWhitespace(final DeleteWhitespace deleteWhitespace) {
-        super(deleteWhitespace);
+    public static final String name = StringVocabulary.deleteWhitespace.stringValue();
+
+    @Override
+    public NodeValue exec(final NodeValue arg0) {
+
+        return makeString(deleteWhitespace(arg0.asString()));
     }
 }
 

@@ -11,14 +11,10 @@ import org.openrdf.model.Value;
 
 import static com.complexible.common.rdf.model.Values.literal;
 
-public final class Split extends AbstractFunction implements StringFunction {
+public final class Split extends FunctionBase {
 
     protected Split() {
         super(Range.closed(1, 3), StringVocabulary.split.stringValue());
-    }
-
-    private Split(final Split split) {
-        super(split);
     }
 
     @Override
@@ -43,20 +39,5 @@ public final class Split extends AbstractFunction implements StringFunction {
                 throw new ExpressionEvaluationException("Takes 1 to 3 arguments. Fount " + values.length);
             }
         }
-    }
-
-    @Override
-    public Split copy() {
-        return new Split(this);
-    }
-
-    @Override
-    public void accept(final ExpressionVisitor expressionVisitor) {
-        expressionVisitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return StringVocabulary.split.name();
     }
 }

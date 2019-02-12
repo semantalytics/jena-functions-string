@@ -9,14 +9,10 @@ import org.openrdf.model.Value;
 
 import static com.complexible.common.rdf.model.Values.*;
 
-public final class SwapCase extends AbstractFunction implements StringFunction {
+public final class SwapCase extends FunctionBase {
 
     protected SwapCase() {
         super(1, StringVocabulary.swapCase.stringValue());
-    }
-
-    private SwapCase(final SwapCase swapCase) {
-        super(swapCase);
     }
 
     @Override
@@ -25,20 +21,5 @@ public final class SwapCase extends AbstractFunction implements StringFunction {
         final String string = assertStringLiteral(values[0]).stringValue();
 
         return literal(StringUtils.swapCase(string));
-    }
-
-    @Override
-    public SwapCase copy() {
-        return new SwapCase(this);
-    }
-
-    @Override
-    public void accept(final ExpressionVisitor expressionVisitor) {
-        expressionVisitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return StringVocabulary.swapCase.name();
     }
 }

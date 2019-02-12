@@ -1,22 +1,17 @@
 package com.semantalytics.jena.function.string;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase1;
 
-public final class Digits extends AbstractFunction implements StringFunction {
+import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.jena.sparql.expr.NodeValue.*;
 
-    protected Digits() {
-        super(1, StringVocabulary.digits.stringValue());
-    }
+public final class Digits extends FunctionBase1 {
 
-    private Digits(final Digits digits) {
-        super(digits);
-    }
+    public static final String name = StringVocabulary.digits.stringValue();
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
-      
-      final String string = assertStringLiteral(values[0]).stringValue();
-
-      return literal(StringUtils.getDigits(string));
+    public NodeValue exec(final NodeValue arg0) {
+      return makeString(getDigits(arg0.asString()));
     }
 }

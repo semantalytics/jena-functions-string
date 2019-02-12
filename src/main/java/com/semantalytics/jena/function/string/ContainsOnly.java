@@ -1,23 +1,21 @@
 package com.semantalytics.jena.function.string;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase2;
 
-public final class ContainsOnly extends AbstractFunction implements StringFunction {
+import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.jena.sparql.expr.NodeValue.*;
 
-    protected ContainsOnly() {
-        super(2, StringVocabulary.containsOnly.stringValue());
-    }
+public final class ContainsOnly extends FunctionBase2 {
 
-    private ContainsOnly(final ContainsOnly containsOnly) {
-        super(containsOnly);
-    }
+    public static final String name = StringVocabulary.containsOnly.stringValue();
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
+    public NodeValue exec(final NodeValue arg0, final NodeValue arg1) {
       
-      final String string = assertStringLiteral(values[0]).stringValue();
-      final String validChars = assertStringLiteral(values[1]).stringValue();
+      final String string = arg0.asString();
+      final String validChars = arg1.asString();
       
-      return literal(StringUtils.containsOnly(string, validChars));
+      return makeBoolean(containsOnly(string, validChars));
     }
 }

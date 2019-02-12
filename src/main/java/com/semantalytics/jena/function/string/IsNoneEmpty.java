@@ -6,16 +6,16 @@ import com.complexible.stardog.plan.filter.functions.AbstractFunction;
 import com.complexible.stardog.plan.filter.functions.string.StringFunction;
 import com.google.common.collect.Range;
 import org.apache.commons.lang3.StringUtils;
-import org.openrdf.model.Value;
+import org.openrdf.model.NodeValue;
 
 import java.util.Arrays;
 
-import static com.complexible.common.rdf.model.Values.*;
+import static com.complexible.common.rdf.model.NodeValues.*;
 
-public final class IsNoneEmpty extends AbstractFunction implements StringFunction {
+public final class IsNoneEmpty extends FunctionBase {
 
     protected IsNoneEmpty() {
-        super(Range.atLeast(1), StringVocabulary.isNoneEmpty.stringValue());
+        super(Range.atLeast(1), StringVocabulary.isNoneEmpty.stringNodeValue());
     }
 
     private IsNoneEmpty(final IsNoneEmpty isNoneBlank) {
@@ -23,29 +23,14 @@ public final class IsNoneEmpty extends AbstractFunction implements StringFunctio
     }
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
+    protected NodeValue internalEvaluate(final NodeValue... values) throws ExpressionEvaluationException {
 
-        for(final Value value : values) {
+        for (final NodeValue value : values) {
             assertStringLiteral(value);
         }
 
-        final String[] strings = Arrays.stream(values).map(Value::stringValue).toArray(String[]::new);
+        final String[] strings = Arrays.stream(values).map(NodeValue::stringNodeValue).toArray(String[]::new);
 
         return literal(StringUtils.isNoneEmpty(strings));
-    }
-
-    @Override
-    public IsNoneEmpty copy() {
-        return new IsNoneEmpty(this);
-    }
-
-    @Override
-    public void accept(final ExpressionVisitor expressionVisitor) {
-        expressionVisitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return StringVocabulary.isNoneBlank.name();
     }
 }

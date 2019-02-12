@@ -1,18 +1,12 @@
 package com.semantalytics.jena.function.string;
 
-import com.complexible.stardog.plan.filter.ExpressionEvaluationException;
-import com.complexible.stardog.plan.filter.ExpressionVisitor;
-import com.complexible.stardog.plan.filter.functions.AbstractFunction;
-import com.complexible.stardog.plan.filter.functions.string.StringFunction;
 import org.apache.commons.lang3.StringUtils;
-import org.openrdf.model.Value;
+import org.apache.jena.sparql.function.FunctionBase1;
 
-import static com.complexible.common.rdf.model.Values.*;
-
-public final class IsAlphanumeric extends AbstractFunction implements StringFunction {
+public final class IsAlphanumeric extends FunctionBase1 {
 
     protected IsAlphanumeric() {
-        super(1, StringVocabulary.isAlphanumeric.stringValue());
+        super(1, StringVocabulary.isAlphanumeric.stringNodeValue());
     }
 
     private IsAlphanumeric(final IsAlphanumeric isUpperCase) {
@@ -20,25 +14,10 @@ public final class IsAlphanumeric extends AbstractFunction implements StringFunc
     }
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
+    protected NodeValue internalEvaluate(final NodeValue... values) throws ExpressionEvaluationException {
 
-        final String string = assertStringLiteral(values[0]).stringValue();
+        final String string = assertStringLiteral(values[0]).stringNodeValue();
 
         return literal(StringUtils.isAlphanumeric(string));
-    }
-
-    @Override
-    public IsAlphanumeric copy() {
-        return new IsAlphanumeric(this);
-    }
-
-    @Override
-    public void accept(final ExpressionVisitor expressionVisitor) {
-        expressionVisitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return StringVocabulary.isAlphanumeric.name();
     }
 }

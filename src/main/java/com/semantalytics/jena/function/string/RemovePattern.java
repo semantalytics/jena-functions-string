@@ -1,45 +1,20 @@
 package com.semantalytics.jena.function.string;
 
-import com.complexible.stardog.plan.filter.ExpressionEvaluationException;
-import com.complexible.stardog.plan.filter.ExpressionVisitor;
-import com.complexible.stardog.plan.filter.functions.AbstractFunction;
-import com.complexible.stardog.plan.filter.functions.string.StringFunction;
-import org.apache.commons.lang3.StringUtils;
-import org.openrdf.model.Value;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase2;
+import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.jena.sparql.expr.NodeValue.*;
 
-import static com.complexible.common.rdf.model.Values.*;
+public final class RemovePattern extends FunctionBase2 {
 
-public final class RemovePattern extends AbstractFunction implements StringFunction {
-
-    protected RemovePattern() {
-        super(2, StringVocabulary.removePattern.stringValue());
-    }
-
-    private RemovePattern(final RemovePattern removePattern) {
-        super(removePattern);
-    }
+    public static final String name = StringVocabulary.removePattern.stringValue();
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
+    public NodeValue exec(final NodeValue arg0, final NodeValue arg1) {
 
-        final String string = assertStringLiteral(values[0]).stringValue();
-        final String pattern = assertStringLiteral(values[1]).stringValue();
+        final String string = arg0.asString();
+        final String pattern = arg1.asString();
 
-        return literal(StringUtils.removePattern(string, pattern));
-    }
-
-    @Override
-    public RemovePattern copy() {
-        return new RemovePattern(this);
-    }
-
-    @Override
-    public void accept(final ExpressionVisitor expressionVisitor) {
-        expressionVisitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return StringVocabulary.removePattern.name();
+        return makeString(removePattern(string, pattern));
     }
 }

@@ -9,14 +9,10 @@ import org.openrdf.model.Value;
 
 import static com.complexible.common.rdf.model.Values.*;
 
-public final class StripStart extends AbstractFunction implements StringFunction {
+public final class StripStart extends FunctionBase {
 
     protected StripStart() {
         super(2, StringVocabulary.stripStart.stringValue());
-    }
-
-    private StripStart(final StripStart stripStart) {
-        super(stripStart);
     }
 
     @Override
@@ -26,20 +22,5 @@ public final class StripStart extends AbstractFunction implements StringFunction
         final String stripChars = assertStringLiteral(values[1]).stringValue();
 
         return literal(StringUtils.stripStart(string, stripChars));
-    }
-
-    @Override
-    public StripStart copy() {
-        return new StripStart(this);
-    }
-
-    @Override
-    public void accept(final ExpressionVisitor expressionVisitor) {
-        expressionVisitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return StringVocabulary.stripStart.name();
     }
 }

@@ -11,14 +11,10 @@ import org.openrdf.model.Value;
 
 import static com.complexible.common.rdf.model.Values.*;
 
-public final class RightPad extends AbstractFunction implements StringFunction {
+public final class RightPad extends FunctionBase {
 
     protected RightPad() {
         super(2, StringVocabulary.rightPad.stringValue());
-    }
-
-    private RightPad(final RightPad rightPad) {
-        super(rightPad);
     }
 
     @Override
@@ -28,20 +24,5 @@ public final class RightPad extends AbstractFunction implements StringFunction {
         final int size = assertNumericLiteral(values[1]).intValue();
 
         return literal(StringUtils.rightPad(string, size));
-    }
-
-    @Override
-    public RightPad copy() {
-        return new RightPad(this);
-    }
-
-    @Override
-    public void accept(final ExpressionVisitor expressionVisitor) {
-        expressionVisitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return StringVocabulary.rightPad.name();
     }
 }

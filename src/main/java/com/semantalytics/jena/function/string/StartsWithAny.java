@@ -12,20 +12,16 @@ import java.util.Arrays;
 
 import static com.complexible.common.rdf.model.Values.*;
 
-public final class StartsWithAny extends AbstractFunction implements StringFunction {
+public final class StartsWithAny extends FunctionBase {
 
     protected StartsWithAny() {
         super(Range.atLeast(2), StringVocabulary.startsWithAny.stringValue());
     }
 
-    private StartsWithAny(final StartsWithAny startsWithAny) {
-        super(startsWithAny);
-    }
-
     @Override
     protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
 
-        for(final Value value : values) {
+        for (final Value value : values) {
             assertStringLiteral(value);
         }
 
@@ -33,20 +29,5 @@ public final class StartsWithAny extends AbstractFunction implements StringFunct
         final String[] prefix = Arrays.stream(values).skip(1).map(Value::stringValue).toArray(String[]::new);
 
         return literal(StringUtils.startsWithAny(string, prefix));
-    }
-
-    @Override
-    public StartsWithAny copy() {
-        return new StartsWithAny(this);
-    }
-
-    @Override
-    public void accept(final ExpressionVisitor expressionVisitor) {
-        expressionVisitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return StringVocabulary.startsWithAny.name();
     }
 }

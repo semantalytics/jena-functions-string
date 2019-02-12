@@ -8,14 +8,10 @@ import com.complexible.stardog.plan.filter.functions.string.StringFunction;
 import org.apache.commons.lang3.StringUtils;
 import org.openrdf.model.Value;
 
-public final class ReplaceChars extends AbstractFunction implements StringFunction {
+public final class ReplaceChars extends FunctionBase {
 
     protected ReplaceChars() {
         super(3, StringVocabulary.replaceChars.stringValue());
-    }
-
-    private ReplaceChars(final ReplaceChars replaceChars) {
-        super(replaceChars);
     }
 
     @Override
@@ -26,20 +22,5 @@ public final class ReplaceChars extends AbstractFunction implements StringFuncti
         final String replacement = assertStringLiteral(values[2]).stringValue();
 
         return Values.literal(StringUtils.replaceChars(string, searchString, replacement));
-    }
-
-    @Override
-    public ReplaceChars copy() {
-        return new ReplaceChars(this);
-    }
-
-    @Override
-    public void accept(final ExpressionVisitor expressionVisitor) {
-        expressionVisitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return StringVocabulary.replaceChars.name();
     }
 }

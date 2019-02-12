@@ -6,14 +6,14 @@ import com.complexible.stardog.plan.filter.functions.AbstractFunction;
 import com.complexible.stardog.plan.filter.functions.string.StringFunction;
 import com.google.common.collect.Range;
 import org.apache.commons.lang3.StringUtils;
-import org.openrdf.model.Value;
+import org.openrdf.model.NodeValue;
 
-import static com.complexible.common.rdf.model.Values.*;
+import static com.complexible.common.rdf.model.NodeValues.*;
 
-public final class LeftPad extends AbstractFunction implements StringFunction {
+public final class LeftPad extends FunctionBase {
 
     protected LeftPad() {
-        super(Range.closed(2, 3), StringVocabulary.leftPad.stringValue());
+        super(Range.closed(2, 3), StringVocabulary.leftPad.stringNodeValue());
     }
 
     private LeftPad(final LeftPad leftPad) {
@@ -21,38 +21,22 @@ public final class LeftPad extends AbstractFunction implements StringFunction {
     }
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
+    protected NodeValue internalEvaluate(final NodeValue... values) throws ExpressionEvaluationException {
 
-        final String string = assertStringLiteral(values[0]).stringValue();
-        final int size = assertNumericLiteral(values[1]).intValue();
+        final String string = assertStringLiteral(values[0]).stringNodeValue();
+        final int size = assertNumericLiteral(values[1]).intNodeValue();
 
-        switch(values.length) {
+        switch (values.length) {
             case 2: {
                 return literal(StringUtils.leftPad(string, size));
             }
             case 3: {
-                final String padStr = assertStringLiteral(values[2]).stringValue();
+                final String padStr = assertStringLiteral(values[2]).stringNodeValue();
                 return literal(StringUtils.leftPad(string, size, padStr));
             }
-            default:
-            {
+            default: {
                 throw new ExpressionEvaluationException("Function takes 2 or 3 arguments. Found " + values.length);
             }
         }
-    }
-
-    @Override
-    public LeftPad copy() {
-        return new LeftPad(this);
-    }
-
-    @Override
-    public void accept(final ExpressionVisitor expressionVisitor) {
-        expressionVisitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return StringVocabulary.leftPad.name();
     }
 }

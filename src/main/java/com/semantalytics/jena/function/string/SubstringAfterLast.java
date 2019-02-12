@@ -10,14 +10,10 @@ import org.openrdf.model.Value;
 
 import static com.complexible.common.rdf.model.Values.*;
 
-public final class SubstringAfterLast extends AbstractFunction implements StringFunction {
+public final class SubstringAfterLast extends FunctionBase {
 
     protected SubstringAfterLast() {
         super(2, StringVocabulary.substringAfterLast.stringValue());
-    }
-
-    private SubstringAfterLast(final SubstringAfterLast substringAfterLast) {
-        super(substringAfterLast);
     }
 
     @Override
@@ -27,20 +23,5 @@ public final class SubstringAfterLast extends AbstractFunction implements String
         final String separator = assertStringLiteral(values[1]).stringValue();
 
         return literal(StringUtils.substringAfterLast(string, separator));
-    }
-
-    @Override
-    public SubstringAfterLast copy() {
-        return new SubstringAfterLast(this);
-    }
-
-    @Override
-    public void accept(final ExpressionVisitor expressionVisitor) {
-        expressionVisitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return StringVocabulary.substringAfterLast.name();
     }
 }

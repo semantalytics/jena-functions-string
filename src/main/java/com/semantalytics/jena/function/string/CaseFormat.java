@@ -1,82 +1,38 @@
 package com.semantalytics.jena.function.string;
 
-import com.complexible.stardog.plan.filter.ExpressionEvaluationException;
-import com.complexible.stardog.plan.filter.ExpressionVisitor;
-import com.complexible.stardog.plan.filter.functions.AbstractFunction;
-import com.complexible.stardog.plan.filter.functions.string.StringFunction;
-import org.openrdf.model.Value;
-
-import static com.complexible.common.rdf.model.Values.literal;
+import org.apache.jena.sparql.expr.ExprEvalException;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase3;
 import static com.google.common.base.CaseFormat.*;
 
+public final class CaseFormat extends FunctionBase3 {
 
-public final class CaseFormat extends AbstractFunction implements StringFunction {
-
-    protected CaseFormat() {
-        super(3, StringVocabulary.caseFormat.stringValue());
-    }
-
-    private CaseFormat(final CaseFormat caseFormat) {
-        super(caseFormat);
-    }
+    public static final String name = StringVocabulary.caseFormat.stringValue();
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
+    public NodeValue exec(final NodeValue arg0, final NodeValue arg1, final NodeValue arg2) {
 
-        final String caseFormatString = assertStringLiteral(values[0]).stringValue();
-        final com.google.common.base.CaseFormat caseFormatFrom = getFromFormatType(assertStringLiteral(values[1]).stringValue());
-        final com.google.common.base.CaseFormat caseFormatTo = getToFormatType(assertStringLiteral(values[2]).stringValue());
+        final String caseFormatString = arg0.asString();
+        final com.google.common.base.CaseFormat caseFormatFrom = getFormatType(arg1.asString());
+        final com.google.common.base.CaseFormat caseFormatTo = getFormatType(arg2.asString());
 
         switch(caseFormatFrom) {
             case LOWER_CAMEL:
-                return literal(caseFormatFrom.LOWER_CAMEL.to(caseFormatTo, caseFormatString));
+                return NodeValue.makeString(caseFormatFrom.LOWER_CAMEL.to(caseFormatTo, caseFormatString));
             case UPPER_CAMEL:
-                return literal(caseFormatFrom.UPPER_CAMEL.to(caseFormatTo, caseFormatString));
+                return NodeValue.makeString(caseFormatFrom.UPPER_CAMEL.to(caseFormatTo, caseFormatString));
             case LOWER_HYPHEN:
-                return literal(caseFormatFrom.LOWER_HYPHEN.to(caseFormatTo, caseFormatString));
+                return NodeValue.makeString(caseFormatFrom.LOWER_HYPHEN.to(caseFormatTo, caseFormatString));
             case LOWER_UNDERSCORE:
-                return literal(caseFormatFrom.LOWER_UNDERSCORE.to(caseFormatTo, caseFormatString));
+                return NodeValue.makeString(caseFormatFrom.LOWER_UNDERSCORE.to(caseFormatTo, caseFormatString));
             case UPPER_UNDERSCORE:
-                return literal(caseFormatFrom.UPPER_UNDERSCORE.to(caseFormatTo, caseFormatString));
+                return NodeValue.makeString(caseFormatFrom.UPPER_UNDERSCORE.to(caseFormatTo, caseFormatString));
             default:
-                throw new ExpressionEvaluationException("Unknown format " + values[0].stringValue());
+                throw new ExprEvalException("Unknown format " + arg0.getString());
         }
     }
 
-    @Override
-    public CaseFormat copy() {
-        return new CaseFormat(this);
-    }
-
-    @Override
-    public void accept(final ExpressionVisitor expressionVisitor) {
-        expressionVisitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return StringVocabulary.caseFormat.name();
-    }
-
-    public com.google.common.base.CaseFormat getFromFormatType(final String formatString) throws ExpressionEvaluationException {
-
-        switch(formatString) {
-            case "fromFormat":
-                return LOWER_CAMEL;
-            case "FromFormat":
-                return UPPER_CAMEL;
-            case "from-format":
-                return LOWER_HYPHEN;
-            case "from_format":
-                return LOWER_UNDERSCORE;
-            case "FROM_FORMAT":
-                return UPPER_UNDERSCORE;
-            default:
-                throw new ExpressionEvaluationException("Unrecognized format type " + formatString);
-        }
-    }
-
-    public com.google.common.base.CaseFormat getToFormatType(final String formatString) throws ExpressionEvaluationException {
+    public com.google.common.base.CaseFormat getFormatType(final String formatString) throws ExprEvalException {
 
         switch(formatString) {
             case "toFormat":
@@ -90,7 +46,7 @@ public final class CaseFormat extends AbstractFunction implements StringFunction
             case "TO_FORMAT":
                 return UPPER_UNDERSCORE;
             default:
-                throw new ExpressionEvaluationException("Unrecognized format type " + formatString);
+                throw new ExprEvalException("Unrecognized format type " + formatString);
         }
     }
 }

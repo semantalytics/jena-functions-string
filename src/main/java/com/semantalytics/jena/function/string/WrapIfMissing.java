@@ -10,41 +10,22 @@ import org.openrdf.model.Value;
 
 import static com.google.common.base.Preconditions.checkElementIndex;
 
-public final class WrapIfMissing extends AbstractFunction implements StringFunction {
+public final class WrapIfMissing extends FunctionBase {
 
     protected WrapIfMissing() {
         super(2, StringVocabulary.wrapIfMissing.stringValue());
     }
 
-    private WrapIfMissing(final WrapIfMissing wrapIfMissing) {
-        super(wrapIfMissing);
-    }
-
     @Override
     protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
-      
-      final String string = assertStringLiteral(values[0]).stringValue();
-      final String wrapWith = assertStringLiteral(values[1]).stringValue();
-      
-      if (wrapWith.length() != 1) {
-          throw new ExpressionEvaluationException("Expecting a single character for second argument. Found '" + wrapWith + "'");
-      }
 
-      return Values.literal(StringUtils.wrapIfMissing(string, wrapWith.charAt(0)));
-    }
+        final String string = assertStringLiteral(values[0]).stringValue();
+        final String wrapWith = assertStringLiteral(values[1]).stringValue();
 
-    @Override
-    public WrapIfMissing copy() {
-        return new WrapIfMissing(this);
-    }
+        if (wrapWith.length() != 1) {
+            throw new ExpressionEvaluationException("Expecting a single character for second argument. Found '" + wrapWith + "'");
+        }
 
-    @Override
-    public void accept(final ExpressionVisitor expressionVisitor) {
-        expressionVisitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return StringVocabulary.wrapIfMissing.name();
+        return Values.literal(StringUtils.wrapIfMissing(string, wrapWith.charAt(0)));
     }
 }

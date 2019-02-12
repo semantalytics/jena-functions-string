@@ -1,45 +1,21 @@
 package com.semantalytics.jena.function.string;
 
-import com.complexible.stardog.plan.filter.ExpressionEvaluationException;
-import com.complexible.stardog.plan.filter.ExpressionVisitor;
-import com.complexible.stardog.plan.filter.functions.AbstractFunction;
-import com.complexible.stardog.plan.filter.functions.string.StringFunction;
-import org.apache.commons.lang3.StringUtils;
-import org.openrdf.model.Value;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase2;
 
-import static com.complexible.common.rdf.model.Values.literal;
+import static org.apache.commons.lang3.StringUtils.removeEndIgnoreCase;
+import static org.apache.jena.sparql.expr.NodeValue.makeString;
 
-public final class RemoveEndIgnoreCase extends AbstractFunction implements StringFunction {
+public final class RemoveEndIgnoreCase extends FunctionBase2 {
 
-    protected RemoveEndIgnoreCase() {
-        super(2, StringVocabulary.removeEndIgnoreCase.stringValue());
-    }
-
-    private RemoveEndIgnoreCase(final RemoveEndIgnoreCase removeEndIgnoreCase) {
-        super(removeEndIgnoreCase);
-    }
+    public static final String name = StringVocabulary.removeEndIgnoreCase.stringValue();
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
+    public NodeValue exec(final NodeValue arg0, final NodeValue arg1) {
 
-        final String string = assertStringLiteral(values[0]).stringValue();
-        final String remove = assertStringLiteral(values[1]).stringValue();
+        final String string = arg0.asString();
+        final String remove = arg1.asString();
 
-        return literal(StringUtils.removeEndIgnoreCase(string, remove));
-    }
-
-    @Override
-    public RemoveEndIgnoreCase copy() {
-        return new RemoveEndIgnoreCase(this);
-    }
-
-    @Override
-    public void accept(final ExpressionVisitor expressionVisitor) {
-        expressionVisitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return StringVocabulary.removeEndIgnoreCase.name();
+        return makeString(removeEndIgnoreCase(string, remove));
     }
 }

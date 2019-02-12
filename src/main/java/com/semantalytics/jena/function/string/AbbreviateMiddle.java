@@ -10,7 +10,7 @@ public final class AbbreviateMiddle extends FunctionBase3 {
 
     @Override
     public NodeValue exec(final NodeValue string, final NodeValue middle, final NodeValue length) {
-      
+
       final String result = StringUtils.abbreviateMiddle(string.getString(),
                                                          middle.getString(),
                                                          length.getInteger().intValue());
