@@ -1,9 +1,9 @@
 package com.semantalytics.stardog.kibble.string;
+package com.semantalytics.jena.function.string;
 
+import com.semantalytics.jena.function.string.StringVocabulary;
 import com.semantalytics.stardog.kibble.AbstractStardogTest;
 import org.junit.Test;
-import org.openrdf.query.BindingSet;
-import org.openrdf.query.TupleQueryResult;
 
 import static org.junit.Assert.*;
 

@@ -22,9 +22,8 @@ public final class StartsWithAny extends FunctionBase {
         if ( args == null )
             // The contract on the function interface is that this should not happen.
             throw new ARQInternalErrorException(Lib.className(this) + ": Null args list") ;
-
-            throw new ExprEvalException(Lib.className(this)+": Wrong number of arguments: Wanted at least 2, got "  + args.size()) ;
-
+        if (!Range.atLeast(1).contains(args.size()))
+            throw new ExprEvalException(Lib.className(this)+": Wrong number of arguments: Wanted at least 1, got "+args.size()) ;
 
         final String string = args.get(0).asString();
         final String[] prefix = args.stream().skip(1).map(NodeValue::asString).toArray(String[]::new);

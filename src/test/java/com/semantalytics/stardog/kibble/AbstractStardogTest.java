@@ -1,16 +1,7 @@
 package com.semantalytics.stardog.kibble;
 
-import com.complexible.common.protocols.server.Server;
-import com.complexible.common.protocols.server.ServerException;
-import com.complexible.stardog.Stardog;
-import com.complexible.stardog.StardogException;
-import com.complexible.stardog.api.Connection;
-import com.complexible.stardog.api.ConnectionConfiguration;
-import com.complexible.stardog.api.admin.AdminConnection;
-import com.complexible.stardog.api.admin.AdminConnectionConfiguration;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
-import com.stardog.http.server.ServerOptions;
 import org.junit.*;
 
 import java.io.File;

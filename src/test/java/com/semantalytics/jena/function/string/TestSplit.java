@@ -1,13 +1,11 @@
-package com.semantalytics.stardog.kibble.string;
+package com.semantalytics.jena.function.string;
 
 import com.semantalytics.stardog.kibble.AbstractStardogTest;
 import org.junit.*;
-import org.openrdf.query.BindingSet;
-import org.openrdf.query.TupleQueryResult;
 
 import static org.junit.Assert.*;
 
-public class TestSplit extends AbstractStardogTest {
+public class TestSplit {
 
     @Test
     public void testOneArg() {
