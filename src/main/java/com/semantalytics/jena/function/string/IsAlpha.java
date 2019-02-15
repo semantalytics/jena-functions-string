@@ -1,30 +1,16 @@
 package com.semantalytics.jena.function.string;
 
-import com.complexible.stardog.plan.filter.ExpressionEvaluationException;
-import com.complexible.stardog.plan.filter.ExpressionVisitor;
-import com.complexible.stardog.plan.filter.functions.AbstractFunction;
-import com.complexible.stardog.plan.filter.functions.string.StringFunction;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.function.FunctionBase1;
-import org.openrdf.model.NodeValue;
-
-import static com.complexible.common.rdf.model.NodeValues.*;
+import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.jena.sparql.expr.NodeValue.*;
 
 public final class IsAlpha extends FunctionBase1 {
 
-    protected IsAlpha() {
-        super(1, StringVocabulary.isAlpha.stringNodeValue());
-    }
-
-    private IsAlpha(final IsAlpha isUpperCase) {
-        super(isUpperCase);
-    }
+    public static final String name = StringVocabulary.isAlpha.stringValue();
 
     @Override
-    protected NodeValue internalEvaluate(final NodeValue... values) throws ExpressionEvaluationException {
-
-        final String string = assertStringLiteral(values[0]).stringNodeValue();
-
-        return literal(StringUtils.isAlpha(string));
+    public NodeValue exec(final NodeValue arg0) {
+        return makeBoolean(isAlpha(arg0.asString()));
     }
 }

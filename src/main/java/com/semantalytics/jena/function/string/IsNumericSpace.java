@@ -1,29 +1,15 @@
 package com.semantalytics.jena.function.string;
 
-import com.complexible.stardog.plan.filter.ExpressionEvaluationException;
-import com.complexible.stardog.plan.filter.ExpressionVisitor;
-import com.complexible.stardog.plan.filter.functions.AbstractFunction;
-import com.complexible.stardog.plan.filter.functions.string.StringFunction;
 import org.apache.commons.lang3.StringUtils;
-import org.openrdf.model.NodeValue;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase1;
 
-import static com.complexible.common.rdf.model.NodeValues.*;
+public final class IsNumericSpace extends FunctionBase1 {
 
-public final class IsNumericSpace extends FunctionBase {
-
-    protected IsNumericSpace() {
-        super(1, StringVocabulary.isNumericSpace.stringNodeValue());
-    }
-
-    private IsNumericSpace(final IsNumericSpace isNumericSpace) {
-        super(isNumericSpace);
-    }
+    public static final String name = StringVocabulary.isNumericSpace.stringValue();
 
     @Override
-    protected NodeValue internalEvaluate(final NodeValue... values) throws ExpressionEvaluationException {
-
-        final String string = assertStringLiteral(values[0]).stringNodeValue();
-
-        return literal(StringUtils.isNumericSpace(string));
+    public NodeValue exec(final NodeValue arg0) {
+        return NodeValue.makeBoolean(StringUtils.isNumericSpace(arg0.asString()));
     }
 }

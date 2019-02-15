@@ -1,24 +1,21 @@
 package com.semantalytics.jena.function.string;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.function.FunctionBase2;
+
+import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.jena.sparql.expr.NodeValue.*;
 
 public class IndexOfDifference extends FunctionBase2 {
 
-    protected IndexOfDifference() {
-        super(2, StringVocabulary.indexOfDifference.stringNodeValue());
-    }
-
-    private IndexOfDifference(final IndexOfDifference indexOfDifference) {
-        super(indexOfDifference);
-    }
+    public static final String name = StringVocabulary.indexOfDifference.stringValue();
 
     @Override
-    protected NodeValue internalEvaluate(final NodeValue... values) throws ExpressionEvaluationException {
+    public NodeValue exec(final NodeValue arg0, final NodeValue arg1) {
 
-        final String string = assertStringLiteral(values[0]).stringNodeValue();
-        final String searchChars = assertStringLiteral(values[1]).stringNodeValue();
+        final String string = arg0.asString();
+        final String searchChars = arg1.asString();
 
-        return literal(StringUtils.indexOfDifference(string, searchChars));
+        return makeInteger(indexOfDifference(string, searchChars));
     }
 }

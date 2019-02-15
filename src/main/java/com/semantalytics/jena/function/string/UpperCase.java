@@ -1,37 +1,27 @@
 package com.semantalytics.jena.function.string;
 
-import com.complexible.stardog.plan.filter.EvalUtil;
-import com.complexible.stardog.plan.filter.ExpressionEvaluationException;
-import com.complexible.stardog.plan.filter.ExpressionVisitor;
-import com.complexible.stardog.plan.filter.functions.AbstractFunction;
-import com.complexible.stardog.plan.filter.functions.UserDefinedFunction;
-import org.apache.commons.lang3.StringUtils;
-import org.openrdf.model.Literal;
-import org.openrdf.model.Value;
+import org.apache.jena.sparql.expr.ExprEvalException;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase1;
 
-import java.util.Locale;
+import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.jena.sparql.expr.NodeValue.*;
 
-import static com.complexible.common.rdf.model.Values.literal;
+public class UpperCase extends FunctionBase1 {
 
-public class UpperCase extends AbstractFunction implements UserDefinedFunction {
-
-    public UpperCase() {
-        super(1, StringVocabulary.upperCase.stringValue());
-    }
+    public static final String name = StringVocabulary.upperCase.stringValue();
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
+    public NodeValue exec(final NodeValue arg0) {
 
-        final Literal string = assertLiteral(values[0]);
-
-        if (EvalUtil.isStringLiteral(string)) {
-            if (string.getLanguage().isPresent()) {
-                return literal(StringUtils.upperCase(string.stringValue(), Locale.forLanguageTag(string.getLanguage().get())));
+        if (arg0.isLiteral()) {
+            if (arg0.isLangString()) {
+                return makeLangString(upperCase(arg0.asString()), arg0.getLang());
             } else {
-                return literal(StringUtils.upperCase(string.stringValue()));
+                return makeString(upperCase(arg0.asString()));
             }
         } else {
-            throw new ExpressionEvaluationException("Invalid argument to " + this.getName() + " argument MUST be a literal value, was: " + values[0]);
+            throw new ExprEvalException("Invalid argument. argument MUST be a literal value");
         }
     }
 }

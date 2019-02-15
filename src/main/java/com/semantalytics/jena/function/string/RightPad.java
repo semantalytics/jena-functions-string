@@ -1,28 +1,20 @@
-
-
 package com.semantalytics.jena.function.string;
 
-import com.complexible.stardog.plan.filter.ExpressionEvaluationException;
-import com.complexible.stardog.plan.filter.ExpressionVisitor;
-import com.complexible.stardog.plan.filter.functions.AbstractFunction;
-import com.complexible.stardog.plan.filter.functions.string.StringFunction;
-import org.apache.commons.lang3.StringUtils;
-import org.openrdf.model.Value;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase2;
+import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.jena.sparql.expr.NodeValue.*;
 
-import static com.complexible.common.rdf.model.Values.*;
+public final class RightPad extends FunctionBase2 {
 
-public final class RightPad extends FunctionBase {
-
-    protected RightPad() {
-        super(2, StringVocabulary.rightPad.stringValue());
-    }
+    public static final String name = StringVocabulary.rightPad.stringValue();
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
+    public NodeValue exec(final NodeValue arg0, final NodeValue arg1) {
 
-        final String string = assertStringLiteral(values[0]).stringValue();
-        final int size = assertNumericLiteral(values[1]).intValue();
+        final String string = arg0.asString();
+        final int size = arg1.getInteger().intValue();
 
-        return literal(StringUtils.rightPad(string, size));
+        return makeString(rightPad(string, size));
     }
 }

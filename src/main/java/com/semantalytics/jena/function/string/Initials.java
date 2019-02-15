@@ -6,9 +6,7 @@ import org.apache.jena.sparql.function.FunctionBase;
 
 public final class Initials extends FunctionBase {
 
-    protected Initials() {
         super(Range.closed(1, 2), StringVocabulary.initials.stringNodeValue());
-    }
 
     private Initials(final Initials initials) {
         super(initials);
@@ -16,6 +14,15 @@ public final class Initials extends FunctionBase {
 
     @Override
     protected NodeValue internalEvaluate(final NodeValue... values) throws ExpressionEvaluationException {
+
+
+        if ( args == null )
+            // The contract on the function interface is that this should not happen.
+            throw new ARQInternalErrorException(Lib.className(this) + ": Null args list") ;
+
+        if (!Range.closed(2, 3).contains(args.size()))
+            throw new ExprEvalException(Lib.className(this)+": Wrong number of arguments: Wanted 3, got "+args.size()) ;
+
 
         final String string = assertStringLiteral(values[0]).stringNodeValue();
 
@@ -28,6 +35,13 @@ public final class Initials extends FunctionBase {
             }
             default:
                 throw new ExpressionEvaluationException("Incorrect number of parameters. Valid values are 1 or 2. Found " + values.length);
+        }
+    }
+
+    @Override
+    public void checkBuild(String uri, ExprList args) {
+        if(!Range.closed(2, 3).contains(args.size())) {
+            throw new QueryBuildException("Function '" + Lib.className(this) + "' takes two or three arguments") ;
         }
     }
 }

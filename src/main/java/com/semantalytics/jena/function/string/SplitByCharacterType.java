@@ -1,26 +1,19 @@
 package com.semantalytics.jena.function.string;
 
-import com.complexible.common.rdf.model.Values;
-import com.complexible.stardog.plan.filter.ExpressionEvaluationException;
-import com.complexible.stardog.plan.filter.ExpressionVisitor;
-import com.complexible.stardog.plan.filter.functions.AbstractFunction;
-import com.complexible.stardog.plan.filter.functions.string.StringFunction;
-import com.google.common.base.Joiner;
-import org.apache.commons.lang3.StringUtils;
-import org.openrdf.model.Value;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase1;
 
-public final class SplitByCharacterType extends FunctionBase {
+import static com.google.common.base.Joiner.*;
+import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.jena.sparql.expr.NodeValue.*;
 
-    protected SplitByCharacterType() {
-        super(1, StringVocabulary.splitByCharacterType.stringValue());
-    }
+public final class SplitByCharacterType extends FunctionBase1 {
+
+    public static final String name = StringVocabulary.splitByCharacterType.stringValue();
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
-
-        final String string = assertStringLiteral(values[0]).stringValue();
-
-        return Values.literal(Joiner.on("\u001f").join(StringUtils.splitByCharacterType(string)));
+    public NodeValue exec(final NodeValue arg0) {
+        return makeString(on("\u001f").join(splitByCharacterType(arg0.asString())));
     }
 }
 

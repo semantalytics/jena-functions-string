@@ -1,24 +1,21 @@
 package com.semantalytics.jena.function.string;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.function.FunctionBase2;
+
+import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.jena.sparql.expr.NodeValue.*;
 
 public class IndexOfIgnoreCase extends FunctionBase2 {
 
-    protected IndexOfIgnoreCase() {
-        super(2, StringVocabulary.indexOfIgnoreCase.stringNodeValue());
-    }
-
-    private IndexOfIgnoreCase(final IndexOfIgnoreCase indexOfIgnoreCase) {
-        super(indexOfIgnoreCase);
-    }
+    public static final String name = StringVocabulary.indexOfIgnoreCase.stringValue();
 
     @Override
-    protected NodeValue internalEvaluate(final NodeValue... values) throws ExpressionEvaluationException {
+    public NodeValue exec(final NodeValue arg0, final NodeValue arg1) {
 
-        final String string = assertStringLiteral(values[0]).stringNodeValue();
-        final String searchChars = assertStringLiteral(values[1]).stringNodeValue();
+        final String string = arg0.asString();
+        final String searchChars = arg1.asString();
 
-        return literal(StringUtils.indexOfIgnoreCase(string, searchChars));
+        return makeInteger(indexOfIgnoreCase(string, searchChars));
     }
 }

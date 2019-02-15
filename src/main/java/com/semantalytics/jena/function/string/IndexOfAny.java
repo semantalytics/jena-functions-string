@@ -1,25 +1,21 @@
 package com.semantalytics.jena.function.string;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.function.FunctionBase2;
 
+import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.jena.sparql.expr.NodeValue.*;
+
 public final class IndexOfAny extends FunctionBase2 {
 
-    protected IndexOfAny() {
-        super(2, StringVocabulary.indexOfAny.stringNodeValue());
-    }
-
-    private IndexOfAny(final IndexOfAny indexOfAny) {
-        super(indexOfAny);
-    }
+    public static final String name = StringVocabulary.indexOfAny.stringValue();
 
     @Override
-    public NodeValue exec(final NodeValue... values) throws ExpressionEvaluationException {
+    public NodeValue exec(final NodeValue arg0, final NodeValue arg1) {
 
-        final String string = assertStringLiteral(values[0]).stringNodeValue();
-        final String searchChars = assertStringLiteral(values[1]).stringNodeValue();
+        final String string = arg0.asString();
+        final String searchChars = arg0.asString();
 
-        return literal(StringUtils.indexOfAny(string, searchChars));
+        return makeInteger(indexOfAny(string, searchChars));
     }
 }

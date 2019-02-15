@@ -1,28 +1,17 @@
 package com.semantalytics.jena.function.string;
 
-import com.complexible.common.rdf.model.NodeValues;
-import com.complexible.stardog.plan.filter.ExpressionEvaluationException;
-import com.complexible.stardog.plan.filter.ExpressionVisitor;
-import com.complexible.stardog.plan.filter.functions.AbstractFunction;
-import com.complexible.stardog.plan.filter.functions.string.StringFunction;
 import org.apache.commons.lang3.StringUtils;
-import org.openrdf.model.NodeValue;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase1;
 
-public final class IsBlank extends FunctionBase {
+import static org.apache.jena.sparql.expr.NodeValue.*;
 
-    protected IsBlank() {
-        super(1, StringVocabulary.isBlank.stringNodeValue());
-    }
+public final class IsBlank extends FunctionBase1 {
 
-    private IsBlank(final IsBlank isBlank) {
-        super(isBlank);
-    }
+    public static final String name = StringVocabulary.isBlank.stringValue();
 
     @Override
-    protected NodeValue internalEvaluate(final NodeValue... values) throws ExpressionEvaluationException {
-
-        final String string = assertStringLiteral(values[0]).stringNodeValue();
-
-        return NodeValues.literal(StringUtils.isBlank(string));
+    public NodeValue exec(final NodeValue arg0) {
+        return makeBoolean(StringUtils.isBlank(arg0.asString()));
     }
 }

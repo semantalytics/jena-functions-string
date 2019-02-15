@@ -1,22 +1,21 @@
 package com.semantalytics.jena.function.string;
 
-import jdk.internal.org.objectweb.asm.tree.analysis.NodeValue;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.function.FunctionBase2;
 
+import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.jena.sparql.expr.NodeValue.*;
+
 public final class EqualsIgnoreCase extends FunctionBase2 {
 
-    protected EqualsIgnoreCase() {
-        super(2, StringVocabulary.equalsIgnoreCase.stringNodeValue());
-    }
+    public static final String name = StringVocabulary.equalsIgnoreCase.stringValue();
 
     @Override
-    public NodeValue exec(final NodeValue... values) throws ExpressionEvaluationException {
+    public NodeValue exec(final NodeValue arg0, final NodeValue arg1) {
 
-        final String firstString = assertStringLiteral(values[0]).stringNodeValue();
-        final String secondString = assertStringLiteral(values[1]).stringNodeValue();
+        final String firstString = arg0.asString();
+        final String secondString = arg1.asString();
 
-        return literal(StringUtils.equalsIgnoreCase(firstString, secondString));
+        return makeBoolean(equalsIgnoreCase(firstString, secondString));
     }
 }

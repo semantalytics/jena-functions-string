@@ -1,30 +1,22 @@
 package com.semantalytics.jena.function.string;
 
-import com.complexible.common.rdf.model.NodeValues;
-import com.complexible.stardog.plan.filter.ExpressionEvaluationException;
-import com.complexible.stardog.plan.filter.ExpressionVisitor;
-import com.complexible.stardog.plan.filter.functions.AbstractFunction;
-import com.complexible.stardog.plan.filter.functions.string.StringFunction;
-import org.apache.commons.lang3.StringUtils;
-import org.openrdf.model.NodeValue;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase3;
 
-public final class Mid extends FunctionBase {
+import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.jena.sparql.expr.NodeValue.*;
 
-    protected Mid() {
-        super(3, StringVocabulary.mid.stringNodeValue());
-    }
+public final class Mid extends FunctionBase3 {
 
-    private Mid(final Mid mid) {
-        super(mid);
-    }
+    public static final String name = StringVocabulary.mid.stringValue();
 
     @Override
-    protected NodeValue internalEvaluate(final NodeValue... values) throws ExpressionEvaluationException {
+    public NodeValue exec(final NodeValue arg0, final NodeValue arg1, final NodeValue arg2) {
 
-        final String string = assertStringLiteral(values[0]).stringNodeValue();
-        final int position = assertIntegerLiteral(values[1]).intNodeValue();
-        final int length = assertIntegerLiteral(values[2]).intNodeValue();
+        final String string = arg0.asString();
+        final int position = arg1.getInteger().intValue();
+        final int length = arg2.getInteger().intValue();
 
-        return NodeValues.literal(StringUtils.mid(string, position, length));
+        return makeString(mid(string, position, length));
     }
 }

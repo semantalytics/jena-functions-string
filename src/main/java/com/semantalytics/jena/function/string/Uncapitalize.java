@@ -1,24 +1,18 @@
 package com.semantalytics.jena.function.string;
 
-import com.complexible.common.rdf.model.Values;
-import com.complexible.stardog.plan.filter.ExpressionEvaluationException;
-import com.complexible.stardog.plan.filter.ExpressionVisitor;
-import com.complexible.stardog.plan.filter.functions.AbstractFunction;
-import com.complexible.stardog.plan.filter.functions.string.StringFunction;
-import org.apache.commons.lang3.StringUtils;
-import org.openrdf.model.Value;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase1;
 
-public final class Uncapitalize extends FunctionBase {
+import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.jena.sparql.expr.NodeValue.*;
 
-    protected Uncapitalize() {
-        super(1, StringVocabulary.uncapitalize.stringValue());
-    }
+public final class Uncapitalize extends FunctionBase1 {
+
+    public static final String name = StringVocabulary.uncapitalize.stringValue();
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
+    public NodeValue exec(final NodeValue arg0) {
 
-        final String string = assertStringLiteral(values[0]).stringValue();
-
-        return Values.literal(StringUtils.uncapitalize(string));
+        return makeString(uncapitalize(arg0.asString()));
     }
 }

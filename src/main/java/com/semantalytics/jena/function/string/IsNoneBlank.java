@@ -14,9 +14,7 @@ import static com.complexible.common.rdf.model.NodeValues.*;
 
 public final class IsNoneBlank extends FunctionBase {
 
-    protected IsNoneBlank() {
         super(Range.atLeast(1), StringVocabulary.isNoneBlank.stringNodeValue());
-    }
 
     private IsNoneBlank(final IsNoneBlank isNoneBlank) {
         super(isNoneBlank);
@@ -25,6 +23,15 @@ public final class IsNoneBlank extends FunctionBase {
     @Override
     protected NodeValue internalEvaluate(final NodeValue... values) throws ExpressionEvaluationException {
 
+        if ( args == null )
+            // The contract on the function interface is that this should not happen.
+            throw new ARQInternalErrorException(Lib.className(this) + ": Null args list") ;
+
+        if (!Range.closed(2, 3).contains(args.size()))
+            throw new ExprEvalException(Lib.className(this)+": Wrong number of arguments: Wanted 3, got "+args.size()) ;
+
+
+
         for (final NodeValue value : values) {
             assertStringLiteral(value);
         }
@@ -32,5 +39,12 @@ public final class IsNoneBlank extends FunctionBase {
         final String[] strings = Arrays.stream(values).map(NodeValue::stringNodeValue).toArray(String[]::new);
 
         return literal(StringUtils.isNoneBlank(strings));
+    }
+
+    @Override
+    public void checkBuild(String uri, ExprList args) {
+        if(!Range.closed(2, 3).contains(args.size())) {
+            throw new QueryBuildException("Function '" + Lib.className(this) + "' takes two or three arguments") ;
+        }
     }
 }

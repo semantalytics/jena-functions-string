@@ -1,26 +1,21 @@
 package com.semantalytics.jena.function.string;
 
-import com.complexible.common.rdf.model.Values;
-import com.complexible.stardog.plan.filter.ExpressionEvaluationException;
-import com.complexible.stardog.plan.filter.ExpressionVisitor;
-import com.complexible.stardog.plan.filter.functions.AbstractFunction;
-import com.complexible.stardog.plan.filter.functions.string.StringFunction;
-import org.apache.commons.lang3.StringUtils;
-import org.openrdf.model.Value;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase3;
+import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.jena.sparql.expr.NodeValue.*;
 
-public final class ReplacePattern extends FunctionBase {
+public final class ReplacePattern extends FunctionBase3 {
 
-    protected ReplacePattern() {
-        super(3, StringVocabulary.replacePattern.stringValue());
-    }
+    public static final String name = StringVocabulary.replacePattern.stringValue();
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
+    public NodeValue exec(final NodeValue arg0, final NodeValue arg1, final NodeValue arg2) {
 
-        final String string = assertStringLiteral(values[0]).stringValue();
-        final String regex = assertStringLiteral(values[1]).stringValue();
-        final String replacement = assertStringLiteral(values[2]).stringValue();
+        final String string = arg0.asString();
+        final String regex = arg1.asString();
+        final String replacement = arg2.asString();
 
-        return Values.literal(StringUtils.replacePattern(string, regex, replacement));
+        return makeString(replacePattern(string, regex, replacement));
     }
 }

@@ -1,31 +1,22 @@
 package com.semantalytics.jena.function.string;
 
-import com.complexible.stardog.plan.filter.ExpressionEvaluationException;
-import com.complexible.stardog.plan.filter.ExpressionVisitor;
-import com.complexible.stardog.plan.filter.functions.AbstractFunction;
-import com.complexible.stardog.plan.filter.functions.string.StringFunction;
-import com.google.common.base.Strings;
-import org.openrdf.model.Value;
+import org.apache.jena.sparql.expr.ExprEvalException;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase3;
+import static com.google.common.base.Strings.*;
+import static org.apache.jena.sparql.expr.NodeValue.*;
 
-import static com.complexible.common.rdf.model.Values.*;
+public final class PadEnd extends FunctionBase3 {
 
-public final class PadEnd extends FunctionBase {
-
-    protected PadEnd() {
-        super(3, StringVocabulary.padEnd.stringValue());
-    }
-
-    private PadEnd(final PadEnd padEnd) {
-        super(padEnd);
-    }
+    public static final String name = StringVocabulary.padEnd.stringValue();
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
+    public NodeValue exec(final NodeValue arg0, final NodeValue arg1, final NodeValue arg2) {
 
-        final String string = assertStringLiteral(values[0]).stringValue();
-        final int minLength = assertIntegerLiteral(values[1]).integerValue().intValue();
-        final char padChar = assertStringLiteral(values[2]).stringValue().chars().mapToObj(i -> (char) i).findFirst().orElseThrow(() -> new ExpressionEvaluationException("Pad character not found"));
+        final String string = arg0.asString();
+        final int minLength = arg1.getInteger().intValue();
+        final char padChar = arg2.asString().chars().mapToObj(i -> (char) i).findFirst().orElseThrow(() -> new ExprEvalException("Pad character not found"));
 
-        return literal(Strings.padEnd(string, minLength, padChar));
+        return makeString(padEnd(string, minLength, padChar));
     }
 }
