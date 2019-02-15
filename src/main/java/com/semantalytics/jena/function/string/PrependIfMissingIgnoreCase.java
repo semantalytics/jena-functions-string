@@ -35,9 +35,27 @@ public final class PrependIfMissingIgnoreCase extends FunctionBase {
     }
 
     @Override
+    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
+
+        if ( args == null )
+            // The contract on the function interface is that this should not happen.
+            throw new ARQInternalErrorException(Lib.className(this) + ": Null args list") ;
+
+        if (!Range.closed(2, 3).contains(args.size()))
+            throw new ExprEvalException(Lib.className(this)+": Wrong number of arguments: Wanted 3, got "+args.size()) ;
+
+
+
+        for (final Value value : values) {
+            assertStringLiteral(value);
+>>>>>>> 334f73488a31de347ef55eba29cfc83d66898c77
+        }
+    }
+
+    @Override
     public void checkBuild(String uri, ExprList args) {
-        if(!Range.atLeast(2).contains(args.size())) {
-            throw new QueryBuildException("Function '" + Lib.className(this) + "' takes at least two arguments") ;
+        if(!Range.closed(2, 3).contains(args.size())) {
+            throw new QueryBuildException("Function '" + Lib.className(this) + "' takes two or three arguments") ;
         }
     }
 }

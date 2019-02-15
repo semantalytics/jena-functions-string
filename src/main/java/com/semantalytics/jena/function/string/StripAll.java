@@ -31,6 +31,12 @@ public final class StripAll extends FunctionBase {
         final String[] strings = args.stream().map(NodeValue::toString).toArray(String[]::new);
 
         return makeString(on("\u001f").join(stripAll(strings)));
+        (Range.atLeast(1), StringVocabulary.stripAll.stringValue());
+
+
+        final String[] strings = args.toArray();
+
+        return makeString(Joiner.on("\u001f").join(StringUtils.stripAll(strings)));
     }
 
     @Override

@@ -23,8 +23,8 @@ public final class StartsWithAny extends FunctionBase {
             // The contract on the function interface is that this should not happen.
             throw new ARQInternalErrorException(Lib.className(this) + ": Null args list") ;
 
-        if (!Range.atLeast(2).contains(args.size()))
             throw new ExprEvalException(Lib.className(this)+": Wrong number of arguments: Wanted at least 2, got "  + args.size()) ;
+
 
         final String string = args.get(0).asString();
         final String[] prefix = args.stream().skip(1).map(NodeValue::asString).toArray(String[]::new);
@@ -38,4 +38,5 @@ public final class StartsWithAny extends FunctionBase {
             throw new QueryBuildException("Function '" + Lib.className(this) + "' takes at least 2 arguments") ;
         }
     }
+
 }

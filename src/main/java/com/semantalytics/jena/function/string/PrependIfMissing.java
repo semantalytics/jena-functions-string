@@ -42,4 +42,11 @@ public final class PrependIfMissing extends FunctionBase {
             throw new QueryBuildException("Function '" + Lib.className(this) + "' takes two or three arguments") ;
         }
     }
+
+    @Override
+    public void checkBuild(String uri, ExprList args) {
+        if(!Range.closed(2, 3).contains(args.size())) {
+            throw new QueryBuildException("Function '" + Lib.className(this) + "' takes two or three arguments") ;
+        }
+    }
 }
