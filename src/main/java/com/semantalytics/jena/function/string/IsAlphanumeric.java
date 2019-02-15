@@ -1,23 +1,17 @@
 package com.semantalytics.jena.function.string;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.function.FunctionBase1;
+
+import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.jena.sparql.expr.NodeValue.*;
 
 public final class IsAlphanumeric extends FunctionBase1 {
 
-    protected IsAlphanumeric() {
-        super(1, StringVocabulary.isAlphanumeric.stringNodeValue());
-    }
-
-    private IsAlphanumeric(final IsAlphanumeric isUpperCase) {
-        super(isUpperCase);
-    }
+    public static final String name = StringVocabulary.isAlphanumeric.stringValue();
 
     @Override
-    protected NodeValue internalEvaluate(final NodeValue... values) throws ExpressionEvaluationException {
-
-        final String string = assertStringLiteral(values[0]).stringNodeValue();
-
-        return literal(StringUtils.isAlphanumeric(string));
+    public NodeValue exec(final NodeValue arg0) {
+        return makeBoolean(isAlphanumeric(arg0.asString()));
     }
 }

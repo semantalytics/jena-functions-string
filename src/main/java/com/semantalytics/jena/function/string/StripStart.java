@@ -1,26 +1,20 @@
 package com.semantalytics.jena.function.string;
 
-import com.complexible.stardog.plan.filter.ExpressionEvaluationException;
-import com.complexible.stardog.plan.filter.ExpressionVisitor;
-import com.complexible.stardog.plan.filter.functions.AbstractFunction;
-import com.complexible.stardog.plan.filter.functions.string.StringFunction;
-import org.apache.commons.lang3.StringUtils;
-import org.openrdf.model.Value;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase2;
+import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.jena.sparql.expr.NodeValue.*;
 
-import static com.complexible.common.rdf.model.Values.*;
+public final class StripStart extends FunctionBase2 {
 
-public final class StripStart extends FunctionBase {
-
-    protected StripStart() {
-        super(2, StringVocabulary.stripStart.stringValue());
-    }
+    public static final String name = StringVocabulary.stripStart.stringValue();
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
+    public NodeValue exec(final NodeValue arg0, final NodeValue arg1) {
 
-        final String string = assertStringLiteral(values[0]).stringValue();
-        final String stripChars = assertStringLiteral(values[1]).stringValue();
+        final String string = arg0.asString();
+        final String stripChars = arg1.asString();
 
-        return literal(StringUtils.stripStart(string, stripChars));
+        return makeString(stripStart(string, stripChars));
     }
 }

@@ -7,27 +7,41 @@ import com.complexible.stardog.plan.filter.functions.string.StringFunction;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Range;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase;
 import org.openrdf.model.Value;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static com.complexible.common.rdf.model.Values.literal;
+import static org.apache.jena.sparql.expr.NodeValue.*;
 
 public final class StripAll extends FunctionBase {
 
-    protected StripAll() {
-        super(Range.atLeast(1), StringVocabulary.stripAll.stringValue());
+        (Range.atLeast(1), StringVocabulary.stripAll.stringValue());
+
+    @Override
+    public NodeValue exec(final List<NodeValue> args) {
+
+        if ( args == null )
+            // The contract on the function interface is that this should not happen.
+            throw new ARQInternalErrorException(Lib.className(this) + ": Null args list") ;
+
+        if (!Range.closed(2, 3).contains(args.size()))
+            throw new ExprEvalException(Lib.className(this)+": Wrong number of arguments: Wanted 3, got "+args.size()) ;
+
+
+
+        final String[] strings = args.toArray();
+
+        return makeString(Joiner.on("\u001f").join(StringUtils.stripAll(strings)));
     }
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
-
-        for (final Value value : values) {
-            assertStringLiteral(value).stringValue();
+    public void checkBuild(String uri, ExprList args) {
+        if(!Range.closed(2, 3).contains(args.size())) {
+            throw new QueryBuildException("Function '" + Lib.className(this) + "' takes two or three arguments") ;
         }
-
-        final String[] strings = Arrays.stream(values).map(Value::stringValue).toArray(String[]::new);
-
-        return literal(Joiner.on("\u001f").join(StringUtils.stripAll(strings)));
     }
 }

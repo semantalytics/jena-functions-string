@@ -1,30 +1,22 @@
 package com.semantalytics.jena.function.string;
 
-import com.complexible.common.rdf.model.Values;
-import com.complexible.stardog.plan.filter.ExpressionEvaluationException;
-import com.complexible.stardog.plan.filter.ExpressionVisitor;
-import com.complexible.stardog.plan.filter.functions.AbstractFunction;
-import com.complexible.stardog.plan.filter.functions.string.StringFunction;
-import org.apache.commons.lang3.StringUtils;
-import org.openrdf.model.Value;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase3;
 
-public final class ReplaceEachRepeatedly extends FunctionBase {
+import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.jena.sparql.expr.NodeValue.*;
 
-    protected ReplaceEachRepeatedly() {
-        super(3, StringVocabulary.replaceEachRepeatedly.stringValue());
-    }
+public final class ReplaceEachRepeatedly extends FunctionBase3 {
+
+    public static final String name = StringVocabulary.replaceEachRepeatedly.stringValue();
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
+    public NodeValue exec(final NodeValue arg0, final NodeValue arg1, final NodeValue arg2) {
 
-        for (final Value value : values) {
-            assertStringLiteral(value);
-        }
+        final String string = arg0.asString();
+        final String[] searchList = arg1.asString().split("\u001f");
+        final String[] replacementList = arg2.asString().split("\u001f");
 
-        final String string = assertStringLiteral(values[0]).stringValue();
-        final String[] searchList = assertStringLiteral(values[1]).stringValue().split("\u001f");
-        final String[] replacementList = assertStringLiteral(values[2]).stringValue().split("\u001f");
-
-        return Values.literal(StringUtils.replaceEachRepeatedly(string, searchList, replacementList));
+        return makeString(replaceEachRepeatedly(string, searchList, replacementList));
     }
 }

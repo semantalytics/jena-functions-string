@@ -1,33 +1,26 @@
 package com.semantalytics.jena.function.string;
 
-import com.complexible.common.rdf.model.Values;
-import com.complexible.stardog.plan.filter.ExpressionEvaluationException;
-import com.complexible.stardog.plan.filter.ExpressionVisitor;
-import com.complexible.stardog.plan.filter.functions.AbstractFunction;
-import com.complexible.stardog.plan.filter.functions.string.StringFunction;
-import com.google.common.base.Strings;
-import org.openrdf.model.Value;
+import org.apache.jena.sparql.expr.ExprEvalException;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase3;
 
-public final class PadStart extends FunctionBase {
+import static org.apache.jena.ext.com.google.common.base.Strings.*;
+import static org.apache.jena.sparql.expr.NodeValue.*;
 
-    protected PadStart() {
-        super(3, StringVocabulary.padStart.stringValue());
-    }
+public final class PadStart extends FunctionBase3 {
 
-    private PadStart(final PadStart padStart) {
-        super(padStart);
-    }
+    public static final String name = StringVocabulary.padStart.stringValue();
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
+    public NodeValue exec(final NodeValue arg0, final NodeValue arg1, final NodeValue arg2) {
 
-        final String string = assertStringLiteral(values[0]).stringValue();
-        final int minLength = assertIntegerLiteral(values[1]).integerValue().intValue();
-        if (values[2].stringValue().length() != 1) {
-            throw new ExpressionEvaluationException("Third argument must be a single char");
+        final String string = arg0.asString();
+        final int minLength = arg0.getInteger().intValue();
+        if (arg2.asString().length() != 1) {
+            throw new ExprEvalException("Third argument must be a single char");
         }
-        final char padChar = assertStringLiteral(values[2]).stringValue().charAt(0);
+        final char padChar = arg2.asString().charAt(0);
 
-        return Values.literal(Strings.padStart(string, minLength, padChar));
+        return makeString(padStart(string, minLength, padChar));
     }
 }

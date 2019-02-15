@@ -24,6 +24,15 @@ public final class PrependIfMissing extends FunctionBase {
     @Override
     protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
 
+        if ( args == null )
+            // The contract on the function interface is that this should not happen.
+            throw new ARQInternalErrorException(Lib.className(this) + ": Null args list") ;
+
+        if (!Range.closed(2, 3).contains(args.size()))
+            throw new ExprEvalException(Lib.className(this)+": Wrong number of arguments: Wanted 3, got "+args.size()) ;
+
+
+
         for (final Value value : values) {
             assertStringLiteral(value);
         }
@@ -33,5 +42,12 @@ public final class PrependIfMissing extends FunctionBase {
         final String[] prefixes = Arrays.stream(values).skip(2).map(Value::stringValue).toArray(String[]::new);
 
         return Values.literal(StringUtils.prependIfMissing(string, prefix, prefixes));
+    }
+
+    @Override
+    public void checkBuild(String uri, ExprList args) {
+        if(!Range.closed(2, 3).contains(args.size())) {
+            throw new QueryBuildException("Function '" + Lib.className(this) + "' takes two or three arguments") ;
+        }
     }
 }

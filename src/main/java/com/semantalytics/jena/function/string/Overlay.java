@@ -1,31 +1,23 @@
 package com.semantalytics.jena.function.string;
 
-import com.complexible.common.rdf.model.Values;
-import com.complexible.stardog.plan.filter.ExpressionEvaluationException;
-import com.complexible.stardog.plan.filter.ExpressionVisitor;
-import com.complexible.stardog.plan.filter.functions.AbstractFunction;
-import com.complexible.stardog.plan.filter.functions.string.StringFunction;
-import org.apache.commons.lang3.StringUtils;
-import org.openrdf.model.Value;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase4;
 
-public final class Overlay extends FunctionBase {
+import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.jena.sparql.expr.NodeValue.*;
 
-    protected Overlay() {
-        super(4, StringVocabulary.overlay.stringValue());
-    }
+public final class Overlay extends FunctionBase4 {
 
-    private Overlay(final Overlay overlay) {
-        super(overlay);
-    }
+    public static final String name = StringVocabulary.overlay.stringValue();
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
+    public NodeValue exec(final NodeValue arg0, final NodeValue arg1, final NodeValue arg2, final NodeValue arg3) {
 
-        final String string = assertStringLiteral(values[0]).stringValue();
-        final String overlay = assertStringLiteral(values[1]).stringValue();
-        final int start = assertIntegerLiteral(values[2]).intValue();
-        final int end = assertIntegerLiteral(values[3]).intValue();
+        final String string = arg0.asString();
+        final String overlay = arg1.asString();
+        final int start = arg2.getInteger().intValue();
+        final int end = arg3.getInteger().intValue();
 
-        return Values.literal(StringUtils.overlay(string, overlay, start, end));
+        return makeString(overlay(string, overlay, start, end));
     }
 }

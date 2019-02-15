@@ -19,6 +19,15 @@ public final class IndexOfArray extends FunctionBase {
     @Override
     protected NodeValue internalEvaluate(final NodeValue... values) throws ExpressionEvaluationException {
 
+        if ( args == null )
+            // The contract on the function interface is that this should not happen.
+            throw new ARQInternalErrorException(Lib.className(this) + ": Null args list") ;
+
+        if (!Range.closed(2, 3).contains(args.size()))
+            throw new ExprEvalException(Lib.className(this)+": Wrong number of arguments: Wanted 3, got "+args.size()) ;
+
+
+
 
         final String[] stringArray = assertLiteral(values[0]).stringNodeValue().split("\u001f");
 
@@ -54,6 +63,13 @@ public final class IndexOfArray extends FunctionBase {
                 throw new ExpressionEvaluationException("Function takes either 2 or three arguments. Found " + values.length);
             }
 
+        }
+    }
+
+    @Override
+    public void checkBuild(String uri, ExprList args) {
+        if(!Range.closed(2, 3).contains(args.size())) {
+            throw new QueryBuildException("Function '" + Lib.className(this) + "' takes two or three arguments") ;
         }
     }
 }
