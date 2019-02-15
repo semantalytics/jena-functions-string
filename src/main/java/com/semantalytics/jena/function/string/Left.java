@@ -1,40 +1,20 @@
 package com.semantalytics.jena.function.string;
 
-import com.complexible.stardog.plan.filter.ExpressionEvaluationException;
-import com.complexible.stardog.plan.filter.ExpressionVisitor;
-import com.complexible.stardog.plan.filter.functions.AbstractFunction;
-import com.complexible.stardog.plan.filter.functions.string.StringFunction;
-import org.apache.commons.lang3.StringUtils;
-import org.openrdf.model.NodeValue;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase2;
+import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.jena.sparql.expr.NodeValue.*;
 
-import static com.complexible.common.rdf.model.NodeValues.*;
+public final class Left extends FunctionBase2 {
 
-public final class Left extends FunctionBase {
-
-        super(2, StringVocabulary.left.stringNodeValue());
+    public static final String name = StringVocabulary.left.stringValue();
 
     @Override
-    protected NodeValue internalEvaluate(final NodeValue... values) throws ExpressionEvaluationException {
+    public NodeValue exec(final NodeValue arg0, final NodeValue arg1) {
 
-        if ( args == null )
-            // The contract on the function interface is that this should not happen.
-            throw new ARQInternalErrorException(Lib.className(this) + ": Null args list") ;
+        final String string = arg0.asString();
+        final int length = arg1.getInteger().intValue();
 
-        if (!Range.closed(2, 3).contains(args.size()))
-            throw new ExprEvalException(Lib.className(this)+": Wrong number of arguments: Wanted 3, got "+args.size()) ;
-
-
-
-        final String string = assertStringLiteral(values[0]).stringNodeValue();
-        final int length = assertNumericLiteral(values[1]).intNodeValue();
-
-        return literal(StringUtils.left(string, length));
-    }
-
-    @Override
-    public void checkBuild(String uri, ExprList args) {
-        if(!Range.closed(2, 3).contains(args.size())) {
-            throw new QueryBuildException("Function '" + Lib.className(this) + "' takes two or three arguments") ;
-        }
+        return makeString(left(string, length));
     }
 }

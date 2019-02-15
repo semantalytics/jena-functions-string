@@ -1,21 +1,23 @@
 package com.semantalytics.jena.function.string;
 
-import com.complexible.stardog.plan.filter.ExpressionEvaluationException;
-import com.complexible.stardog.plan.filter.ExpressionVisitor;
-import com.complexible.stardog.plan.filter.functions.AbstractFunction;
-import com.complexible.stardog.plan.filter.functions.string.StringFunction;
 import com.google.common.collect.Range;
 import org.apache.commons.lang3.StringUtils;
-import org.openrdf.model.NodeValue;
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.query.QueryBuildException;
+import org.apache.jena.sparql.ARQInternalErrorException;
+import org.apache.jena.sparql.expr.ExprEvalException;
+import org.apache.jena.sparql.expr.ExprList;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase;
 
-import static com.complexible.common.rdf.model.NodeValues.*;
+import java.util.List;
 
 public final class LastIndexOf extends FunctionBase {
 
-        super(Range.closed(2, 3), StringVocabulary.lastIndexOf.stringNodeValue());
+    public static final String name = StringVocabulary.lastIndexOf.stringValue();
 
     @Override
-    protected NodeValue internalEvaluate(final NodeValue... values) throws ExpressionEvaluationException {
+    public NodeValue exec(final List<NodeValue> args) {
 
         if ( args == null )
             // The contract on the function interface is that this should not happen.
@@ -24,21 +26,19 @@ public final class LastIndexOf extends FunctionBase {
         if (!Range.closed(2, 3).contains(args.size()))
             throw new ExprEvalException(Lib.className(this)+": Wrong number of arguments: Wanted 3, got "+args.size()) ;
 
+        final String sequence = args.get(0).asString();
+        final String searchSequence = args.get(1).getString();
 
-
-        final String sequence = assertStringLiteral(values[0]).stringNodeValue();
-        final String searchSequence = assertStringLiteral(values[1]).stringNodeValue();
-
-        switch (values.length) {
+        switch (args.size()) {
             case 2: {
-                return literal(StringUtils.lastIndexOf(sequence, searchSequence));
+                return NodeValue.makeInteger(StringUtils.lastIndexOf(sequence, searchSequence));
             }
             case 3: {
-                final int startPos = assertNumericLiteral(values[2]).intNodeValue();
-                return literal(StringUtils.lastIndexOf(sequence, searchSequence, startPos));
+                final int startPos = args.get(2).getInteger().intValue();
+                return NodeValue.makeInteger(StringUtils.lastIndexOf(sequence, searchSequence, startPos));
             }
             default: {
-                throw new ExpressionEvaluationException("Function takes 2 or 3 arguments. Found " + values.length);
+                throw new ExprEvalException("Function takes 2 or 3 arguments. Found " + args.size());
             }
         }
     }

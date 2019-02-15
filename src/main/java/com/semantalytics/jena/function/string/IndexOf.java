@@ -2,43 +2,45 @@ package com.semantalytics.jena.function.string;
 
 import com.google.common.collect.Range;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.query.QueryBuildException;
+import org.apache.jena.sparql.ARQInternalErrorException;
+import org.apache.jena.sparql.expr.ExprEvalException;
+import org.apache.jena.sparql.expr.ExprList;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.function.FunctionBase;
 
+import java.util.List;
+
 public class IndexOf extends FunctionBase {
 
-        super(Range.closed(2, 3), StringVocabulary.indexOf.stringNodeValue());
-
-    private IndexOf(final IndexOf indexOf) {
-        super(indexOf);
-    }
+    public static final String name = StringVocabulary.indexOf.stringValue();
 
     @Override
-    public NodeValue exec(final NodeValue... values) throws ExpressionEvaluationException {
-
+    public NodeValue exec(final List<NodeValue> args) {
 
         if ( args == null )
             // The contract on the function interface is that this should not happen.
             throw new ARQInternalErrorException(Lib.className(this) + ": Null args list") ;
 
         if (!Range.closed(2, 3).contains(args.size()))
-            throw new ExprEvalException(Lib.className(this)+": Wrong number of arguments: Wanted 3, got "+args.size()) ;
+            throw new ExprEvalException(Lib.className(this)+": Wrong number of arguments: Wanted either 2 or 3, got " + args.size()) ;
 
 
-        final String sequence = assertStringLiteral(values[0]).stringNodeValue();
-        final String searchSequence = assertStringLiteral(values[1]).stringNodeValue();
+        final String sequence = args.get(0).asString();
+        final String searchSequence = args.get(1).asString();
 
-        switch(values.length) {
+        switch(args.size()) {
             case 2: {
-                return literal(StringUtils.indexOf(sequence, searchSequence));
+                return NodeValue.makeInteger(StringUtils.indexOf(sequence, searchSequence));
             }
             case 3: {
-                final int startPosition = assertNumericLiteral(values[2]).intNodeValue();
+                final int startPosition = args.get(2).getInteger().intValue();
 
-                return literal(StringUtils.indexOf(sequence, searchSequence, startPosition));
+                return NodeValue.makeInteger(StringUtils.indexOf(sequence, searchSequence, startPosition));
             }
             default: {
-                throw new ExpressionEvaluationException("Expected 2 or 3 args. Found " + values.length);
+                throw new ExprEvalException("Expected 2 or 3 args. Found " + args.size());
             }
         }
     }

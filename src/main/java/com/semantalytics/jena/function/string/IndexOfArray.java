@@ -2,63 +2,65 @@ package com.semantalytics.jena.function.string;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Range;
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.query.QueryBuildException;
+import org.apache.jena.sparql.ARQInternalErrorException;
+import org.apache.jena.sparql.expr.ExprEvalException;
+import org.apache.jena.sparql.expr.ExprList;
+import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.function.FunctionBase;
 
 import java.util.Arrays;
+import java.util.List;
+
+import static org.apache.jena.sparql.expr.NodeValue.*;
 
 public final class IndexOfArray extends FunctionBase {
 
-        super(Range.closed(2, 3), StringVocabulary.arrayIndex.stringNodeValue());
-
-    private IndexOfArray(final IndexOfArray array) {
-        super(array);
-    }
+    public static final String name = StringVocabulary.arrayIndex.stringValue();
 
     @Override
-    protected NodeValue internalEvaluate(final NodeValue... values) throws ExpressionEvaluationException {
+    public NodeValue exec(final List<NodeValue> args) {
 
         if ( args == null )
             // The contract on the function interface is that this should not happen.
             throw new ARQInternalErrorException(Lib.className(this) + ": Null args list") ;
 
         if (!Range.closed(2, 3).contains(args.size()))
-            throw new ExprEvalException(Lib.className(this)+": Wrong number of arguments: Wanted 3, got "+args.size()) ;
+            throw new ExprEvalException(Lib.className(this) + ": Wrong number of arguments: Wanted 3, got "+args.size()) ;
 
+        final String[] stringArray = args.get(0).asString().split("\u001f");
 
-
-
-        final String[] stringArray = assertLiteral(values[0]).stringNodeValue().split("\u001f");
-
-        switch (values.length) {
+        switch (args.size()) {
             case 2: {
-                final int index = assertIntegerLiteral(values[1]).intNodeValue();
+                final int index = args.get(1).getInteger().intValue();
 
                 if (index >= stringArray.length) {
-                    throw new ExpressionEvaluationException("Index " + index + " out of bound. ArrayFunction length " + stringArray.length);
+                    throw new ExprEvalException("Index " + index + " out of bound. ArrayFunction length " + stringArray.length);
                 }
 
-                return literal(stringArray[index]);
+                return makeString(stringArray[index]);
 
             }
             case 3: {
 
-                final int startIndex = assertIntegerLiteral(values[1]).intNodeValue();
-                final int endIndex = assertIntegerLiteral(values[2]).intNodeValue();
+                final int startIndex = args.get(1).getInteger().intValue();
+                final int endIndex = args.get(2).getInteger().intValue();
 
                 if (startIndex >= stringArray.length) {
-                    throw new ExpressionEvaluationException("Index " + startIndex + " out of bound. ArrayFunction length " + stringArray.length);
+                    throw new ExprEvalException("Index " + startIndex + " out of bound. ArrayFunction length " + stringArray.length);
                 }
                 if (endIndex >= stringArray.length) {
-                    throw new ExpressionEvaluationException("Index " + endIndex + " out of bound. ArrayFunction length " + stringArray.length);
+                    throw new ExprEvalException("Index " + endIndex + " out of bound. ArrayFunction length " + stringArray.length);
                 }
                 if (endIndex < startIndex) {
-                    throw new ExpressionEvaluationException("Start index must be smaller or equal to end index");
+                    throw new ExprEvalException("Start index must be smaller or equal to end index");
                 }
 
-                return literal(Joiner.on("\u001f").join(Arrays.copyOfRange(stringArray, startIndex, endIndex)));
+                return NodeValue.makeString(Joiner.on("\u001f").join(Arrays.copyOfRange(stringArray, startIndex, endIndex)));
             }
             default: {
-                throw new ExpressionEvaluationException("Function takes either 2 or three arguments. Found " + values.length);
+                throw new ExprEvalException("Function takes either 2 or three arguments. Found " + args.size());
             }
 
         }

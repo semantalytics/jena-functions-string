@@ -2,39 +2,45 @@ package com.semantalytics.jena.function.string;
 
 import com.google.common.collect.Range;
 import org.apache.commons.text.WordUtils;
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.query.QueryBuildException;
+import org.apache.jena.sparql.ARQInternalErrorException;
+import org.apache.jena.sparql.expr.ExprEvalException;
+import org.apache.jena.sparql.expr.ExprList;
+import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.function.FunctionBase;
+
+import java.util.List;
+
+import static org.apache.commons.text.WordUtils.*;
+import static org.apache.jena.sparql.expr.NodeValue.*;
 
 public final class Initials extends FunctionBase {
 
-        super(Range.closed(1, 2), StringVocabulary.initials.stringNodeValue());
-
-    private Initials(final Initials initials) {
-        super(initials);
-    }
+    public static final String name = StringVocabulary.initials.stringValue();
 
     @Override
-    protected NodeValue internalEvaluate(final NodeValue... values) throws ExpressionEvaluationException {
-
+    public NodeValue exec(final List<NodeValue> args) {
 
         if ( args == null )
             // The contract on the function interface is that this should not happen.
             throw new ARQInternalErrorException(Lib.className(this) + ": Null args list") ;
 
-        if (!Range.closed(2, 3).contains(args.size()))
-            throw new ExprEvalException(Lib.className(this)+": Wrong number of arguments: Wanted 3, got "+args.size()) ;
+        if (!Range.closed(1, 2).contains(args.size()))
+            throw new ExprEvalException(Lib.className(this)+": Wrong number of arguments: Wanted 1 or 2, got " + args.size()) ;
 
 
-        final String string = assertStringLiteral(values[0]).stringNodeValue();
+        final String string = args.get(0).asString();
 
-        switch (values.length) {
+        switch (args.size()) {
             case 1:
-                return literal(WordUtils.initials(string));
+                return makeString(initials(string));
             case 2: {
-                final String delimiters = assertStringLiteral(values[1]).stringNodeValue();
-                return literal(WordUtils.initials(string, delimiters.toCharArray()));
+                final String delimiters = args.get(1).asString();
+                return makeString(initials(string, delimiters.toCharArray()));
             }
             default:
-                throw new ExpressionEvaluationException("Incorrect number of parameters. Valid values are 1 or 2. Found " + values.length);
+                throw new ExprEvalException("Incorrect number of parameters. Valid values are 1 or 2. Found " + args.size());
         }
     }
 

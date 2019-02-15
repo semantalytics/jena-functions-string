@@ -1,48 +1,43 @@
 package com.semantalytics.jena.function.string;
 
-import com.complexible.stardog.plan.filter.ExpressionEvaluationException;
-import com.complexible.stardog.plan.filter.ExpressionVisitor;
-import com.complexible.stardog.plan.filter.functions.AbstractFunction;
-import com.complexible.stardog.plan.filter.functions.string.StringFunction;
-import org.apache.commons.lang3.StringUtils;
-import org.openrdf.model.NodeValue;
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.ext.com.google.common.collect.Range;
+import org.apache.jena.query.QueryBuildException;
+import org.apache.jena.sparql.ARQInternalErrorException;
+import org.apache.jena.sparql.expr.ExprEvalException;
+import org.apache.jena.sparql.expr.ExprList;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase;
 
-import java.util.Arrays;
+import java.util.List;
 
-import com.google.common.collect.Range;
-
-import static com.complexible.common.rdf.model.NodeValues.literal;
+import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.jena.sparql.expr.NodeValue.*;
 
 public final class JoinWith extends FunctionBase {
 
-        super(Range.atLeast(3), StringVocabulary.joinWith.stringNodeValue());
+    public static final String name = StringVocabulary.joinWith.stringValue();
 
     @Override
-    protected NodeValue internalEvaluate(final NodeValue... values) throws ExpressionEvaluationException {
+    public NodeValue exec(final List<NodeValue> args) {
 
         if ( args == null )
             // The contract on the function interface is that this should not happen.
             throw new ARQInternalErrorException(Lib.className(this) + ": Null args list") ;
 
-        if (!Range.closed(2, 3).contains(args.size()))
-            throw new ExprEvalException(Lib.className(this)+": Wrong number of arguments: Wanted 3, got "+args.size()) ;
+        if (!Range.atLeast(3).contains(args.size()))
+            throw new ExprEvalException(Lib.className(this)+": Wrong number of arguments: Wanted at least 3, got "+args.size()) ;
 
+        final String separator = args.get(0).asString();
+        final String[] pieces = args.stream().skip(1).map(NodeValue::asString).toArray(String[]::new);
 
-
-        for (final NodeValue value : values) {
-            assertStringLiteral(value);
-        }
-
-        final String separator = assertStringLiteral(values[0]).stringNodeValue();
-        final String[] pieces = Arrays.stream(values).skip(1).map(NodeValue::stringNodeValue).toArray(String[]::new);
-
-        return literal(StringUtils.joinWith(separator, pieces));
+        return makeString(joinWith(separator, pieces));
     }
 
     @Override
     public void checkBuild(String uri, ExprList args) {
-        if(!Range.closed(2, 3).contains(args.size())) {
-            throw new QueryBuildException("Function '" + Lib.className(this) + "' takes two or three arguments") ;
+        if(!Range.atLeast(3).contains(args.size())) {
+            throw new QueryBuildException("Function '" + Lib.className(this) + "' takes at least three arguments") ;
         }
     }
 }

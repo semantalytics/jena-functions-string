@@ -10,8 +10,8 @@ import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.function.FunctionBase;
 import java.util.List;
 
-import static com.google.common.base.Joiner.*;
 import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.jena.ext.com.google.common.base.Joiner.*;
 import static org.apache.jena.sparql.expr.NodeValue.*;
 
 public final class StripAll extends FunctionBase {
@@ -31,18 +31,12 @@ public final class StripAll extends FunctionBase {
         final String[] strings = args.stream().map(NodeValue::toString).toArray(String[]::new);
 
         return makeString(on("\u001f").join(stripAll(strings)));
-        (Range.atLeast(1), StringVocabulary.stripAll.stringValue());
-
-
-        final String[] strings = args.toArray();
-
-        return makeString(Joiner.on("\u001f").join(StringUtils.stripAll(strings)));
     }
 
     @Override
     public void checkBuild(String uri, ExprList args) {
         if(!Range.atLeast(1).contains(args.size())) {
-            throw new QueryBuildException("Function '" + Lib.className(this) + "' takes two or three arguments") ;
+            throw new QueryBuildException("Function '" + Lib.className(this) + "' takes at least one argument") ;
         }
     }
 }
