@@ -20,7 +20,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class TestArrayPropertyFunction extends AbstractStardogTest {
+public class TestArrayPropertyFunction {
     @Test(expected = ExecutionException.class)
     public void tooManyResultsThrowsError() {
 

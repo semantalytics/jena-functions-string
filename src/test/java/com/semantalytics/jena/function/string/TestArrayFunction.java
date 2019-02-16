@@ -8,7 +8,7 @@ import org.openrdf.query.TupleQueryResult;
 
 import static org.junit.Assert.*;
 
-public class TestArrayFunction extends AbstractStardogTest {
+public class TestArrayFunction {
 
     @Test
     public void test() {

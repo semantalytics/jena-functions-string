@@ -8,7 +8,7 @@ import org.junit.*;
 
 import static org.junit.Assert.*;
 
-public class TestAppendIfMissing extends AbstractStardogTest {
+public class TestAppendIfMissing {
 
     private Model model;
 

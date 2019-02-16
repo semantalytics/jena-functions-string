@@ -5,7 +5,7 @@ import org.junit.*;
 
 import static org.junit.Assert.*;
 
-public class TestStrip extends AbstractStardogTest {
+public class TestStrip {
 
     @Test
     public void test() {

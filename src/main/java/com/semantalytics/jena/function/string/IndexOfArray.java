@@ -1,8 +1,8 @@
 package com.semantalytics.jena.function.string;
 
-import com.google.common.base.Joiner;
-import com.google.common.collect.Range;
 import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.ext.com.google.common.base.Joiner;
+import org.apache.jena.ext.com.google.common.collect.Range;
 import org.apache.jena.query.QueryBuildException;
 import org.apache.jena.sparql.ARQInternalErrorException;
 import org.apache.jena.sparql.expr.ExprEvalException;

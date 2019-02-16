@@ -46,11 +46,6 @@
             <version>${jena.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${guava.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.6</version>
@@ -89,7 +84,6 @@
     </repositories>
 
     <build>
-        <finalName>semantalyitcs-${project.artifactId}-${project.version}-sd${stardog.major.version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

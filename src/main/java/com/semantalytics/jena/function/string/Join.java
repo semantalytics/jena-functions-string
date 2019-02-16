@@ -3,6 +3,7 @@ package com.semantalytics.jena.function.string;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.ext.com.google.common.collect.Range;
 import org.apache.jena.query.QueryBuildException;
 import org.apache.jena.sparql.ARQInternalErrorException;
 import org.apache.jena.sparql.expr.ExprEvalException;
@@ -10,8 +11,6 @@ import org.apache.jena.sparql.expr.ExprList;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.function.FunctionBase;
 import java.util.List;
-
-import com.google.common.collect.Range;
 
 public final class Join extends FunctionBase {
 

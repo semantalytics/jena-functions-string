@@ -3,7 +3,7 @@ package com.semantalytics.jena.function.string;
 import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.function.FunctionBase3;
-import static com.google.common.base.Strings.*;
+import static org.apache.jena.ext.com.google.common.base.Strings.padEnd;
 import static org.apache.jena.sparql.expr.NodeValue.*;
 
 public final class PadEnd extends FunctionBase3 {

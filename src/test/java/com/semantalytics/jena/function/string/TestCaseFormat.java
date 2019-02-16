@@ -7,7 +7,7 @@ import org.openrdf.query.TupleQueryResult;
 
 import static org.junit.Assert.*;
 
-public class TestCaseFormat extends AbstractStardogTest {
+public class TestCaseFormat {
  
     @Test
     public void testLowerCamelToUpperUnderscoreByExample() {
