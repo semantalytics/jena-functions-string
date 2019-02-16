@@ -1,147 +1,164 @@
-package com.semantalytics.stardog.kibble.string;
+package com.semantalytics.jena.function.string;
 
-import com.semantalytics.stardog.kibble.AbstractStardogTest;
 import org.junit.*;
-import org.openrdf.query.BindingSet;
-import org.openrdf.query.TupleQueryResult;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryExecutionFactory;
+import org.apache.jena.query.QuerySolution;
+import org.apache.jena.query.ResultSet;
 
 import static org.junit.Assert.*;
 
-public class TestLastOrdinalIndexOf extends AbstractStardogTest {
+public class TestLastOrdinalIndexOf {
 
     @Test
     public void testThreeArg() {
       
-        final String aQuery = StringVocabulary.sparqlPrefix("string") +
+        final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:lastOrdinalIndexOf(\"Stardog\", \"ar\", 2) AS ?result) }";
 
-            try (final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+            final ResultSet result = queryExecution.execSelect();
 
-                assertTrue("Should have a result", aResult.hasNext());
 
-                final int aValue = Integer.parseInt(aResult.next().getValue("result").stringValue());
+                assertTrue("Should have a result", result.hasNext());
+
+                final int aValue = Integer.parseInt(result.next().getLiteral("result").getString());
 
                 assertEquals(-1, aValue);
-                assertFalse("Should have no more results", aResult.hasNext());
+                assertFalse("Should have no more results", result.hasNext());
             }
     }
 
     @Test
     public void testEmptyString() {
       
-        final String aQuery = StringVocabulary.sparqlPrefix("string") +
+        final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:lastOrdinalIndexOf(\"\", \"\", 10) as ?result) }";
 
-            try(final TupleQueryResult aResult = connection.select(aQuery).execute()) {
-           
-                assertTrue("Should have a result", aResult.hasNext());
+            try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                final ResultSet result = queryExecution.execSelect();
 
-                final int aValue = Integer.parseInt(aResult.next().getValue("result").stringValue());
+           
+                assertTrue("Should have a result", result.hasNext());
+
+                final int aValue = Integer.parseInt(result.next().getLiteral("result").getString());
 
                 assertEquals(0, aValue);
-                assertFalse("Should have no more results", aResult.hasNext());
+                assertFalse("Should have no more results", result.hasNext());
             }
     }
 
     @Test
     public void testTooFewArgs() {
       
-        final String aQuery = StringVocabulary.sparqlPrefix("string") +
+        final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:lastOrdinalIndexOf(\"one\", \"two\") as ?result) }";
 
-            try(final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+                try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                    final ResultSet result = queryExecution.execSelect();
+
          
-                assertTrue("Should have a result", aResult.hasNext());
+                assertTrue("Should have a result", result.hasNext());
 
-                final BindingSet aBindingSet = aResult.next();
+                final QuerySolution aQuerySolution = result.next();
 
-                assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
-                assertFalse("Should have no more results", aResult.hasNext());
+                assertTrue("Should have no bindings", aQuerySolution.varNames().hasNext());
+                assertFalse("Should have no more results", result.hasNext());
             }
     }
 
     @Test
     public void testTooManyArgs() {
 
-        final String aQuery = StringVocabulary.sparqlPrefix("string") +
+        final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:lastOrdinalIndexOf(\"one\", \"two\", 3, 4) as ?result) }";
 
-            try(final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+                    try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                        final ResultSet result = queryExecution.execSelect();
 
-                assertTrue("Should have a result", aResult.hasNext());
 
-                final BindingSet aBindingSet = aResult.next();
+                assertTrue("Should have a result", result.hasNext());
 
-                assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
-                assertFalse("Should have no more results", aResult.hasNext());
+                final QuerySolution aQuerySolution = result.next();
+
+                assertTrue("Should have no bindings", aQuerySolution.varNames().hasNext());
+                assertFalse("Should have no more results", result.hasNext());
             }
     }
 
     @Test
     public void testWrongTypeFirstArg() {
        
-        final String aQuery = StringVocabulary.sparqlPrefix("string") +
+        final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:lastOrdinalIndexOf(1, \"two\", 3) as ?result) }";
 
-            try(final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+                        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                            final ResultSet result = queryExecution.execSelect();
 
-                assertTrue("Should have a result", aResult.hasNext());
 
-                final BindingSet aBindingSet = aResult.next();
+                assertTrue("Should have a result", result.hasNext());
 
-                assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
-                assertFalse("Should have no more results", aResult.hasNext());
+                final QuerySolution aQuerySolution = result.next();
+
+                assertTrue("Should have no bindings", aQuerySolution.varNames().hasNext());
+                assertFalse("Should have no more results", result.hasNext());
             }
     }
 
     @Test
     public void testWrongTypeSecondArg() {
      
-        final String aQuery = StringVocabulary.sparqlPrefix("string") +
+        final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:lastOrdinalIndexOf(\"one\", 2, 3) as ?result) }";
 
-            try(final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+                            try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                                final ResultSet result = queryExecution.execSelect();
 
-                assertTrue("Should have a result", aResult.hasNext());
 
-                final BindingSet aBindingSet = aResult.next();
+                assertTrue("Should have a result", result.hasNext());
 
-                assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
-                assertFalse("Should have no more results", aResult.hasNext());
+                final QuerySolution aQuerySolution = result.next();
+
+                assertTrue("Should have no bindings", aQuerySolution.varNames().hasNext());
+                assertFalse("Should have no more results", result.hasNext());
             }
     }
 
     @Test
     public void testWrongTypeThirdArg() {
 
-        final String aQuery = StringVocabulary.sparqlPrefix("string") +
+        final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:lastOrdinalIndexOf(\"one\", \"two\", \"three\") as ?result) }";
 
-        try(final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+                                try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                                    final ResultSet result = queryExecution.execSelect();
 
-            assertTrue("Should have a result", aResult.hasNext());
 
-            final BindingSet aBindingSet = aResult.next();
+            assertTrue("Should have a result", result.hasNext());
 
-            assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
-            assertFalse("Should have no more results", aResult.hasNext());
+            final QuerySolution aQuerySolution = result.next();
+
+            assertTrue("Should have no bindings", aQuerySolution.varNames().hasNext());
+            assertFalse("Should have no more results", result.hasNext());
         }
     }
 
     @Test
     public void testLengthTooShort() {
      
-        final String aQuery = StringVocabulary.sparqlPrefix("string") +
+        final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:lastOrdinalIndexOf(\"Stardog\", 3) as ?result) }";
 
-            try(final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+                                    try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                                        final ResultSet result = queryExecution.execSelect();
+
          
-                assertTrue("Should have a result", aResult.hasNext());
+                assertTrue("Should have a result", result.hasNext());
 
-                final BindingSet aBindingSet = aResult.next();
+                final QuerySolution aQuerySolution = result.next();
 
-                assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
-                assertFalse("Should have no more results", aResult.hasNext());
+                assertTrue("Should have no bindings", aQuerySolution.varNames().hasNext());
+                assertFalse("Should have no more results", result.hasNext());
             }
     }
 }

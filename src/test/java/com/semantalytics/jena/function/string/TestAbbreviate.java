@@ -25,11 +25,11 @@ public class TestAbbreviate {
 
     @Test
     public void testAbbreviate() {
-    
-        final String queryString = StringVocabulary.sparqlPrefix("string") +
-                    "select ?result where { bind(string:abbreviate(\"Jena abbreviate function\", 8) AS ?result) }";
 
-        try(QueryExecution queryExecution = QueryExecutionFactory.create(queryString)) {
+        final String queryString = StringVocabulary.sparqlPrefix("string") +
+                "select ?result where { bind(string:abbreviate(\"Jena abbreviate function\", 8) AS ?result) }";
+
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(queryString, model)) {
             final ResultSet result = queryExecution.execSelect();
 
             assertTrue("Should have a result", result.hasNext());
@@ -43,11 +43,11 @@ public class TestAbbreviate {
 
     @Test
     public void testAbbreviateWithOffset() {
-  
-        final String queryString = StringVocabulary.sparqlPrefix("string") +
-                    "select ?result where { bind(string:abbreviate(\"Stardog graph database\", 15, 5) AS ?result) }";
 
-        try(QueryExecution queryExecution = QueryExecutionFactory.create(queryString)) {
+        final String queryString = StringVocabulary.sparqlPrefix("string") +
+                "select ?result where { bind(string:abbreviate(\"Stardog graph database\", 15, 5) AS ?result) }";
+
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(queryString, model)) {
             final ResultSet result = queryExecution.execSelect();
 
             assertTrue("Should have a result", result.hasNext());
@@ -61,127 +61,126 @@ public class TestAbbreviate {
 
     @Test
     public void testEmptyString() {
-  
+
         final String queryString = StringVocabulary.sparqlPrefix("string") +
-                    "select ?result where { bind(string:abbreviate(\"\", 5) as ?result) }";
+                "select ?result where { bind(string:abbreviate(\"\", 5) as ?result) }";
 
-            try(QueryExecution queryExecution = QueryExecutionFactory.create(queryString)) {
-        final Query query = QueryFactory.create(queryString);
-        final ResultSet result = QueryExecutionFactory.create(query, model).execSelect();
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(queryString, model)) {
+            final ResultSet result = queryExecution.execSelect();
 
-                assertTrue("Should have a result", result.hasNext());
+            assertTrue("Should have a result", result.hasNext());
 
-                final String aValue = result.next().getLiteral("result").getString();
+            final String aValue = result.next().getLiteral("result").getString();
 
-                assertEquals("", aValue);
-                assertFalse("Should have no more results", result.hasNext());
+            assertEquals("", aValue);
+            assertFalse("Should have no more results", result.hasNext());
+        }
     }
 
     @Test
     public void testTooFewArgs() {
-    
+
         final String queryString = StringVocabulary.sparqlPrefix("string") +
-                    "select ?result where { bind(string:abbreviate(\"one\") as ?result) }";
+                "select ?result where { bind(string:abbreviate(\"one\") as ?result) }";
 
-                try(QueryExecution queryExecution = QueryExecutionFactory.create(queryString)) {
-        final Query query = QueryFactory.create(queryString);
-        final ResultSet result = QueryExecutionFactory.create(query, model).execSelect();
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(queryString, model)) {
+            final ResultSet result = queryExecution.execSelect();
 
-        assertTrue("Should have a result", result.hasNext());
+            assertTrue("Should have a result", result.hasNext());
 
-        final QuerySolution aBindingSet = result.next();
+            final QuerySolution aQuerySolution = result.next();
 
-        assertFalse("Should have no bindings", aBindingSet.varNames().hasNext());
-        assertFalse("Should have no more results", result.hasNext());
+            assertFalse("Should have no bindings", aQuerySolution.varNames().hasNext());
+            assertFalse("Should have no more results", result.hasNext());
+        }
     }
 
     @Test
     public void testTooManyArgs() {
 
         final String queryString = StringVocabulary.sparqlPrefix("string") +
-                    "select ?result where { bind(string:abbreviate(\"one\", 9, \"three\", \"four\") as ?result) }";
+                "select ?result where { bind(string:abbreviate(\"one\", 9, \"three\", \"four\") as ?result) }";
 
-                    try(QueryExecution queryExecution = QueryExecutionFactory.create(queryString)) {
-        final Query query = QueryFactory.create(queryString);
-        final ResultSet result = QueryExecutionFactory.create(query, model).execSelect();
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(queryString, model)) {
+            final ResultSet result = queryExecution.execSelect();
 
-                assertTrue("Should have a result", result.hasNext());
+            assertTrue("Should have a result", result.hasNext());
 
-                final QuerySolution aBindingSet = result.next();
+            final QuerySolution aQuerySolution = result.next();
 
-                assertFalse("Should have no bindings", aBindingSet.varNames().hasNext());
-                assertFalse("Should have no more results", result.hasNext());
+            assertFalse("Should have no bindings", aQuerySolution.varNames().hasNext());
+            assertFalse("Should have no more results", result.hasNext());
+        }
     }
 
     @Test
     public void testWrongTypeFirstArg() {
-     
+
         final String queryString = StringVocabulary.sparqlPrefix("string") +
-                    "select ?result where { bind(string:abbreviate(4, 5) as ?result) }";
+                "select ?result where { bind(string:abbreviate(4, 5) as ?result) }";
 
-                        try(QueryExecution queryExecution = QueryExecutionFactory.create(queryString)) {
-        final Query query = QueryFactory.create(queryString);
-        final ResultSet result = QueryExecutionFactory.create(query, model).execSelect();
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(queryString, model)) {
+            final ResultSet result = queryExecution.execSelect();
 
-                assertTrue("Should have a result", result.hasNext());
+            assertTrue("Should have a result", result.hasNext());
 
-                final QuerySolution aBindingSet = result.next();
+            final QuerySolution aQuerySolution = result.next();
 
-                assertFalse("Should have no bindings", aBindingSet.varNames().hasNext());
-                assertFalse("Should have no more results", result.hasNext());
+            assertFalse("Should have no bindings", aQuerySolution.varNames().hasNext());
+            assertFalse("Should have no more results", result.hasNext());
+        }
     }
 
     @Test
     public void testWrongTypeSecondArg() {
 
         final String queryString = StringVocabulary.sparqlPrefix("string") +
-                    "select ?result where { bind(string:abbreviate(\"one\", \"two\") as ?result) }";
+                "select ?result where { bind(string:abbreviate(\"one\", \"two\") as ?result) }";
 
-                            try(QueryExecution queryExecution = QueryExecutionFactory.create(queryString)) {
-        final Query query = QueryFactory.create(queryString);
-        final ResultSet result = QueryExecutionFactory.create(query, model).execSelect();
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(queryString, model)) {
+            final ResultSet result = queryExecution.execSelect();
 
-                assertTrue("Should have a result", result.hasNext());
+            assertTrue("Should have a result", result.hasNext());
 
-                final QuerySolution aBindingSet = result.next();
+            final QuerySolution aQuerySolution = result.next();
 
-                assertFalse("Should have no bindings", aBindingSet.varNames().hasNext());
-                assertFalse("Should have no more results", result.hasNext());
+            assertFalse("Should have no bindings", aQuerySolution.varNames().hasNext());
+            assertFalse("Should have no more results", result.hasNext());
+        }
     }
 
     @Test
     public void testWrongTypeThirdArg() {
- 
+
         final String queryString = StringVocabulary.sparqlPrefix("string") +
-                    "select ?result where { bind(string:abbreviate(\"one\", 9, \"three\") as ?result) }";
+                "select ?result where { bind(string:abbreviate(\"one\", 9, \"three\") as ?result) }";
 
-                                try(QueryExecution queryExecution = QueryExecutionFactory.create(queryString)) {
-        final Query query = QueryFactory.create(queryString);
-        final ResultSet result = QueryExecutionFactory.create(query, model).execSelect();
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(queryString, model)) {
+            final ResultSet result = queryExecution.execSelect();
 
-                assertTrue("Should have a result", result.hasNext());
+            assertTrue("Should have a result", result.hasNext());
 
-                final QuerySolution aBindingSet = result.next();
+            final QuerySolution aQuerySolution = result.next();
 
-                assertTrue("Should have no bindings", aBindingSet.varNames().hasNext());
-                assertFalse("Should have no more results", result.hasNext());
+            assertTrue("Should have no bindings", aQuerySolution.varNames().hasNext());
+            assertFalse("Should have no more results", result.hasNext());
+        }
     }
 
     @Test
     public void testLengthTooShort() {
 
         final String queryString = StringVocabulary.sparqlPrefix("string") +
-                    "select ?result where { bind(string:abbreviate(\"Stardog\", 3) as ?result) }";
-                                    try(QueryExecution queryExecution = QueryExecutionFactory.create(queryString)) {
+                "select ?result where { bind(string:abbreviate(\"Stardog\", 3) as ?result) }";
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(queryString, model)) {
+            final ResultSet result = queryExecution.execSelect();
 
-        final Query query = QueryFactory.create(queryString);
-        final ResultSet result = QueryExecutionFactory.create(query, model).execSelect();
+            assertTrue("Should have a result", result.hasNext());
 
-                assertTrue("Should have a result", result.hasNext());
+            final QuerySolution aQuerySolution = result.next();
 
-                final QuerySolution aBindingSet = result.next();
-
-                assertFalse("Should have no bindings", aBindingSet.varNames().hasNext());
-                assertFalse("Should have no more results", result.hasNext());
+            assertFalse("Should have no bindings", aQuerySolution.varNames().hasNext());
+            assertFalse("Should have no more results", result.hasNext());
+        }
     }
 }

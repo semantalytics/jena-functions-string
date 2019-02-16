@@ -1,46 +1,51 @@
-package com.semantalytics.stardog.kibble.string;
+package com.semantalytics.jena.function.string;
 
-import com.semantalytics.stardog.kibble.AbstractStardogTest;
 import org.junit.*;
-import org.openrdf.query.BindingSet;
-import org.openrdf.query.TupleQueryResult;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryExecutionFactory;
+import org.apache.jena.query.QuerySolution;
+import org.apache.jena.query.ResultSet;
 
 import static org.junit.Assert.*;
 
-public class TestIsAnyEmpty extends AbstractStardogTest {
+public class TestIsAnyEmpty {
 
     @Test
     public void testTrue() {
        
 
-            final String aQuery = "prefix string: <" + StringVocabulary.NAMESPACE + "> " +
+            final String query = "prefix string: <" + StringVocabulary.NAMESPACE + "> " +
                 "select ?result where { bind(string:isAnyBlank(\"Stardog\", \"graph\", \"database\", \"\") AS ?result) }";
 
-            try (final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+            final ResultSet result = queryExecution.execSelect();
 
-                assertTrue("Should have a result", aResult.hasNext());
 
-                final boolean aValue = Boolean.parseBoolean(aResult.next().getValue("result").stringValue());
+                assertTrue("Should have a result", result.hasNext());
+
+                final boolean aValue = Boolean.parseBoolean(result.next().getLiteral("result").getString());
 
                 assertEquals(true, aValue);
-                assertFalse("Should have no more results", aResult.hasNext());
+                assertFalse("Should have no more results", result.hasNext());
             }
     }
 
     @Test
     public void testFalse() {
 
-        final String aQuery = "prefix string: <" + StringVocabulary.NAMESPACE + "> " +
+        final String query = "prefix string: <" + StringVocabulary.NAMESPACE + "> " +
                 "select ?result where { bind(string:isAnyBlank(\"Stardog\", \"graph\", \"database\") AS ?result) }";
 
-        try (final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+            try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                final ResultSet result = queryExecution.execSelect();
 
-            assertTrue("Should have a result", aResult.hasNext());
 
-            final boolean aValue = Boolean.parseBoolean(aResult.next().getValue("result").stringValue());
+            assertTrue("Should have a result", result.hasNext());
+
+            final boolean aValue = Boolean.parseBoolean(result.next().getLiteral("result").getString());
 
             assertEquals(false, aValue);
-            assertFalse("Should have no more results", aResult.hasNext());
+            assertFalse("Should have no more results", result.hasNext());
         }
 
     }
@@ -48,69 +53,77 @@ public class TestIsAnyEmpty extends AbstractStardogTest {
     @Test
     public void testBlank() {
        
-            final String aQuery = "prefix string: <" + StringVocabulary.NAMESPACE + "> " +
+            final String query = "prefix string: <" + StringVocabulary.NAMESPACE + "> " +
                     "select ?result where { bind(string:isAnyEmpty(\" \") as ?result) }";
 
-            try(final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+                try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                    final ResultSet result = queryExecution.execSelect();
 
 
-                assertTrue("Should have a result", aResult.hasNext());
 
-                final boolean aValue = Boolean.parseBoolean(aResult.next().getValue("result").stringValue());
+                assertTrue("Should have a result", result.hasNext());
+
+                final boolean aValue = Boolean.parseBoolean(result.next().getLiteral("result").getString());
 
                 assertEquals(false, aValue);
-                assertFalse("Should have no more results", aResult.hasNext());
+                assertFalse("Should have no more results", result.hasNext());
             }
     }
 
     @Test
     public void testTooFewArgs() {
 
-            final String aQuery = "prefix string: <" + StringVocabulary.NAMESPACE + "> " +
+            final String query = "prefix string: <" + StringVocabulary.NAMESPACE + "> " +
                     "select ?result where { bind(string:isAnyEmpty() as ?result) }";
 
-            try(final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+                    try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                        final ResultSet result = queryExecution.execSelect();
 
-                assertTrue("Should have a result", aResult.hasNext());
 
-                final BindingSet aBindingSet = aResult.next();
+                assertTrue("Should have a result", result.hasNext());
 
-                assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
-                assertFalse("Should have no more results", aResult.hasNext());
+                final QuerySolution aQuerySolution = result.next();
+
+                assertTrue("Should have no bindings", aQuerySolution.varNames().hasNext());
+                assertFalse("Should have no more results", result.hasNext());
             }
     }
 
     @Test
     public void testWrongTypeOneArg() {
        
-            final String aQuery = "prefix string: <" + StringVocabulary.NAMESPACE + "> " +
+            final String query = "prefix string: <" + StringVocabulary.NAMESPACE + "> " +
                     "select ?result where { bind(string:isAnyEmpty(1) as ?result) }";
 
-            try(final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+                        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                            final ResultSet result = queryExecution.execSelect();
 
-                assertTrue("Should have a result", aResult.hasNext());
 
-                final BindingSet aBindingSet = aResult.next();
+                assertTrue("Should have a result", result.hasNext());
 
-                assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
-                assertFalse("Should have no more results", aResult.hasNext());
+                final QuerySolution aQuerySolution = result.next();
+
+                assertTrue("Should have no bindings", aQuerySolution.varNames().hasNext());
+                assertFalse("Should have no more results", result.hasNext());
             }
     }
 
     @Test
     public void testWrongTypeTwoArg() {
        
-            final String aQuery = "prefix string: <" + StringVocabulary.NAMESPACE + "> " +
+            final String query = "prefix string: <" + StringVocabulary.NAMESPACE + "> " +
                     "select ?result where { bind(string:isAnyEmpty(1, 2) as ?result) }";
 
-            try(final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+                            try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                                final ResultSet result = queryExecution.execSelect();
 
-                assertTrue("Should have a result", aResult.hasNext());
 
-                final BindingSet aBindingSet = aResult.next();
+                assertTrue("Should have a result", result.hasNext());
 
-                assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
-                assertFalse("Should have no more results", aResult.hasNext());
+                final QuerySolution aQuerySolution = result.next();
+
+                assertTrue("Should have no bindings", aQuerySolution.varNames().hasNext());
+                assertFalse("Should have no more results", result.hasNext());
             }
     }
 }

@@ -1,135 +1,139 @@
 package com.semantalytics.jena.function.string;
 
-
-import com.semantalytics.stardog.kibble.AbstractStardogTest;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryExecutionFactory;
+import org.apache.jena.query.QuerySolution;
+import org.apache.jena.query.ResultSet;
 import org.junit.*;
-import org.openrdf.query.BindingSet;
-import org.openrdf.query.TupleQueryResult;
 
 import static org.junit.Assert.*;
 
 public class TestCapitalize {
-   
+
     @Test
     public void testNotCapitalized() {
-     
-         final String aQuery = StringVocabulary.sparqlPrefix("string") +
-                    "select ?result where { bind(string:capitalize(\"stardog\") AS ?result) }";
 
-            try (final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+        final String query = StringVocabulary.sparqlPrefix("string") +
+                "select ?result where { bind(string:capitalize(\"stardog\") AS ?result) }";
 
-                assertTrue("Should have a result", aResult.hasNext());
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+            final ResultSet result = queryExecution.execSelect();
 
-                final String aValue = aResult.next().getValue("result").stringValue();
+            assertTrue("Should have a result", result.hasNext());
 
-                assertEquals("Stardog", aValue);
+            final String aValue = result.next().getLiteral("result").getString();
 
-                assertFalse("Should have no more results", aResult.hasNext());
-            }
+            assertEquals("Stardog", aValue);
+            assertFalse("Should have no more results", result.hasNext());
+        }
     }
 
     @Test
     public void testCapitalized() {
-   
-         final String aQuery = StringVocabulary.sparqlPrefix("string") +
-               "select ?result where { bind(string:capitalize(\"Stardog\") AS ?result) }";
 
-            try (final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+        final String query = StringVocabulary.sparqlPrefix("string") +
+                "select ?result where { bind(string:capitalize(\"Stardog\") AS ?result) }";
 
-                assertTrue("Should have a result", aResult.hasNext());
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+            final ResultSet result = queryExecution.execSelect();
 
-                final String aValue = aResult.next().getValue("result").stringValue();
+            assertTrue("Should have a result", result.hasNext());
 
-                assertEquals("Stardog", aValue);
+            final String aValue = result.next().getLiteral("result").getString();
 
-                assertFalse("Should have no more results", aResult.hasNext());
-            }
+            assertEquals("Stardog", aValue);
+            assertFalse("Should have no more results", result.hasNext());
+        }
     }
 
     @Test
     public void testAllCaps() {
-   
-         final String aQuery = StringVocabulary.sparqlPrefix("string") +
-                    "select ?result where { bind(string:capitalize(\"STARDOG\") AS ?result) }";
 
+        final String query = StringVocabulary.sparqlPrefix("string") +
+                "select ?result where { bind(string:capitalize(\"STARDOG\") AS ?result) }";
 
-            try (final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+            final ResultSet result = queryExecution.execSelect();
 
-                assertTrue("Should have a result", aResult.hasNext());
+            assertTrue("Should have a result", result.hasNext());
 
-                final String aValue = aResult.next().getValue("result").stringValue();
+            final String aValue = result.next().getLiteral("result").getString();
 
-                assertEquals("STARDOG", aValue);
-
-                assertFalse("Should have no more results", aResult.hasNext());
-            }
+            assertEquals("STARDOG", aValue);
+            assertFalse("Should have no more results", result.hasNext());
+        }
     }
 
     @Test
     public void testEmptyString() {
-     
-         final String aQuery = StringVocabulary.sparqlPrefix("string") +
-                    "select ?result where { bind(string:capitalize(\"\") as ?result) }";
 
-            final TupleQueryResult aResult = connection.select(aQuery).execute();
+        final String query = StringVocabulary.sparqlPrefix("string") +
+                "select ?result where { bind(string:capitalize(\"\") as ?result) }";
 
-                assertTrue("Should have a result", aResult.hasNext());
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+            final ResultSet result = queryExecution.execSelect();
 
-                final String aValue = aResult.next().getValue("result").stringValue();
+            assertTrue("Should have a result", result.hasNext());
 
-                assertEquals("", aValue);
+            final String aValue = result.next().getLiteral("result").getString();
 
-                assertFalse("Should have no more results", aResult.hasNext());
+            assertEquals("", aValue);
+            assertFalse("Should have no more results", result.hasNext());
+        }
     }
 
     @Test
     public void testTooFewArgs() {
 
-         final String aQuery = StringVocabulary.sparqlPrefix("string") +
-                    "select ?result where { bind(string:capitalize() as ?result) }";
+        final String query = StringVocabulary.sparqlPrefix("string") +
+                "select ?result where { bind(string:capitalize() as ?result) }";
 
-            final TupleQueryResult aResult = connection.select(aQuery).execute();
-    
-                assertTrue("Should have a result", aResult.hasNext());
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+            final ResultSet result = queryExecution.execSelect();
 
-                final BindingSet aBindingSet = aResult.next();
+            assertTrue("Should have a result", result.hasNext());
 
-                assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
+            final QuerySolution aQuerySolution = result.next();
 
-                assertFalse("Should have no more results", aResult.hasNext());
+            assertTrue("Should have no bindings", aQuerySolution.varNames().hasNext());
+            assertFalse("Should have no more results", result.hasNext());
+        }
     }
 
     @Test
     public void testTooManyArgs() {
 
-         final String aQuery = StringVocabulary.sparqlPrefix("string") +
-                    "select ?capitalize where { bind(string:capitalize(\"one\", \"two\") as ?result) }";
+        final String query = StringVocabulary.sparqlPrefix("string") +
+                "select ?capitalize where { bind(string:capitalize(\"one\", \"two\") as ?result) }";
 
-            final TupleQueryResult aResult = connection.select(aQuery).execute();
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+            final ResultSet result = queryExecution.execSelect();
 
-                assertTrue("Should have a result", aResult.hasNext());
+            assertTrue("Should have a result", result.hasNext());
 
-                final BindingSet aBindingSet = aResult.next();
+            final QuerySolution aQuerySolution = result.next();
 
-                assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
-
-                assertFalse("Should have no more results", aResult.hasNext());
+            assertTrue("Should have no bindings", aQuerySolution.varNames().hasNext());
+            assertFalse("Should have no more results", result.hasNext());
+        }
     }
 
     @Test
     public void testArgumentWrongType() {
-     
-         final String aQuery = StringVocabulary.sparqlPrefix("string") +
-                    "select ?result where { bind(string:capitalize(1) as ?result) }";
 
-            final TupleQueryResult aResult = connection.select(aQuery).execute();
-         
-                assertTrue("Should have a result", aResult.hasNext());
+        final String query = StringVocabulary.sparqlPrefix("string") +
+                "select ?result where { bind(string:capitalize(1) as ?result) }";
 
-                final BindingSet aBindingSet = aResult.next();
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+            final ResultSet result = queryExecution.execSelect();
 
-                assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
+            assertTrue("Should have a result", result.hasNext());
 
-                assertFalse("Should have no more results", aResult.hasNext());
+            final QuerySolution aQuerySolution = result.next();
+
+            assertTrue("Should have no bindings", aQuerySolution.varNames().hasNext());
+            assertFalse("Should have no more results", result.hasNext());
+        }
     }
 }
+

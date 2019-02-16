@@ -1,17 +1,11 @@
 package com.semantalytics.jena.function.string;
 
-import com.google.common.io.Files;
 import junit.framework.TestCase;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.InetSocketAddress;
 
 @RunWith(Suite.class)
 @SuiteClasses({

@@ -1,6 +1,9 @@
 package com.semantalytics.jena.function.string;
 
-import com.semantalytics.stardog.kibble.AbstractStardogTest;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryExecutionFactory;
+import org.apache.jena.query.QuerySolution;
+import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.sparql.function.FunctionRegistry;
@@ -24,13 +27,16 @@ public class TestAppendIfMissing {
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:appendIfMissing(\"Stardog\", \".txt\") AS ?result) }";
 
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+            final ResultSet result = queryExecution.execSelect();
 
             assertTrue("Should have a result", result.hasNext());
 
-            final String aValue = result.next().getValue("result").stringValue();
+            final String aValue = result.next().getLiteral("result").getString();
 
             assertEquals("Stardog.txt", aValue);
             assertFalse("Should have no more results", result.hasNext());
+        }
     }
 
     @Test
@@ -39,13 +45,16 @@ public class TestAppendIfMissing {
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:appendIfMissing(\"Stardog.txt\", \".txt\") as ?result) }";
 
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+            final ResultSet result = queryExecution.execSelect();
 
             assertTrue("Should have a result", result.hasNext());
 
-            final String aValue = result.next().getValue("result").stringValue();
+            final String aValue = result.next().getLiteral("result").getString();
 
             assertEquals("Stardog.txt", aValue);
             assertFalse("Should have no more results", result.hasNext());
+        }
     }
 
     @Test
@@ -54,14 +63,16 @@ public class TestAppendIfMissing {
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:appendIfMissing(\"one\") as ?result) }";
 
-        try(final TupleQueryResult result = connection.select(query).execute()) {
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+            final ResultSet result = queryExecution.execSelect();
 
-        assertTrue("Should have a result", result.hasNext());
 
-        final BindingSet aBindingSet = result.next();
+            assertTrue("Should have a result", result.hasNext());
 
-        assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
-        assertFalse("Should have no more results", result.hasNext());
+            final QuerySolution querySolution = result.next();
+
+            assertTrue("Should have no bindings", querySolution.varNames().hasNext());
+            assertFalse("Should have no more results", result.hasNext());
         }
     }
 
@@ -72,13 +83,15 @@ public class TestAppendIfMissing {
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:appendIfMissing(\"one\", 2, \"three\") as ?result) }";
 
-        try(final TupleQueryResult result = connection.select(query).execute()) {
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+            final ResultSet result = queryExecution.execSelect();
+
 
             assertTrue("Should have a result", result.hasNext());
 
-            final BindingSet aBindingSet = result.next();
+            final QuerySolution querySolution = result.next();
 
-            assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
+            assertTrue("Should have no bindings", querySolution.varNames().hasNext());
             assertFalse("Should have no more results", result.hasNext());
         }
     }
@@ -89,13 +102,15 @@ public class TestAppendIfMissing {
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:appendIfMissing(4, 5) as ?result) }";
 
-        try(final TupleQueryResult result = connection.select(query).execute()) {
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+            final ResultSet result = queryExecution.execSelect();
+
 
             assertTrue("Should have a result", result.hasNext());
 
-            final BindingSet aBindingSet = result.next();
+            final QuerySolution querySolution = result.next();
 
-            assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
+            assertTrue("Should have no bindings", querySolution.varNames().hasNext());
             assertFalse("Should have no more results", result.hasNext());
         }
     }
@@ -107,13 +122,15 @@ public class TestAppendIfMissing {
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:appendIfMissing(\"one\", 2) as ?result) }";
 
-        try(final TupleQueryResult result = connection.select(query).execute()) {
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+            final ResultSet result = queryExecution.execSelect();
+
 
             assertTrue("Should have a result", result.hasNext());
 
-            final BindingSet aBindingSet = result.next();
+            final QuerySolution querySolution = result.next();
 
-            assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
+            assertTrue("Should have no bindings", querySolution.varNames().hasNext());
             assertFalse("Should have no more results", result.hasNext());
         }
     }
@@ -124,13 +141,15 @@ public class TestAppendIfMissing {
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:appendIfMissing(\"Stardog\", 3) as ?result) }";
 
-        try(final TupleQueryResult result = connection.select(query).execute()) {
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+            final ResultSet result = queryExecution.execSelect();
+
 
             assertTrue("Should have a result", result.hasNext());
 
-            final BindingSet aBindingSet = result.next();
+            final QuerySolution querySolution = result.next();
 
-            assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
+            assertTrue("Should have no bindings", querySolution.varNames().hasNext());
             assertFalse("Should have no more results", result.hasNext());
         }
     }

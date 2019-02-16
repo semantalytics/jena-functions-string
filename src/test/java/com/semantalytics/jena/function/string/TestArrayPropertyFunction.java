@@ -1,198 +1,202 @@
 package com.semantalytics.jena.function.string;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
-import com.complexible.common.openrdf.query.BindingSets;
-import com.complexible.common.rdf.model.StardogValueFactory;
-import com.complexible.stardog.plan.eval.ExecutionException;
-import com.google.common.collect.Lists;
-import com.semantalytics.stardog.kibble.AbstractStardogTest;
-import info.aduna.iteration.Iterations;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryExecutionFactory;
+import org.apache.jena.query.ResultSet;
 import org.junit.Test;
-import org.openrdf.model.Value;
-import org.openrdf.query.BindingSet;
-import org.openrdf.query.TupleQueryResult;
 
-import static com.complexible.common.rdf.model.Values.literal;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class TestArrayPropertyFunction {
+
+    /*
     @Test(expected = ExecutionException.class)
     public void tooManyResultsThrowsError() {
 
-        final String aQueryStr = StringVocabulary.sparqlPrefix("string") +
+        final String query = StringVocabulary.sparqlPrefix("string") +
                 " select * where { (?too ?many ?args) string:array (\"stardog\") }";
 
-        final TupleQueryResult aResult = connection.select(aQueryStr).execute();
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+            final ResultSet result = queryExecution.execSelect();
+
         try {
             fail("Should not have successfully executed");
         } finally {
-            aResult.close();
+            result.close();
         }
     }
 
 
     @Test(expected = ExecutionException.class)
     public void resultTermsWhichAreNotVariablesShouldBeAnError() {
-        final String aQueryStr = StringVocabulary.sparqlPrefix("string") +
+        final String query = StringVocabulary.sparqlPrefix("string") +
                 " select * where { (\"no literals allowed\") string:array (\"stardog\") }";
 
-        final TupleQueryResult aResult = connection.select(aQueryStr).execute();
+            try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                final ResultSet result = queryExecution.execSelect();
         try {
             fail("Should not have successfully executed");
         } finally {
-            aResult.close();
+            result.close();
         }
     }
 
     @Test(expected = ExecutionException.class)
     public void tooManyInputsThrowsError() {
-        final String aQueryStr = StringVocabulary.sparqlPrefix("string") +
+        final String query = StringVocabulary.sparqlPrefix("string") +
                 " select * where { ?result string:array (\"stardog\" 5) }";
+                try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                    final ResultSet result = queryExecution.execSelect();
 
 
-        final TupleQueryResult aResult = connection.select(aQueryStr).execute();
 
         try {
             fail("Should not have successfully executed");
         } finally {
-            aResult.close();
+            result.close();
         }
     }
 
     @Test(expected = ExecutionException.class)
     public void argCannotBeANonnumericLiteral() {
-        final String aQueryStr = StringVocabulary.sparqlPrefix("string") +
+        final String query = StringVocabulary.sparqlPrefix("string") +
                 " select * where { ?result string:array (5) }";
+                    try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                        final ResultSet result = queryExecution.execSelect();
 
 
-        final TupleQueryResult aResult = connection.select(aQueryStr).execute();
         try {
             fail("Should not have successfully executed");
         } finally {
-            aResult.close();
+            result.close();
         }
     }
 
     @Test(expected = ExecutionException.class)
     public void argCannotBeAnIRI() {
-        final String aQueryStr = StringVocabulary.sparqlPrefix("string") +
+        final String query = StringVocabulary.sparqlPrefix("string") +
                 " select * where { ?result string:array (<http://example.com>) }";
+                        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                            final ResultSet result = queryExecution.execSelect();
 
 
-        final TupleQueryResult aResult = connection.select(aQueryStr).execute();
         try {
             fail("Should not have successfully executed");
         } finally {
-            aResult.close();
+            result.close();
         }
     }
 
     @Test
     public void argCannotBeABNode() {
-        final String aQueryStr = StringVocabulary.sparqlPrefix("string") +
+        final String query = StringVocabulary.sparqlPrefix("string") +
                 " select * where { ?result string:array (_:bnode) }";
+                            try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                                final ResultSet result = queryExecution.execSelect();
 
-        try(final TupleQueryResult aResult = connection.select(aQueryStr).execute()) {
-            assertFalse("Should have no more results", aResult.hasNext());
+            assertFalse("Should have no more results", result.hasNext());
         }
     }
 
     @Test
     public void varInputWithNoResultsShouldProduceZeroResults() {
-        final String aQueryStr = StringVocabulary.sparqlPrefix("string") +
+        final String query = StringVocabulary.sparqlPrefix("string") +
                 " select * where { ?result string:array (?input) }";
+                                try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                                    final ResultSet result = queryExecution.execSelect();
 
 
-        final TupleQueryResult aResult = connection.select(aQueryStr).execute();
         try {
-            assertFalse(aResult.hasNext());
+            assertFalse(result.hasNext());
         } finally {
-            aResult.close();
+            result.close();
         }
     }
 
     @Test
     public void simpleStringArray() {
-        final String aQueryStr = StringVocabulary.sparqlPrefix("string") +
+        final String query = StringVocabulary.sparqlPrefix("string") +
                 " select * where { ?result string:array (\"star\u001fdog\") }";
+                                    try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                                        final ResultSet result = queryExecution.execSelect();
 
-        try(final TupleQueryResult aResult = connection.select(aQueryStr).execute()) {
 
             final List<Value> aExpected = Lists.newArrayList(literal("star"), literal("dog"));
-            final List<Value> aResults = Iterations.stream(aResult).map(BindingSets.select("result")).collect(Collectors.toList());
+            final List<Value> results = Iterations.stream(result).map(QuerySolutions.select("result")).collect(Collectors.toList());
 
-            assertEquals(aExpected, aResults);
+            assertEquals(aExpected, results);
         }
     }
 
     @Test
     public void stringArrayWithIndex() {
-        final String aQueryStr = StringVocabulary.sparqlPrefix("string") +
+        final String query = StringVocabulary.sparqlPrefix("string") +
                 " select * where { (?result ?idx) string:array (\"star\u001fdog\") }";
+                                        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                                            final ResultSet result = queryExecution.execSelect();
 
-        BindingSet aBindingSet;
+        QuerySolution aQuerySolution;
 
-        try(final TupleQueryResult aResult = connection.select(aQueryStr).execute()) {
 
-            aBindingSet = aResult.next();
+            aQuerySolution = result.next();
 
-            assertEquals(literal("star"), aBindingSet.getValue("result"));
-            assertEquals(literal(0, StardogValueFactory.Datatype.INTEGER), aBindingSet.getValue("idx"));
+            assertEquals(literal("star"), aQuerySolution.getLiteral("result"));
+            assertEquals(literal(0, StardogValueFactory.Datatype.INTEGER), aQuerySolution.getLiteral("idx"));
 
-            aBindingSet = aResult.next();
+            aQuerySolution = result.next();
 
-            assertEquals(literal("dog"), aBindingSet.getValue("result"));
-            assertEquals(literal(1, StardogValueFactory.Datatype.INTEGER), aBindingSet.getValue("idx"));
+            assertEquals(literal("dog"), aQuerySolution.getLiteral("result"));
+            assertEquals(literal(1, StardogValueFactory.Datatype.INTEGER), aQuerySolution.getLiteral("idx"));
 
-            assertFalse("Should have no more results", aResult.hasNext());
+            assertFalse("Should have no more results", result.hasNext());
         }
     }
 
     @Test
     public void repeatWithVarInput() {
-        final String aQueryStr = StringVocabulary.sparqlPrefix("string") +
+        final String query = StringVocabulary.sparqlPrefix("string") +
                 " select * where { (?result ?idx) string:array (?in) . values ?in { \"star\u001fdog\u001fdatabase\"} }";
+                                            try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                                                final ResultSet result = queryExecution.execSelect();
 
-        BindingSet aBindingSet;
+        QuerySolution aQuerySolution;
 
-        try(final TupleQueryResult aResult = connection.select(aQueryStr).execute()) {
 
-            aBindingSet = aResult.next();
+            aQuerySolution = result.next();
 
-            assertEquals(literal("star"), aBindingSet.getValue("result"));
-            assertEquals(literal(0, StardogValueFactory.Datatype.INTEGER), aBindingSet.getValue("idx"));
+            assertEquals(literal("star"), aQuerySolution.getLiteral("result"));
+            assertEquals(literal(0, StardogValueFactory.Datatype.INTEGER), aQuerySolution.getLiteral("idx"));
 
-            aBindingSet = aResult.next();
+            aQuerySolution = result.next();
 
-            assertEquals(literal("dog"), aBindingSet.getValue("result"));
-            assertEquals(literal(1, StardogValueFactory.Datatype.INTEGER), aBindingSet.getValue("idx"));
+            assertEquals(literal("dog"), aQuerySolution.getLiteral("result"));
+            assertEquals(literal(1, StardogValueFactory.Datatype.INTEGER), aQuerySolution.getLiteral("idx"));
 
-            aBindingSet = aResult.next();
+            aQuerySolution = result.next();
 
-            assertEquals(literal("database"), aBindingSet.getValue("result"));
-            assertEquals(literal(2, StardogValueFactory.Datatype.INTEGER), aBindingSet.getValue("idx"));
+            assertEquals(literal("database"), aQuerySolution.getLiteral("result"));
+            assertEquals(literal(2, StardogValueFactory.Datatype.INTEGER), aQuerySolution.getLiteral("idx"));
 
-            assertFalse("Should have no more results", aResult.hasNext());
+            assertFalse("Should have no more results", result.hasNext());
         }
     }
 
     /*
     @Test
     public void costAndCardinalityShouldBeCorrect() throws Exception {
-        final String aQueryStr = StringVocabulary.sparqlPrefix("string") +
+        final String query = StringVocabulary.sparqlPrefix("string") +
             "select * where { (?result ?idx) string:array (\"star\u001fdog\") }";
 
-        Optional<PlanNode> aResult = PlanNodes.find(new QueryParserImpl().parseQuery(aQueryStr, Namespaces.STARDOG).getNode(),
+        Optional<PlanNode> result = PlanNodes.find(new QueryParserImpl().parseQuery(query, Namespaces.STARDOG).getNode(),
                                                     PlanNodes.is(ArrayPropertyFunction.ArrayPlanNode.class));
 
-        assertTrue(aResult.isPresent());
+        assertTrue(result.isPresent());
 
-        ArrayPropertyFunction.ArrayPlanNode aNode = (ArrayPropertyFunction.ArrayPlanNode) aResult.get();
+        ArrayPropertyFunction.ArrayPlanNode aNode = (ArrayPropertyFunction.ArrayPlanNode) result.get();
 
         new ArrayPropertyFunction().estimate(aNode);
 
@@ -205,15 +209,15 @@ public class TestArrayPropertyFunction {
     @Test
     public void costAndCardinalityShouldBeCorrectWithArg() throws Exception {
 
-        final String aQueryStr = StringVocabulary.sparqlPrefix("string") +
+        final String query = StringVocabulary.sparqlPrefix("string") +
             "select * where { (?result ?idx) string:array (?in) . values ?in { \"star\u001fdog"} }";
 
-        Optional<PlanNode> aResult = PlanNodes.find(new QueryParserImpl().parseQuery(aQueryStr, Namespaces.STARDOG).getNode(),
+        Optional<PlanNode> result = PlanNodes.find(new QueryParserImpl().parseQuery(query, Namespaces.STARDOG).getNode(),
                                                   PlanNodes.is(ArrayPropertyFunction.ArrayPlanNode.class));
 
-        assertTrue(aResult.isPresent());
+        assertTrue(result.isPresent());
 
-        ArrayPropertyFunction.ArrayPlanNode aNode = (ArrayPropertyFunction.ArrayPlanNode) aResult.get();
+        ArrayPropertyFunction.ArrayPlanNode aNode = (ArrayPropertyFunction.ArrayPlanNode) result.get();
 
         aNode.getArg().setCardinality(Cardinality.of(3, Accuracy.ACCURATE));
         aNode.getArg().setCost(3);
@@ -226,13 +230,16 @@ public class TestArrayPropertyFunction {
         assertEquals(15d, aNode.getCardinality().value(), .00001);
     }
 
-*/
     @Test
     public void shouldRenderACustomExplanation() {
 
-        final String aQueryStr = StringVocabulary.sparqlPrefix("string") +
+        final String query = StringVocabulary.sparqlPrefix("string") +
                 "select * where { (?result ?idx) string:array (\"star\u001fdog\") }";
+                                                try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                                                    final ResultSet result = queryExecution.execSelect();
 
-        assertTrue(connection.select(aQueryStr).explain().contains("StringArray("));
+        assertTrue(connection.select(query).explain().contains("StringArray("));
     }
+
+*/
 }
