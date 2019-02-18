@@ -7,7 +7,7 @@ import static org.apache.jena.sparql.expr.NodeValue.*;
 
 public final class Remove extends FunctionBase2 {
 
-    public final String name = StringVocabulary.remove.stringValue();
+    public static final String name = StringVocabulary.remove.stringValue();
 
     @Override
     public NodeValue exec(final NodeValue arg0, final NodeValue arg1) {

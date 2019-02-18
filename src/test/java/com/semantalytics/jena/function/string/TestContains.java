@@ -4,11 +4,31 @@ import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.sparql.function.FunctionRegistry;
 import org.junit.*;
+import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.*;
 
 public class TestContains {
+
+    private Model model;
+
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
+
+    @Before
+    public void setUp() {
+        FunctionRegistry.get().put(Contains.name, Contains.class);
+        model = ModelFactory.createDefaultModel();
+    }
+
+    @After
+    public void tearDown() {
+        model.close();
+    }
 
     @Test
     public void testTrue() {
@@ -16,7 +36,7 @@ public class TestContains {
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:contains(\"Stardog\", \"dog\") AS ?result) }";
 
-        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             final ResultSet result = queryExecution.execSelect();
 
             assertTrue("Should have a result", result.hasNext());
@@ -34,7 +54,7 @@ public class TestContains {
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:contains(\"Stardog\", \"graph\") AS ?result) }";
 
-        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             final ResultSet result = queryExecution.execSelect();
 
             assertTrue("Should have a result", result.hasNext());
@@ -52,7 +72,7 @@ public class TestContains {
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:contains(\"\", \"\") as ?result) }";
 
-        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             final ResultSet result = queryExecution.execSelect();
 
             assertTrue("Should have a result", result.hasNext());
@@ -71,7 +91,7 @@ public class TestContains {
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:contains(\"one\") as ?result) }";
 
-        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             final ResultSet result = queryExecution.execSelect();
 
             assertTrue("Should have a result", result.hasNext());
@@ -90,7 +110,7 @@ public class TestContains {
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:contains(\"one\", \"two\", \"three\") as ?result) }";
 
-        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             final ResultSet result = queryExecution.execSelect();
 
             assertTrue("Should have a result", result.hasNext());
@@ -108,7 +128,7 @@ public class TestContains {
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:contains(1, \"two\") as ?result) }";
 
-        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             final ResultSet result = queryExecution.execSelect();
 
             assertTrue("Should have a result", result.hasNext());
@@ -126,7 +146,7 @@ public class TestContains {
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:contains(\"one\", 2) as ?result) }";
 
-        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             final ResultSet result = queryExecution.execSelect();
 
 

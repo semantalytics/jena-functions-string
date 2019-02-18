@@ -1,14 +1,34 @@
 package com.semantalytics.jena.function.string;
 
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.sparql.function.FunctionRegistry;
 import org.junit.*;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
+import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.*;
 
 public class TestRemove {
+
+    private Model model;
+
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
+
+    @Before
+    public void setUp() {
+        FunctionRegistry.get().put(Remove.name, Remove.class);
+        model = ModelFactory.createDefaultModel();
+    }
+
+    @After
+    public void tearDown() {
+        model.close();
+    }
 
     @Test
     public void testTwoArg() {
@@ -16,7 +36,7 @@ public class TestRemove {
         final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:remove(\"Stardog\", \"dog\") AS ?result) }";
 
-        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             final ResultSet result = queryExecution.execSelect();
 
 
@@ -35,7 +55,7 @@ public class TestRemove {
         final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:remove(\"\", \"\") as ?result) }";
 
-            try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+            try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                 final ResultSet result = queryExecution.execSelect();
 
            
@@ -54,7 +74,7 @@ public class TestRemove {
         final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:remove(\"one\") as ?result) }";
 
-                try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                     final ResultSet result = queryExecution.execSelect();
 
          
@@ -73,7 +93,7 @@ public class TestRemove {
         final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:remove(\"one\", \"two\", \"three\") as ?result) }";
 
-                    try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                    try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                         final ResultSet result = queryExecution.execSelect();
 
 
@@ -92,7 +112,7 @@ public class TestRemove {
         final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:remove(1, \"two\") as ?result) }";
 
-                        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                             final ResultSet result = queryExecution.execSelect();
 
 
@@ -111,7 +131,7 @@ public class TestRemove {
         final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:remove(\"one\", 2) as ?result) }";
 
-                            try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                            try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                                 final ResultSet result = queryExecution.execSelect();
 
 

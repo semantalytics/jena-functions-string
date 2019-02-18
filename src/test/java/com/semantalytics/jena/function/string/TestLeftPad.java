@@ -1,14 +1,34 @@
 package com.semantalytics.jena.function.string;
 
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.sparql.function.FunctionRegistry;
 import org.junit.*;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
+import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.*;
 
 public class TestLeftPad {
+
+    private Model model;
+
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
+
+    @Before
+    public void setUp() {
+        FunctionRegistry.get().put(LeftPad.name, LeftPad.class);
+        model = ModelFactory.createDefaultModel();
+    }
+
+    @After
+    public void tearDown() {
+        model.close();
+    }
 
     @Test
     public void testTwoArg() {
@@ -16,7 +36,7 @@ public class TestLeftPad {
         final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:leftPad(\"Stardog\", 10) AS ?result) }";
 
-        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             final ResultSet result = queryExecution.execSelect();
 
 
@@ -35,7 +55,7 @@ public class TestLeftPad {
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:leftPad(\"Stardog\", 10, \"*\") AS ?result) }";
 
-            try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+            try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                 final ResultSet result = queryExecution.execSelect();
 
 
@@ -54,7 +74,7 @@ public class TestLeftPad {
         final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:leftPad(\"\", 10) as ?result) }";
 
-                try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                     final ResultSet result = queryExecution.execSelect();
 
            
@@ -73,7 +93,7 @@ public class TestLeftPad {
         final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:leftPad(\"one\") as ?result) }";
 
-                    try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                    try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                         final ResultSet result = queryExecution.execSelect();
 
          
@@ -92,7 +112,7 @@ public class TestLeftPad {
         final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:leftPad(\"one\", 2, \"three\", \"four\") as ?result) }";
 
-                        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                             final ResultSet result = queryExecution.execSelect();
 
 
@@ -111,7 +131,7 @@ public class TestLeftPad {
         final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:leftPad(1, 2) as ?result) }";
 
-                            try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                            try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                                 final ResultSet result = queryExecution.execSelect();
 
 
@@ -130,7 +150,7 @@ public class TestLeftPad {
         final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:leftPad(\"one\", \"two\") as ?result) }";
 
-                                try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                                try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                                     final ResultSet result = queryExecution.execSelect();
 
 
@@ -149,7 +169,7 @@ public class TestLeftPad {
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:leftPad(\"one\", 2, 3) as ?result) }";
 
-                                    try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                                    try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                                         final ResultSet result = queryExecution.execSelect();
 
 

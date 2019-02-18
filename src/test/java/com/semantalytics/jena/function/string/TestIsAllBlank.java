@@ -1,14 +1,37 @@
 package com.semantalytics.jena.function.string;
 
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.sparql.function.FunctionRegistry;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
+import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.*;
 
 public class TestIsAllBlank {
+
+    private Model model;
+
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
+
+    @Before
+    public void setUp() {
+        FunctionRegistry.get().put(IsAllBlank.name, IsAllBlank.class);
+        model = ModelFactory.createDefaultModel();
+    }
+
+    @After
+    public void tearDown() {
+        model.close();
+    }
 
     @Test
     public void testTrue() {
@@ -16,7 +39,7 @@ public class TestIsAllBlank {
             final String query = "prefix string: <" + StringVocabulary.NAMESPACE + "> " +
                     "select ?result where { bind(string:isAllBlank(\"     \") AS ?result) }";
 
-        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             final ResultSet result = queryExecution.execSelect();
 
 
@@ -36,7 +59,7 @@ public class TestIsAllBlank {
         final String query = "prefix string: <" + StringVocabulary.NAMESPACE + "> " +
                 "select ?result where { bind(string:isAllBlank(\"        Stardog\") AS ?result) }";
 
-            try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+            try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                 final ResultSet result = queryExecution.execSelect();
 
 
@@ -57,7 +80,7 @@ public class TestIsAllBlank {
             final String query = "prefix string: <" + StringVocabulary.NAMESPACE + "> " +
                     "select ?result where { bind(string:isAllBlank(\"\") as ?result) }";
 
-                try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                     final ResultSet result = queryExecution.execSelect();
 
 
@@ -76,7 +99,7 @@ public class TestIsAllBlank {
             final String query = "prefix string: <" + StringVocabulary.NAMESPACE + "> " +
                     "select ?result where { bind(string:isAllBlank() as ?result) }";
 
-                    try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                    try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                         final ResultSet result = queryExecution.execSelect();
 
 
@@ -95,7 +118,7 @@ public class TestIsAllBlank {
             final String query = "prefix string: <" + StringVocabulary.NAMESPACE + "> " +
                     "select ?result where { bind(string:isAllBlank(\"one\", \"two\") as ?result) }";
 
-                        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                             final ResultSet result = queryExecution.execSelect();
 
 
@@ -114,7 +137,7 @@ public class TestIsAllBlank {
             final String query = "prefix string: <" + StringVocabulary.NAMESPACE + "> " +
                     "select ?result where { bind(string:isAllBlank(1) as ?result) }";
 
-                            try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                            try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                                 final ResultSet result = queryExecution.execSelect();
 
 

@@ -31,16 +31,20 @@ public final class Center extends FunctionBase {
         final String string = args.get(0).asString();
         final int size = args.get(1).getInteger().intValue();
 
+        final NodeValue result;
+
         switch(args.size()) {
             case 2:
-                return makeString(center(string, size));
+                result = makeString(center(string, size));
+                break;
             case 3:
                 char padChar = args.get(2).asString().charAt(0);
-                return makeString(center(string, size, padChar));
+                result = makeString(center(string, size, padChar));
+                break;
             default:
                 throw new ExprEvalException("Function requires 2 or 3 arguments. Found " + args.size());
         }
-
+        return result;
     }
 
     @Override

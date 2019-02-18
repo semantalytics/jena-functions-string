@@ -4,18 +4,38 @@ import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.sparql.function.FunctionRegistry;
 import org.junit.*;
+import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.*;
 
 public class TestCompareIgnoreCase {
+
+    private Model model;
+
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
+
+    @Before
+    public void setUp() {
+        FunctionRegistry.get().put(CompareIgnoreCase.name, CompareIgnoreCase.class);
+        model = ModelFactory.createDefaultModel();
+    }
+
+    @After
+    public void tearDown() {
+        model.close();
+    }
 
     @Test
     public void testEqual() {
 
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:compareIgnoreCase(\"Stardog\", \"stardog\") AS ?result) }";
-        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             final ResultSet result = queryExecution.execSelect();
 
             assertTrue("Should have a result", result.hasNext());
@@ -33,7 +53,7 @@ public class TestCompareIgnoreCase {
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:compareIgnoreCase(\"star\", \"dog\") AS ?result) }";
 
-        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             final ResultSet result = queryExecution.execSelect();
 
             assertTrue("Should have a result", result.hasNext());
@@ -50,7 +70,7 @@ public class TestCompareIgnoreCase {
 
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:compareIgnoreCase(\"dog\", \"star\") AS ?result) }";
-        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             final ResultSet result = queryExecution.execSelect();
 
 
@@ -68,7 +88,7 @@ public class TestCompareIgnoreCase {
 
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:compareIgnoreCase(\"\", \"\") as ?result) }";
-        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             final ResultSet result = queryExecution.execSelect();
 
 
@@ -86,7 +106,7 @@ public class TestCompareIgnoreCase {
 
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:compareIgnoreCase(\"one\") as ?result) }";
-        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             final ResultSet result = queryExecution.execSelect();
 
 
@@ -104,7 +124,7 @@ public class TestCompareIgnoreCase {
 
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:compareIgnoreCase(\"one\", \"two\", \"three\") as ?result) }";
-        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             final ResultSet result = queryExecution.execSelect();
 
 
@@ -122,7 +142,7 @@ public class TestCompareIgnoreCase {
 
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:compareIgnoreCase(1, \"two\") as ?result) }";
-        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             final ResultSet result = queryExecution.execSelect();
 
 
@@ -140,7 +160,7 @@ public class TestCompareIgnoreCase {
 
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:compareIgnoreCase(\"one\", 2) as ?result) }";
-        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             final ResultSet result = queryExecution.execSelect();
 
 

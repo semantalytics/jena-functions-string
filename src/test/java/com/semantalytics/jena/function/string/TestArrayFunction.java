@@ -4,18 +4,43 @@ import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.sparql.function.FunctionRegistry;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.*;
 
 public class TestArrayFunction {
+
+    private Model model;
+
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
+
+    @Before
+    public void setUp() {
+        FunctionRegistry.get().put(ArrayFunction.name, ArrayFunction.class);
+        model = ModelFactory.createDefaultModel();
+    }
+
+    @After
+    public void tearDown() {
+        model.close();
+    }
+
+
 
     @Test
     public void test() {
       
         final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:array(\"Stardog\", \"graph\", \"database\") AS ?result) }";
-        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             final ResultSet result = queryExecution.execSelect();
 
                 assertTrue("Should have a result", result.hasNext());
@@ -32,7 +57,7 @@ public class TestArrayFunction {
       
         final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:array(\"\", \"\") as ?result) }";
-            try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+            try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                 final ResultSet result = queryExecution.execSelect();
 
                 assertTrue("Should have a result", result.hasNext());
@@ -49,7 +74,7 @@ public class TestArrayFunction {
       
         final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:array() as ?result) }";
-                try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                     final ResultSet result = queryExecution.execSelect();
 
                 assertTrue("Should have a result", result.hasNext());
@@ -66,7 +91,7 @@ public class TestArrayFunction {
        
         final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:array(1, \"two\", \"three\") as ?result) }";
-                    try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                    try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                         final ResultSet result = queryExecution.execSelect();
 
                 assertTrue("Should have a result", result.hasNext());
@@ -83,7 +108,7 @@ public class TestArrayFunction {
      
         final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:array(\"one\", 2, \"three\") as ?result) }";
-                        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                             final ResultSet result = queryExecution.execSelect();
 
                 assertTrue("Should have a result", result.hasNext());
@@ -100,7 +125,7 @@ public class TestArrayFunction {
 
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:array(\"one\", \"two\", 3) as ?result) }";
-                            try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                            try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                                 final ResultSet result = queryExecution.execSelect();
 
             assertTrue("Should have a result", result.hasNext());

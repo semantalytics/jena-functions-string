@@ -20,7 +20,7 @@ public class TestArrayPropertyFunction {
         final String query = StringVocabulary.sparqlPrefix("string") +
                 " select * where { (?too ?many ?args) string:array (\"stardog\") }";
 
-        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             final ResultSet result = queryExecution.execSelect();
 
         try {
@@ -36,7 +36,7 @@ public class TestArrayPropertyFunction {
         final String query = StringVocabulary.sparqlPrefix("string") +
                 " select * where { (\"no literals allowed\") string:array (\"stardog\") }";
 
-            try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+            try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                 final ResultSet result = queryExecution.execSelect();
         try {
             fail("Should not have successfully executed");
@@ -49,7 +49,7 @@ public class TestArrayPropertyFunction {
     public void tooManyInputsThrowsError() {
         final String query = StringVocabulary.sparqlPrefix("string") +
                 " select * where { ?result string:array (\"stardog\" 5) }";
-                try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                     final ResultSet result = queryExecution.execSelect();
 
 
@@ -65,7 +65,7 @@ public class TestArrayPropertyFunction {
     public void argCannotBeANonnumericLiteral() {
         final String query = StringVocabulary.sparqlPrefix("string") +
                 " select * where { ?result string:array (5) }";
-                    try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                    try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                         final ResultSet result = queryExecution.execSelect();
 
 
@@ -80,7 +80,7 @@ public class TestArrayPropertyFunction {
     public void argCannotBeAnIRI() {
         final String query = StringVocabulary.sparqlPrefix("string") +
                 " select * where { ?result string:array (<http://example.com>) }";
-                        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                             final ResultSet result = queryExecution.execSelect();
 
 
@@ -95,7 +95,7 @@ public class TestArrayPropertyFunction {
     public void argCannotBeABNode() {
         final String query = StringVocabulary.sparqlPrefix("string") +
                 " select * where { ?result string:array (_:bnode) }";
-                            try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                            try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                                 final ResultSet result = queryExecution.execSelect();
 
             assertFalse("Should have no more results", result.hasNext());
@@ -106,7 +106,7 @@ public class TestArrayPropertyFunction {
     public void varInputWithNoResultsShouldProduceZeroResults() {
         final String query = StringVocabulary.sparqlPrefix("string") +
                 " select * where { ?result string:array (?input) }";
-                                try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                                try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                                     final ResultSet result = queryExecution.execSelect();
 
 
@@ -121,7 +121,7 @@ public class TestArrayPropertyFunction {
     public void simpleStringArray() {
         final String query = StringVocabulary.sparqlPrefix("string") +
                 " select * where { ?result string:array (\"star\u001fdog\") }";
-                                    try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                                    try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                                         final ResultSet result = queryExecution.execSelect();
 
 
@@ -136,7 +136,7 @@ public class TestArrayPropertyFunction {
     public void stringArrayWithIndex() {
         final String query = StringVocabulary.sparqlPrefix("string") +
                 " select * where { (?result ?idx) string:array (\"star\u001fdog\") }";
-                                        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                                        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                                             final ResultSet result = queryExecution.execSelect();
 
         QuerySolution aQuerySolution;
@@ -160,7 +160,7 @@ public class TestArrayPropertyFunction {
     public void repeatWithVarInput() {
         final String query = StringVocabulary.sparqlPrefix("string") +
                 " select * where { (?result ?idx) string:array (?in) . values ?in { \"star\u001fdog\u001fdatabase\"} }";
-                                            try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                                            try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                                                 final ResultSet result = queryExecution.execSelect();
 
         QuerySolution aQuerySolution;
@@ -191,7 +191,7 @@ public class TestArrayPropertyFunction {
         final String query = StringVocabulary.sparqlPrefix("string") +
             "select * where { (?result ?idx) string:array (\"star\u001fdog\") }";
 
-        Optional<PlanNode> result = PlanNodes.find(new QueryParserImpl().parseQuery(query, Namespaces.STARDOG).getNode(),
+        Optional<PlanNode> result = PlanNodes.find(new QueryParserImpl().parseQuery(query, model, Namespaces.STARDOG).getNode(),
                                                     PlanNodes.is(ArrayPropertyFunction.ArrayPlanNode.class));
 
         assertTrue(result.isPresent());
@@ -212,7 +212,7 @@ public class TestArrayPropertyFunction {
         final String query = StringVocabulary.sparqlPrefix("string") +
             "select * where { (?result ?idx) string:array (?in) . values ?in { \"star\u001fdog"} }";
 
-        Optional<PlanNode> result = PlanNodes.find(new QueryParserImpl().parseQuery(query, Namespaces.STARDOG).getNode(),
+        Optional<PlanNode> result = PlanNodes.find(new QueryParserImpl().parseQuery(query, model, Namespaces.STARDOG).getNode(),
                                                   PlanNodes.is(ArrayPropertyFunction.ArrayPlanNode.class));
 
         assertTrue(result.isPresent());
@@ -235,10 +235,10 @@ public class TestArrayPropertyFunction {
 
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select * where { (?result ?idx) string:array (\"star\u001fdog\") }";
-                                                try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                                                try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                                                     final ResultSet result = queryExecution.execSelect();
 
-        assertTrue(connection.select(query).explain().contains("StringArray("));
+        assertTrue(connection.select(query, model)).explain().contains("StringArray("));
     }
 
 */

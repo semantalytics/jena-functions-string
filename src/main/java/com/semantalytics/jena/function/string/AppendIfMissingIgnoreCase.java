@@ -32,9 +32,16 @@ public final class AppendIfMissingIgnoreCase extends FunctionBase {
       final String string = args.get(0).asString();
       final String suffix = args.get(1).asString();
 
-      final String[] suffixes = args.stream().skip(2).toArray(String[]::new);
-
-      return makeString(appendIfMissingIgnoreCase(string, suffix, suffixes));
+      final NodeValue result;
+      switch(args.size()) {
+          case 2:
+              result = makeString(appendIfMissingIgnoreCase(string, suffix));
+              break;
+          default:
+              final String[] suffixes = args.stream().skip(2).toArray(String[]::new);
+              result = makeString(appendIfMissingIgnoreCase(string, suffix, suffixes));
+        }
+        return result;
     }
 
     @Override

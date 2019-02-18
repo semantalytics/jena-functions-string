@@ -5,12 +5,17 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.sparql.function.FunctionRegistry;
 import org.junit.*;
+import org.junit.rules.ExpectedException;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.*;
 
 public class TestAbbreviateMiddle {
 
     private Model model;
+
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
 
     @Before
     public void setUp() {
@@ -26,10 +31,10 @@ public class TestAbbreviateMiddle {
     @Test
     public void testAbbreviateMiddle() {
 
-        final String queryString = StringVocabulary.sparqlPrefix("string") +
+        final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:abbreviateMiddle(\"Stardog graph database\", \"...\", 8) AS ?result) }";
 
-        try (QueryExecution queryExecution = QueryExecutionFactory.create(queryString, model)) {
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             final ResultSet result = queryExecution.execSelect();
 
             assertTrue("Should have a result", result.hasNext());
@@ -44,10 +49,10 @@ public class TestAbbreviateMiddle {
     @Test
     public void testEmptyString() {
 
-        final String queryString = StringVocabulary.sparqlPrefix("string") +
+        final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:abbreviateMiddle(\"\", \"\", 10) as ?result) }";
 
-        try (QueryExecution queryExecution = QueryExecutionFactory.create(queryString, model)) {
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             final ResultSet result = queryExecution.execSelect();
 
             assertTrue("Should have a result", result.hasNext());
@@ -61,11 +66,13 @@ public class TestAbbreviateMiddle {
 
     @Test
     public void testTooFewArgs() {
+        exception.expect(QueryBuildException.class);
+        exception.expectMessage(containsString("takes three arguments"));
 
-        final String queryString = StringVocabulary.sparqlPrefix("string") +
-                "select ?result where { bind(string:abbreviateMiddle(\"one\") as ?result) }";
+        final String query = StringVocabulary.sparqlPrefix("string") +
+                "select ?result where { bind(string:abbreviateMiddle(\"one\", \"two\") as ?result) }";
 
-        try (QueryExecution queryExecution = QueryExecutionFactory.create(queryString, model)) {
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             final ResultSet result = queryExecution.execSelect();
 
             assertTrue("Should have a result", result.hasNext());
@@ -79,10 +86,12 @@ public class TestAbbreviateMiddle {
 
     @Test
     public void testTooManyArgs() {
+        exception.expect(QueryBuildException.class);
+        exception.expectMessage(containsString("takes three arguments"));
 
-        final String queryString = StringVocabulary.sparqlPrefix("string") +
-                "select ?result where { bind(string:abbreviateMiddle(\"one\", 2, \"three\") as ?result) }";
-        try (QueryExecution queryExecution = QueryExecutionFactory.create(queryString, model)) {
+        final String query = StringVocabulary.sparqlPrefix("string") +
+                "select ?result where { bind(string:abbreviateMiddle(\"one\", \"two\", 3, \"four\") as ?result) }";
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             final ResultSet result = queryExecution.execSelect();
 
             assertTrue("Should have a result", result.hasNext());
@@ -95,12 +104,14 @@ public class TestAbbreviateMiddle {
     }
 
     @Test
-    public void testWrongTypeFirstArg() {
+    public void testWrongTypeFirstArgConstant() {
+        exception.expect(QueryBuildException.class);
+        exception.expectMessage(containsString("takes three arguments"));
 
-        final String queryString = StringVocabulary.sparqlPrefix("string") +
+        final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:abbreviateMiddle(4, 5) as ?result) }";
 
-        try (QueryExecution queryExecution = QueryExecutionFactory.create(queryString, model)) {
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             final ResultSet result = queryExecution.execSelect();
 
             assertTrue("Should have a result", result.hasNext());
@@ -113,12 +124,12 @@ public class TestAbbreviateMiddle {
     }
 
     @Test
-    public void testWrongTypeSecondArg() {
+    public void testWrongTypeFirstArgVariable() {
 
-        final String queryString = StringVocabulary.sparqlPrefix("string") +
-                "select ?result where { bind(string:abbreviateMiddle(\"one\", \"two\") as ?result) }";
+        final String query = StringVocabulary.sparqlPrefix("string") +
+                "select (string:abbreviateMiddle(?string, ?middle, ?length) as ?result) where { values(?string ?middle ?length) {( 1 \"two\" 8 ) }}";
 
-        try (QueryExecution queryExecution = QueryExecutionFactory.create(queryString, model)) {
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             final ResultSet result = queryExecution.execSelect();
 
             assertTrue("Should have a result", result.hasNext());
@@ -131,12 +142,70 @@ public class TestAbbreviateMiddle {
     }
 
     @Test
-    public void testLengthTooShort() {
+    public void testWrongTypeSecondArgConstant() {
+        exception.expect(QueryBuildException.class);
+        exception.expectMessage(containsString("second argument must be a string literal"));
 
-        final String queryString = StringVocabulary.sparqlPrefix("string") +
-                "select ?result where { bind(string:abbreviateMiddle(\"Stardog\", 3) as ?result) }";
+        final String query = StringVocabulary.sparqlPrefix("string") +
+                "select ?result where { bind(string:abbreviateMiddle(\"one\", 2, 8) as ?result) }";
 
-        try (QueryExecution queryExecution = QueryExecutionFactory.create(queryString, model)) {
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
+            final ResultSet result = queryExecution.execSelect();
+
+            assertTrue("Should have a result", result.hasNext());
+
+            final QuerySolution querySolution = result.next();
+
+            assertFalse("Should have no bindings", querySolution.varNames().hasNext());
+            assertFalse("Should have no more results", result.hasNext());
+        }
+    }
+
+    @Test
+    public void testWrongTypeSecondArgVariable() {
+
+        final String query = StringVocabulary.sparqlPrefix("string") +
+                "select (string:abbreviateMiddle(?string, ?middle, ?length) as ?result) where { values(?string ?middle ?length) {( \"one\" 2 8 ) }}";
+
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
+            final ResultSet result = queryExecution.execSelect();
+
+            assertTrue("Should have a result", result.hasNext());
+
+            final QuerySolution querySolution = result.next();
+
+            assertFalse("Should have no bindings", querySolution.varNames().hasNext());
+            assertFalse("Should have no more results", result.hasNext());
+        }
+    }
+
+    @Test
+    public void testWrongTypeThirdArgConstant() {
+        exception.expect(QueryBuildException.class);
+        exception.expectMessage(containsString("third argument must be a integer literal"));
+
+        final String query = StringVocabulary.sparqlPrefix("string") +
+                "select ?result where { bind(string:abbreviateMiddle(\"one\", \"two\", \"three\") as ?result) }";
+
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
+            final ResultSet result = queryExecution.execSelect();
+
+            assertTrue("Should have a result", result.hasNext());
+
+            final QuerySolution querySolution = result.next();
+
+            assertFalse("Should have no bindings", querySolution.varNames().hasNext());
+            assertFalse("Should have no more results", result.hasNext());
+        }
+    }
+
+    @Test
+    public void testWrongTypeThirdArgVariable() {
+
+        final String query = StringVocabulary.sparqlPrefix("string") +
+                "select (string:abbreviateMiddle(?string, ?middle, ?length) as ?result) where { values(?string ?middle ?length) {( \"one\" \"two\" \"three\" ) }}";
+
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             final ResultSet result = queryExecution.execSelect();
 
             assertTrue("Should have a result", result.hasNext());

@@ -1,5 +1,8 @@
 package com.semantalytics.jena.function.string;
 
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.sparql.function.FunctionRegistry;
 import org.junit.*;
 
 import static org.junit.Assert.*;
@@ -8,7 +11,25 @@ import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
+import org.junit.rules.ExpectedException;
+
 public class TestDefaultIfEmpty {
+
+    private Model model;
+
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
+
+    @Before
+    public void setUp() {
+        FunctionRegistry.get().put(DefaultIfEmpty.name, DefaultIfEmpty.class);
+        model = ModelFactory.createDefaultModel();
+    }
+
+    @After
+    public void tearDown() {
+        model.close();
+    }
 
     @Test
     public void testEmpty() {
@@ -16,7 +37,7 @@ public class TestDefaultIfEmpty {
        final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:defaultIfEmpty(\"\", \"Stardog\") AS ?result) }";
 
-        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             final ResultSet result = queryExecution.execSelect();
 
 
@@ -35,7 +56,7 @@ public class TestDefaultIfEmpty {
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:defaultIfEmpty(\"z\", \"Stardog\") AS ?result) }";
 
-            try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+            try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                 final ResultSet result = queryExecution.execSelect();
 
 
@@ -54,7 +75,7 @@ public class TestDefaultIfEmpty {
        final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:defaultIfEmpty(\" \", \"Stardog\") as ?result) }";
 
-                try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                     final ResultSet result = queryExecution.execSelect();
 
 
@@ -73,7 +94,7 @@ public class TestDefaultIfEmpty {
        final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:defaultIfEmpty(\"one\") as ?result) }";
 
-                    try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                    try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                         final ResultSet result = queryExecution.execSelect();
 
 
@@ -92,7 +113,7 @@ public class TestDefaultIfEmpty {
        final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:defaultIfEmpty(\"one\", \"two\", \"three\") as ?result) }";
 
-                        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                             final ResultSet result = queryExecution.execSelect();
 
 
@@ -111,7 +132,7 @@ public class TestDefaultIfEmpty {
        final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:defaultIfEmpty(\"one\", 2) as ?result) }";
 
-                            try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                            try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                                 final ResultSet result = queryExecution.execSelect();
 
 
@@ -130,7 +151,7 @@ public class TestDefaultIfEmpty {
        final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:defaultIfEmpty(\"one\", 2) as ?result) }";
 
-                                try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                                try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                                     final ResultSet result = queryExecution.execSelect();
 
 

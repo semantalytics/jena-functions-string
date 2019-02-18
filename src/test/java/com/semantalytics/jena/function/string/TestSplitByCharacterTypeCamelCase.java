@@ -1,14 +1,37 @@
 package com.semantalytics.jena.function.string;
 
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.sparql.function.FunctionRegistry;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
+import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.*;
 
 public class TestSplitByCharacterTypeCamelCase {
+
+    private Model model;
+
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
+
+    @Before
+    public void setUp() {
+        FunctionRegistry.get().put(SplitByCharacterTypeCamelCase.name, SplitByCharacterTypeCamelCase.class);
+        model = ModelFactory.createDefaultModel();
+    }
+
+    @After
+    public void tearDown() {
+        model.close();
+    }
 
     @Test
     public void test() {
@@ -16,7 +39,7 @@ public class TestSplitByCharacterTypeCamelCase {
         final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:splitByCharacterTypeCamelCase(\"Stardog8graph8Database\") AS ?result) }";
 
-        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             final ResultSet result = queryExecution.execSelect();
 
 
@@ -35,7 +58,7 @@ public class TestSplitByCharacterTypeCamelCase {
         final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:splitByCharacterTypeCamelCase(\"\") as ?result) }";
 
-            try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+            try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                 final ResultSet result = queryExecution.execSelect();
 
            
@@ -54,7 +77,7 @@ public class TestSplitByCharacterTypeCamelCase {
         final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:splitByCharacterTypeCamelCase() as ?result) }";
 
-                try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                     final ResultSet result = queryExecution.execSelect();
 
          
@@ -73,7 +96,7 @@ public class TestSplitByCharacterTypeCamelCase {
         final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:splitByCharacterTypeCamelCase(\"one\", \"two\") as ?result) }";
 
-                    try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                    try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                         final ResultSet result = queryExecution.execSelect();
 
 
@@ -92,7 +115,7 @@ public class TestSplitByCharacterTypeCamelCase {
         final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:splitByCharacterTypeCamelCase(1) as ?result) }";
 
-                        try (QueryExecution queryExecution = QueryExecutionFactory.create(query)) {
+                        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                             final ResultSet result = queryExecution.execSelect();
 
 
