@@ -75,14 +75,6 @@
         </dependency>
     </dependencies>
 
-    <repositories>
-        <repository>
-            <id>stardog-maven-repo</id>
-            <name>Stardog Maven Repo</name>
-            <url>http://maven.stardog.com</url>
-        </repository>
-    </repositories>
-
     <build>
         <plugins>
             <plugin>
