@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/semantalytics/stardog-kibbles.svg?branch=master)](https://travis-ci.org/semantalytics/stardog-kibbles)
+[![Build Status](https://travis-ci.org/semantalytics/jena-functions-string.svg?branch=master)](https://travis-ci.org/semantalytics/jena-functions-string)
 
 # Jena functions String
 
