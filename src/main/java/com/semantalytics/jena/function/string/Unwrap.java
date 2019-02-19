@@ -14,7 +14,7 @@ public final class Unwrap extends FunctionBase2 {
     public NodeValue exec(final NodeValue arg0, final NodeValue arg1) {
 
         final String string = arg0.asString();
-        final String wrapToken = arg0.asString();
+        final String wrapToken = arg1.asString();
 
         return makeString(unwrap(string, wrapToken));
     }

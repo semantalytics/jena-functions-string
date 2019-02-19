@@ -102,26 +102,6 @@ public class TestAppendIfMissingIgnoreCase {
     }
 
     @Test
-    public void testTooManyArgs() {
-        exception.expect(QueryBuildException.class);
-        exception.expectMessage("");
-
-        final String query = StringVocabulary.sparqlPrefix("string") +
-                "select ?abbreviation where { bind(string:appendIfMissingIgnoreCase(\"one\", \"two\", \"three\") as ?abbreviation) }";
-        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
-            final ResultSet result = queryExecution.execSelect();
-
-
-            assertTrue("Should have a result", result.hasNext());
-
-            final QuerySolution querySolution = result.next();
-
-            assertTrue("Should have no bindings", querySolution.varNames().hasNext());
-            assertFalse("Should have no more results", result.hasNext());
-        }
-    }
-
-    @Test
     public void testWrongTypeFirstArg() {
         exception.expect(QueryBuildException.class);
         exception.expectMessage("all arguments must be a string literal");

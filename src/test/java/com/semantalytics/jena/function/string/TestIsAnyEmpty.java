@@ -18,7 +18,7 @@ public class TestIsAnyEmpty {
 
     @Before
     public void setUp() {
-        FunctionRegistry.get().put(IsAnyBlank.name, IsAnyBlank.class);
+        FunctionRegistry.get().put(IsAnyEmpty.name, IsAnyEmpty.class);
         model = ModelFactory.createDefaultModel();
     }
 

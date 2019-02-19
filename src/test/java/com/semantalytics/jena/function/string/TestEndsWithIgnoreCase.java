@@ -31,7 +31,7 @@ public class TestEndsWithIgnoreCase {
     public void testTrue() {
 
         final String query = StringVocabulary.sparqlPrefix("string") +
-                "select ?result where { bind(string:endsWithIgnoreCase(\"Jena\", \"ena\") AS ?result) }";
+                "select ?result where { bind(string:endsWithIgnoreCase(\"Jena\", \"enA\") AS ?result) }";
 
         try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             final ResultSet result = queryExecution.execSelect();
@@ -50,7 +50,7 @@ public class TestEndsWithIgnoreCase {
     public void testFalse() {
 
         final String query = StringVocabulary.sparqlPrefix("string") +
-                "select ?result where { bind(string:endsWithIgnoreCase(\"Jena\", \"ema\") AS ?result) }";
+                "select ?result where { bind(string:endsWithIgnoreCase(\"Jena\", \"emA\") AS ?result) }";
 
             try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                 final ResultSet result = queryExecution.execSelect();

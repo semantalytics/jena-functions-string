@@ -31,10 +31,10 @@ public class TestTruncate {
     }
 
     @Test
-    public void testAbbreviateMiddle() {
+    public void testTruncate() {
    
        final String query = StringVocabulary.sparqlPrefix("string") +
-                    "select ?result where { bind(string:truncate(\"Stardog\", 3) AS ?result) }";
+                    "select ?result where { bind(string:truncate(\"Jena\", 3) AS ?result) }";
 
         try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             final ResultSet result = queryExecution.execSelect();
@@ -44,7 +44,7 @@ public class TestTruncate {
 
                 final String aValue = result.next().getLiteral("result").getString();
 
-                assertEquals("Sta", aValue);
+                assertEquals("Jen", aValue);
                 assertFalse("Should have no more results", result.hasNext());
             }
     }
@@ -129,6 +129,7 @@ public class TestTruncate {
 
     @Test
     public void testWrongTypeSecondArg() {
+        exception.expect(QueryBuildException.class);
        
        final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:truncate(\"one\", \"two\") as ?result) }";

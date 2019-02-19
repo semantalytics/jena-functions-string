@@ -29,108 +29,109 @@ public class TestCaseFormat {
 
     @Test
     public void testLowerCamelToUpperUnderscoreByExample() {
-       
+
         final String query = StringVocabulary.sparqlPrefix("string") +
-                    "select ?caseFormat where { bind(string:caseFormat(\"stardogUnion\", \"fromFormat\", \"TO_FORMAT\") as ?caseFormat) }";
+                "select ?caseFormat where { bind(string:caseFormat(\"stardogUnion\", \"fromFormat\", \"TO_FORMAT\") as ?caseFormat) }";
         try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             final ResultSet result = queryExecution.execSelect();
 
-                assertTrue("Should have a result", result.hasNext());
+            assertTrue("Should have a result", result.hasNext());
 
-                final String aValue = result.next().getLiteral("caseFormat").getString();
+            final String aValue = result.next().getLiteral("caseFormat").getString();
 
-                assertEquals("STARDOG_UNION", aValue);
-                assertFalse("Should have no more results", result.hasNext());
-            }
+            assertEquals("STARDOG_UNION", aValue);
+            assertFalse("Should have no more results", result.hasNext());
+        }
     }
 
     @Test
     public void testLowerCamelToLowerUnderscoreByExample() {
-     
+
         final String query = StringVocabulary.sparqlPrefix("string") +
-                    "select ?caseFormat where { bind(string:caseFormat(\"stardogUnion\", \"fromFormat\", \"to_format\") as ?caseFormat) }";
-            try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
-                final ResultSet result = queryExecution.execSelect();
+                "select ?caseFormat where { bind(string:caseFormat(\"stardogUnion\", \"fromFormat\", \"to_format\") as ?caseFormat) }";
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
+            final ResultSet result = queryExecution.execSelect();
 
 
-                assertTrue("Should have a result", result.hasNext());
+            assertTrue("Should have a result", result.hasNext());
 
-                final String aValue = result.next().getLiteral("caseFormat").getString();
+            final String aValue = result.next().getLiteral("caseFormat").getString();
 
-                assertEquals("stardog_union", aValue);
-                assertFalse("Should have no more results", result.hasNext());
-            }
+            assertEquals("stardog_union", aValue);
+            assertFalse("Should have no more results", result.hasNext());
+        }
     }
 
     @Test
     public void testLowerCamelToLowerHyphenByExample() {
-       
+
         final String query = StringVocabulary.sparqlPrefix("string") +
-                    "select ?caseFormat where { bind(string:caseFormat(\"stardogUnion\", \"fromFormat\", \"to-format\") as ?caseFormat) }";
-                try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
-                    final ResultSet result = queryExecution.execSelect();
+                "select ?caseFormat where { bind(string:caseFormat(\"apacheJena\", \"fromFormat\", \"to-format\") as ?caseFormat) }";
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
+            final ResultSet result = queryExecution.execSelect();
 
+            assertTrue("Should have a result", result.hasNext());
 
-                assertTrue("Should have a result", result.hasNext());
+            final String aValue = result.next().getLiteral("caseFormat").getString();
 
-                final String aValue = result.next().getLiteral("caseFormat").getString();
-
-                assertEquals("stardog-union", aValue);
-                assertFalse("Should have no more results", result.hasNext());
-            }
+            assertEquals("apache-jena", aValue);
+            assertFalse("Should have no more results", result.hasNext());
+        }
     }
 
     @Test
     public void testLowerCamelToUpperCamelByExample() {
-    
+
         final String query = StringVocabulary.sparqlPrefix("string") +
-                    "select ?caseFormat where { bind(string:caseFormat(\"stardogUnion\", \"fromFormat\", \"ToFormat\") as ?caseFormat) }";
-                    try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
-                        final ResultSet result = queryExecution.execSelect();
+                "select ?caseFormat where { bind(string:caseFormat(\"apacheJena\", \"fromFormat\", \"ToFormat\") as ?caseFormat) }";
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
+            final ResultSet result = queryExecution.execSelect();
 
 
-                assertTrue("Should have a result", result.hasNext());
+            assertTrue("Should have a result", result.hasNext());
 
-                final String aValue = result.next().getLiteral("caseFormat").getString();
+            final String aValue = result.next().getLiteral("caseFormat").getString();
 
-                assertEquals("StardogUnion", aValue);
-                assertFalse("Should have no more results", result.hasNext());
-            }
+            assertEquals("ApacheJena", aValue);
+            assertFalse("Should have no more results", result.hasNext());
+        }
     }
 
-    @Test(expected= QueryBuildException.class)
+    @Test
     public void testTooManyArgs() {
-      
+        exception.expect(QueryBuildException.class);
+
         final String query = StringVocabulary.sparqlPrefix("string") +
-                    "select ?caseFormat where { bind(string:caseFormat(\"one\", \"two\", \"three\", \"four\") as ?caseFormat) }";
-                        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
-                            final ResultSet result = queryExecution.execSelect();
+                "select ?caseFormat where { bind(string:caseFormat(\"one\", \"two\", \"three\", \"four\") as ?caseFormat) }";
 
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
+            final ResultSet result = queryExecution.execSelect();
 
-                assertTrue("Should have a result", result.hasNext());
+            assertTrue("Should have a result", result.hasNext());
 
-                final QuerySolution aQuerySolution = result.next();
+            final QuerySolution aQuerySolution = result.next();
 
-                assertTrue("Should have no bindings", aQuerySolution.varNames().hasNext());
-                assertFalse("Should have no more results", result.hasNext());
-            }
+            assertTrue("Should have no bindings", aQuerySolution.varNames().hasNext());
+            assertFalse("Should have no more results", result.hasNext());
+        }
     }
 
     @Test
     public void testWrongType() {
-    
+        exception.expect(QueryBuildException.class);
+
         final String query = StringVocabulary.sparqlPrefix("string") +
-                    "select ?caseFormat where { bind(string:caseFormat(7, 8, 9) as ?caseFormat) }";
-                            try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
-                                final ResultSet result = queryExecution.execSelect();
+                "select ?caseFormat where { bind(string:caseFormat(7, 8, 9) as ?caseFormat) }";
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
+            final ResultSet result = queryExecution.execSelect();
 
 
-                assertTrue("Should have a result", result.hasNext());
+            assertTrue("Should have a result", result.hasNext());
 
-                final QuerySolution aQuerySolution = result.next();
+            final QuerySolution aQuerySolution = result.next();
 
-                assertTrue("Should have no bindings", aQuerySolution.varNames().hasNext());
-                assertFalse("Should have no more results", result.hasNext());
-            }
+            assertTrue("Should have no bindings", aQuerySolution.varNames().hasNext());
+            assertFalse("Should have no more results", result.hasNext());
+        }
     }
 }

@@ -34,7 +34,7 @@ public class TestEqualsAny {
     public void testTrue() {
 
         final String query = StringVocabulary.sparqlPrefix("string") +
-                "select ?result where { bind(string:equalsAny(\"Stardog\", \"Stardog\", \"graph\", \"database\") AS ?result) }";
+                "select ?result where { bind(string:equalsAny(\"Apache\", \"Apache\", \"jena\", \"project\") AS ?result) }";
 
         try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             final ResultSet result = queryExecution.execSelect();
@@ -53,7 +53,7 @@ public class TestEqualsAny {
     public void testFalse() {
 
         final String query = StringVocabulary.sparqlPrefix("string") +
-                "select ?result where { bind(string:equalsAny(\"Stardog\", \"graph\", \"database\") as ?result) }";
+                "select ?result where { bind(string:equalsAny(\"Apache\", \"jena\", \"project\") as ?result) }";
 
         try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             final ResultSet result = queryExecution.execSelect();

@@ -29,147 +29,50 @@ public class TestWrapIfMissing {
 
     @Test
     public void testIfNoWrapping() {
-        
-       final String query = StringVocabulary.sparqlPrefix("string") +
-                    "select ?result where { bind(string:wrapIfMissing(\"Stardog\", \"*\") AS ?result) }";
+
+        final String query = StringVocabulary.sparqlPrefix("string") +
+                "select ?result where { bind(string:wrapIfMissing(\"Jena\", \"*\") AS ?result) }";
 
         try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             final ResultSet result = queryExecution.execSelect();
 
+            assertTrue("Should have a result", result.hasNext());
 
-                assertTrue("Should have a result", result.hasNext());
+            final String aValue = result.next().getLiteral("result").getString();
 
-                final String aValue = result.next().getLiteral("result").getString();
-
-                assertEquals("*Stardog*", aValue);
-                assertFalse("Should have no more results", result.hasNext());
-            }
+            assertEquals("*Jena*", aValue);
+            assertFalse("Should have no more results", result.hasNext());
+        }
     }
 
     @Test
     public void testIfWrapped() {
 
-       final String query = StringVocabulary.sparqlPrefix("string") +
-                    "select ?result where { bind(string:wrapIfMissing(\"*Stardog*\", \"*\") as ?result) }";
+        final String query = StringVocabulary.sparqlPrefix("string") +
+                "select ?result where { bind(string:wrapIfMissing(\"*Stardog*\", \"*\") as ?result) }";
 
-            try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
-                final ResultSet result = queryExecution.execSelect();
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
+            final ResultSet result = queryExecution.execSelect();
 
 
-                assertTrue("Should have a result", result.hasNext());
+            assertTrue("Should have a result", result.hasNext());
 
-                final String aValue = result.next().getLiteral("result").getString();
+            final String aValue = result.next().getLiteral("result").getString();
 
-                assertEquals("*Stardog*", aValue);
-                assertFalse("Should have no more results", result.hasNext());
-            }
+            assertEquals("*Stardog*", aValue);
+            assertFalse("Should have no more results", result.hasNext());
+        }
     }
 
     @Test
     public void testTooFewArgs() {
         exception.expect(QueryBuildException.class);
 
-       final String query = StringVocabulary.sparqlPrefix("string") +
-                    "select ?result where { bind(string:wrapIfMissing(\"one\") as ?result) }";
-
-                try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
-                    final ResultSet result = queryExecution.execSelect();
-
-
-                assertTrue("Should have a result", result.hasNext());
-
-                final QuerySolution aQuerySolution = result.next();
-
-                assertTrue("Should have no bindings", aQuerySolution.varNames().hasNext());
-                assertFalse("Should have no more results", result.hasNext());
-            }
-    }
-
-    @Test
-    public void testTooManyArgs() {
-        exception.expect(QueryBuildException.class);
-
-       final String query = StringVocabulary.sparqlPrefix("string") +
-                    "select ?result where { bind(string:wrapIfMissing(\"one\", \"two\", \"three\") as ?result) }";
-
-                    try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
-                        final ResultSet result = queryExecution.execSelect();
-
-
-                assertTrue("Should have a result", result.hasNext());
-
-                final QuerySolution aQuerySolution = result.next();
-
-                assertTrue("Should have no bindings", aQuerySolution.varNames().hasNext());
-                assertFalse("Should have no more results", result.hasNext());
-            }
-    }
-
-    @Test
-    public void testWrongTypeFirstArg() {
-        
-       final String query = StringVocabulary.sparqlPrefix("string") +
-                    "select ?result where { bind(string:wrapIfMissing(1, \"two\") as ?result) }";
-
-                        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
-                            final ResultSet result = queryExecution.execSelect();
-
-
-                assertTrue("Should have a result", result.hasNext());
-
-                final QuerySolution aQuerySolution = result.next();
-
-                assertTrue("Should have no bindings", aQuerySolution.varNames().hasNext());
-                assertFalse("Should have no more results", result.hasNext());
-            }
-    }
-
-    @Test
-    public void testWrongTypeSecondArg() {
-
-       final String query = StringVocabulary.sparqlPrefix("string") +
-                    "select ?result where { bind(string:wrapIfMissing(\"one\", 2) as ?result) }";
-
-                            try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
-                                final ResultSet result = queryExecution.execSelect();
-
-
-                assertTrue("Should have a result", result.hasNext());
-
-                final QuerySolution aQuerySolution = result.next();
-
-                assertTrue("Should have no bindings", aQuerySolution.varNames().hasNext());
-                assertFalse("Should have no more results", result.hasNext());
-            }
-    }
-
-    @Test
-    public void testMoreThanOneWrapChar() {
-      
-       final String query = StringVocabulary.sparqlPrefix("string") +
-                    "select ?result where { bind(string:wrapIfMissing(\"Stardog\", \"**\") as ?result) }";
-
-                                try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
-                                    final ResultSet result = queryExecution.execSelect();
-
-
-                assertTrue("Should have a result", result.hasNext());
-
-                final QuerySolution aQuerySolution = result.next();
-
-                assertTrue("Should have no bindings", aQuerySolution.varNames().hasNext());
-                assertFalse("Should have no more results", result.hasNext());
-            }
-    }
-
-    @Test
-    public void testMultiCharacterWrap() {
-
         final String query = StringVocabulary.sparqlPrefix("string") +
-                "select ?result where { bind(string:wrap(\"one\", \"**\") as ?result) }";
+                "select ?result where { bind(string:wrapIfMissing(\"one\") as ?result) }";
 
-                                    try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
-                                        final ResultSet result = queryExecution.execSelect();
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
+            final ResultSet result = queryExecution.execSelect();
 
 
             assertTrue("Should have a result", result.hasNext());
@@ -177,6 +80,84 @@ public class TestWrapIfMissing {
             final QuerySolution aQuerySolution = result.next();
 
             assertTrue("Should have no bindings", aQuerySolution.varNames().hasNext());
+            assertFalse("Should have no more results", result.hasNext());
+        }
+    }
+
+    @Test
+    public void testTooManyArgs() {
+        exception.expect(QueryBuildException.class);
+
+        final String query = StringVocabulary.sparqlPrefix("string") +
+                "select ?result where { bind(string:wrapIfMissing(\"one\", \"two\", \"three\") as ?result) }";
+
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
+            final ResultSet result = queryExecution.execSelect();
+
+
+            assertTrue("Should have a result", result.hasNext());
+
+            final QuerySolution aQuerySolution = result.next();
+
+            assertTrue("Should have no bindings", aQuerySolution.varNames().hasNext());
+            assertFalse("Should have no more results", result.hasNext());
+        }
+    }
+
+    @Test
+    public void testWrongTypeFirstArg() {
+        exception.expect(QueryBuildException.class);
+
+        final String query = StringVocabulary.sparqlPrefix("string") +
+                "select ?result where { bind(string:wrapIfMissing(1, \"two\") as ?result) }";
+
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
+            final ResultSet result = queryExecution.execSelect();
+
+
+            assertTrue("Should have a result", result.hasNext());
+
+            final QuerySolution aQuerySolution = result.next();
+
+            assertTrue("Should have no bindings", aQuerySolution.varNames().hasNext());
+            assertFalse("Should have no more results", result.hasNext());
+        }
+    }
+
+    @Test
+    public void testWrongTypeSecondArg() {
+        exception.expect(QueryBuildException.class);
+
+        final String query = StringVocabulary.sparqlPrefix("string") +
+                "select ?result where { bind(string:wrapIfMissing(\"one\", 2) as ?result) }";
+
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
+            final ResultSet result = queryExecution.execSelect();
+
+
+            assertTrue("Should have a result", result.hasNext());
+
+            final QuerySolution aQuerySolution = result.next();
+
+            assertTrue("Should have no bindings", aQuerySolution.varNames().hasNext());
+            assertFalse("Should have no more results", result.hasNext());
+        }
+    }
+
+    @Test
+    public void testMultiCharacterWrap() {
+
+        final String query = StringVocabulary.sparqlPrefix("string") +
+                "select ?result where { bind(string:wrap(\"Jena\", \"**\") as ?result) }";
+
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
+            final ResultSet result = queryExecution.execSelect();
+
+            assertTrue("Should have a result", result.hasNext());
+
+            final String value = result.next().getLiteral("result").getString();
+
+            assertEquals("**Jena**", value);
             assertFalse("Should have no more results", result.hasNext());
         }
     }

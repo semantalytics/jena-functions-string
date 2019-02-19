@@ -1,6 +1,9 @@
 package com.semantalytics.jena.function.string;
 
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.query.QueryBuildException;
 import org.apache.jena.sparql.expr.ExprEvalException;
+import org.apache.jena.sparql.expr.ExprList;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.function.FunctionBase3;
 import static org.apache.jena.ext.com.google.common.base.CaseFormat.*;
@@ -12,6 +15,13 @@ public final class CaseFormat extends FunctionBase3 {
 
     @Override
     public NodeValue exec(final NodeValue arg0, final NodeValue arg1, final NodeValue arg2) {
+
+        if(!arg0.isString())
+            throw new ExprEvalException(Lib.className(this) + " first argument must be a string literal");
+        if(!arg1.isString())
+            throw new ExprEvalException(Lib.className(this) + " second argument must be a string literal");
+        if(!arg2.isString())
+            throw new ExprEvalException(Lib.className(this) + " third argument must be a string literal");
 
         final String caseFormatString = arg0.asString();
         final org.apache.jena.ext.com.google.common.base.CaseFormat caseFormatFrom = getFormatType(arg1.asString());
@@ -46,8 +56,34 @@ public final class CaseFormat extends FunctionBase3 {
                 return LOWER_UNDERSCORE;
             case "TO_FORMAT":
                 return UPPER_UNDERSCORE;
+            case "fromFormat":
+                return LOWER_CAMEL;
+            case "FromFormat":
+                return UPPER_CAMEL;
+            case "from-format":
+                return LOWER_HYPHEN;
+            case "from_format":
+                return LOWER_UNDERSCORE;
+            case "FROM_FORMAT":
+                return UPPER_UNDERSCORE;
             default:
                 throw new ExprEvalException("Unrecognized format type " + formatString);
+        }
+    }
+
+    @Override
+    public void checkBuild(String uri, ExprList args) {
+        if(args.size() != 3) {
+            throw new QueryBuildException("Function '" + Lib.className(this) + "' takes three arguments") ;
+        }
+        if(args.get(0).isConstant() && !args.get(0).getConstant().isString()) {
+            throw new QueryBuildException("Function '" + Lib.className(this) + "' first argument must be a string literal") ;
+        }
+        if(args.get(1).isConstant() && !args.get(1).getConstant().isString()) {
+            throw new QueryBuildException("Function '" + Lib.className(this) + "' second argument must be a string literal") ;
+        }
+        if(args.get(2).isConstant() && !args.get(2).getConstant().isString()) {
+            throw new QueryBuildException("Function '" + Lib.className(this) + "' third argument must be a string literal") ;
         }
     }
 }

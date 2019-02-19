@@ -31,7 +31,7 @@ public class TestUncapitalize {
     public void test() {
        
        final String query = StringVocabulary.sparqlPrefix("string") +
-                    "select ?result where { bind(string:uncapitalize(\"Stardog\") AS ?result) }";
+                    "select ?result where { bind(string:uncapitalize(\"Jena\") AS ?result) }";
 
         try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             final ResultSet result = queryExecution.execSelect();
@@ -42,7 +42,7 @@ public class TestUncapitalize {
 
                 final String aValue = result.next().getLiteral("result").getString();
 
-                assertEquals("stardog", aValue);
+                assertEquals("jena", aValue);
                 assertFalse("Should have no more results", result.hasNext());
             }
         
@@ -112,29 +112,10 @@ public class TestUncapitalize {
     public void testWrongTypeFirstArg() {
       
        final String query = StringVocabulary.sparqlPrefix("string") +
-                    "select ?result where { bind(string:uncapitalize(1, \"two\") as ?result) }";
+                    "select ?result where { bind(string:uncapitalize(1) as ?result) }";
 
                         try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                             final ResultSet result = queryExecution.execSelect();
-
-
-                assertTrue("Should have a result", result.hasNext());
-
-                final QuerySolution aQuerySolution = result.next();
-
-                assertTrue("Should have no bindings", aQuerySolution.varNames().hasNext());
-                assertFalse("Should have no more results", result.hasNext());
-            }
-    }
-
-    @Test
-    public void testWrongTypeSecondArg() {
-        
-       final String query = StringVocabulary.sparqlPrefix("string") +
-                    "select ?result where { bind(string:uncapitalize(\"one\", 2) as ?result) }";
-
-                            try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
-                                final ResultSet result = queryExecution.execSelect();
 
 
                 assertTrue("Should have a result", result.hasNext());

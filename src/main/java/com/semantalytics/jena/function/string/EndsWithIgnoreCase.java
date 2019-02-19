@@ -14,7 +14,7 @@ public final class EndsWithIgnoreCase extends FunctionBase2 {
     public NodeValue exec(final NodeValue arg0, final NodeValue arg1) {
 
         final String string = arg0.asString();
-        final String suffix = arg0.asString();
+        final String suffix = arg1.asString();
 
         return makeBoolean(endsWithIgnoreCase(string, suffix));
     }
