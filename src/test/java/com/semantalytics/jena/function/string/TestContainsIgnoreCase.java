@@ -1,9 +1,6 @@
 package com.semantalytics.jena.function.string;
 
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.query.QuerySolution;
-import org.apache.jena.query.ResultSet;
+import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.sparql.function.FunctionRegistry;
@@ -86,6 +83,7 @@ public class TestContainsIgnoreCase {
 
     @Test
     public void testTooFewArgs() {
+        exception.expect(QueryBuildException.class);
 
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:containsIgnoreCase(\"one\") as ?result) }";
@@ -104,6 +102,7 @@ public class TestContainsIgnoreCase {
 
     @Test
     public void testTooManyArgs() {
+        exception.expect(QueryBuildException.class);
 
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:containsIgnoreCase(\"one\", \"two\", \"three\") as ?result) }";

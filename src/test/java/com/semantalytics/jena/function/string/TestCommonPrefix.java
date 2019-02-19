@@ -65,6 +65,7 @@ public class TestCommonPrefix {
 
     @Test
     public void testTooFewArgs() {
+        exception.expect(QueryBuildException.class);
 
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:commonPrefix(\"one\") as ?result) }";

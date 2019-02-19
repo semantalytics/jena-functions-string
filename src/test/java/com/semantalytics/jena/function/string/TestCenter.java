@@ -83,6 +83,7 @@ public class TestCenter {
 
     @Test
     public void testTooFewArgs() {
+        exception.expect(QueryBuildException.class);
 
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?abbreviation where { bind(string:center(\"one\") as ?abbreviation) }";
@@ -148,7 +149,7 @@ public class TestCenter {
 
             final QuerySolution aQuerySolution = result.next();
 
-            assertTrue("Should have no bindings", aQuerySolution.varNames().hasNext());
+            assertFalse("Should have no bindings", aQuerySolution.varNames().hasNext());
             assertFalse("Should have no more results", result.hasNext());
         }
     }

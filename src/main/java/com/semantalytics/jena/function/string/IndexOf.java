@@ -12,6 +12,9 @@ import org.apache.jena.sparql.function.FunctionBase;
 
 import java.util.List;
 
+import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.jena.sparql.expr.NodeValue.*;
+
 public class IndexOf extends FunctionBase {
 
     public static final String name = StringVocabulary.indexOf.stringValue();
@@ -32,12 +35,12 @@ public class IndexOf extends FunctionBase {
 
         switch(args.size()) {
             case 2: {
-                return NodeValue.makeInteger(StringUtils.indexOf(sequence, searchSequence));
+                return makeInteger(indexOf(sequence, searchSequence));
             }
             case 3: {
                 final int startPosition = args.get(2).getInteger().intValue();
 
-                return NodeValue.makeInteger(StringUtils.indexOf(sequence, searchSequence, startPosition));
+                return makeInteger(indexOf(sequence, searchSequence, startPosition));
             }
             default: {
                 throw new ExprEvalException("Expected 2 or 3 args. Found " + args.size());

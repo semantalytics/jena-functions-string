@@ -7,7 +7,6 @@ import org.apache.jena.sparql.function.FunctionRegistry;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
 
-import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.*;
 
 public class TestAbbreviateWithMarker {
@@ -86,7 +85,7 @@ public class TestAbbreviateWithMarker {
     @Test
     public void testTooFewArgs() {
         exception.expect(QueryBuildException.class);
-        exception.expectMessage(containsString("takes three or four arguments"));
+        exception.expectMessage("takes three or four arguments");
 
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?abbreviation where { bind(string:abbreviateWithMarker(\"one\") as ?abbreviation) }";
@@ -107,7 +106,7 @@ public class TestAbbreviateWithMarker {
     @Test
     public void testTooManyArgs() {
         exception.expect(QueryBuildException.class);
-        exception.expectMessage(containsString("takes three or four arguments"));
+        exception.expectMessage("takes three or four arguments");
 
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?abbreviation where { bind(string:abbreviateWithMarker(\"one\", \"two\", 3, 4, 5) as ?abbreviation) }";
@@ -127,7 +126,7 @@ public class TestAbbreviateWithMarker {
     @Test
     public void testWrongTypeFirstArgConstant() {
         exception.expect(QueryBuildException.class);
-        exception.expectMessage(containsString("first argument must be a string literal"));
+        exception.expectMessage("first argument must be a string literal");
 
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?abbreviation where { bind(string:abbreviateWithMarker(1, \"two\", 3) as ?abbreviation) }";
@@ -147,7 +146,7 @@ public class TestAbbreviateWithMarker {
     @Test
     public void testWrongTypeSecondArg() {
         exception.expect(QueryBuildException.class);
-        exception.expectMessage(containsString("second argument must be a string literal"));
+        exception.expectMessage("second argument must be a string literal");
 
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?abbreviation where { bind(string:abbreviateWithMarker(\"one\", 2, 3, 4) as ?abbreviation) }";

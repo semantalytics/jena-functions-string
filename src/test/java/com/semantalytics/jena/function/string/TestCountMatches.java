@@ -1,14 +1,11 @@
 package com.semantalytics.jena.function.string;
 
+import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.sparql.function.FunctionRegistry;
 import org.junit.*;
 
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.query.QuerySolution;
-import org.apache.jena.query.ResultSet;
 import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.*;
@@ -90,6 +87,7 @@ public class TestCountMatches {
 
     @Test
     public void testTooFewArgs() {
+        exception.expect(QueryBuildException.class);
 
        final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:countMatches(\"one\") as ?result) }";
@@ -109,6 +107,7 @@ public class TestCountMatches {
 
     @Test
     public void testTooManyArgs() {
+        exception.expect(QueryBuildException.class);
 
        final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:countMatches(\"one\", \"two\", \"three\") as ?result) }";

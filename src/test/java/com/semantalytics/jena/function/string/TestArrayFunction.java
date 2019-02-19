@@ -1,9 +1,6 @@
 package com.semantalytics.jena.function.string;
 
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.query.QuerySolution;
-import org.apache.jena.query.ResultSet;
+import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.sparql.function.FunctionRegistry;
@@ -71,6 +68,8 @@ public class TestArrayFunction {
 
     @Test
     public void testTooFewArgs() {
+        exception.expect(QueryBuildException.class);
+        exception.expectMessage("takes at least one argument");
       
         final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:array() as ?result) }";

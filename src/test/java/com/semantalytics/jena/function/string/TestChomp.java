@@ -67,6 +67,7 @@ public class TestChomp {
 
     @Test
     public void testTooFewArgs() {
+        exception.expect(QueryBuildException.class);
 
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:chomp() as ?result) }";
@@ -116,7 +117,7 @@ public class TestChomp {
 
             final QuerySolution aQuerySolution = result.next();
 
-            assertTrue("Should have no bindings", aQuerySolution.varNames().hasNext());
+            assertFalse("Should have no bindings", aQuerySolution.varNames().hasNext());
             assertFalse("Should have no more results", result.hasNext());
         }
     }

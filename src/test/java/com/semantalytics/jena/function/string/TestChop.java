@@ -67,6 +67,7 @@ public class TestChop {
 
     @Test
     public void testTooFewArgs() {
+        exception.expect(QueryBuildException.class);
 
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:chop() as ?result) }";

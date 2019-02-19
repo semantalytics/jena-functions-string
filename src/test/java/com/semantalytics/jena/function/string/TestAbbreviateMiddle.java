@@ -7,7 +7,6 @@ import org.apache.jena.sparql.function.FunctionRegistry;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
 
-import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.*;
 
 public class TestAbbreviateMiddle {
@@ -67,7 +66,7 @@ public class TestAbbreviateMiddle {
     @Test
     public void testTooFewArgs() {
         exception.expect(QueryBuildException.class);
-        exception.expectMessage(containsString("takes three arguments"));
+        exception.expectMessage("takes three arguments");
 
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:abbreviateMiddle(\"one\", \"two\") as ?result) }";
@@ -87,7 +86,7 @@ public class TestAbbreviateMiddle {
     @Test
     public void testTooManyArgs() {
         exception.expect(QueryBuildException.class);
-        exception.expectMessage(containsString("takes three arguments"));
+        exception.expectMessage("takes three arguments");
 
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:abbreviateMiddle(\"one\", \"two\", 3, \"four\") as ?result) }";
@@ -106,7 +105,7 @@ public class TestAbbreviateMiddle {
     @Test
     public void testWrongTypeFirstArgConstant() {
         exception.expect(QueryBuildException.class);
-        exception.expectMessage(containsString("takes three arguments"));
+        exception.expectMessage("takes three arguments");
 
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:abbreviateMiddle(4, 5) as ?result) }";
@@ -144,7 +143,7 @@ public class TestAbbreviateMiddle {
     @Test
     public void testWrongTypeSecondArgConstant() {
         exception.expect(QueryBuildException.class);
-        exception.expectMessage(containsString("second argument must be a string literal"));
+        exception.expectMessage("second argument must be a string literal");
 
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:abbreviateMiddle(\"one\", 2, 8) as ?result) }";
@@ -182,7 +181,7 @@ public class TestAbbreviateMiddle {
     @Test
     public void testWrongTypeThirdArgConstant() {
         exception.expect(QueryBuildException.class);
-        exception.expectMessage(containsString("third argument must be a integer literal"));
+        exception.expectMessage("third argument must be a integer literal");
 
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:abbreviateMiddle(\"one\", \"two\", \"three\") as ?result) }";

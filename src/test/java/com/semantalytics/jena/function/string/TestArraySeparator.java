@@ -12,7 +12,7 @@ import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.*;
 
-public class TestArrayFunctionSeparator {
+public class TestArraySeparator {
 
     private Model model;
 
@@ -21,7 +21,7 @@ public class TestArrayFunctionSeparator {
 
     @Before
     public void setUp() {
-        FunctionRegistry.get().put(Abbreviate.name, Abbreviate.class);
+        FunctionRegistry.get().put(ArraySeparator.name, ArraySeparator.class);
         model = ModelFactory.createDefaultModel();
     }
 
@@ -48,8 +48,9 @@ public class TestArrayFunctionSeparator {
             }
     }
 
-    @Test(expected= QueryBuildException.class)
+    @Test
     public void testTooManyArgs() {
+        exception.expect(QueryBuildException.class);
 
         final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:abbreviate(\"one\") as ?result) }";

@@ -1,9 +1,6 @@
 package com.semantalytics.jena.function.string;
 
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.query.QuerySolution;
-import org.apache.jena.query.ResultSet;
+import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.sparql.function.FunctionRegistry;
@@ -34,7 +31,7 @@ public class TestContainsWhitespace {
     public void testTrue() {
 
         final String query = StringVocabulary.sparqlPrefix("string") +
-                "select ?result where { bind(string:containsWhitespace(\"Stardog graph database\") AS ?result) }";
+                "select ?result where { bind(string:containsWhitespace(\"apache jena\") AS ?result) }";
 
         try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             final ResultSet result = queryExecution.execSelect();
@@ -53,7 +50,7 @@ public class TestContainsWhitespace {
     public void testFalse() {
 
         final String query = StringVocabulary.sparqlPrefix("string") +
-                "select ?result where { bind(string:containsWhitespace(\"Stardog\") AS ?result) }";
+                "select ?result where { bind(string:containsWhitespace(\"Jena\") AS ?result) }";
 
         try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             final ResultSet result = queryExecution.execSelect();
@@ -89,13 +86,13 @@ public class TestContainsWhitespace {
 
     @Test
     public void testTooFewArgs() {
+        exception.expect(QueryBuildException.class);
 
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:containsWhitespace() as ?result) }";
 
         try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             final ResultSet result = queryExecution.execSelect();
-
 
             assertTrue("Should have a result", result.hasNext());
 
@@ -108,13 +105,13 @@ public class TestContainsWhitespace {
 
     @Test
     public void testTooManyArgs() {
+        exception.expect(QueryBuildException.class);
 
         final String query = StringVocabulary.sparqlPrefix("string") +
-                "select ?result where { bind(string:containsWhitespace(\"one\", \"two\", \"three\") as ?result) }";
+                "select ?result where { bind(string:containsWhitespace(\"one\", \"two\") as ?result) }";
 
         try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             final ResultSet result = queryExecution.execSelect();
-
 
             assertTrue("Should have a result", result.hasNext());
 
@@ -129,26 +126,7 @@ public class TestContainsWhitespace {
     public void testWrongTypeFirstArg() {
 
         final String query = StringVocabulary.sparqlPrefix("string") +
-                "select ?result where { bind(string:containsWhitespace(1, \"two\") as ?result) }";
-
-        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
-            final ResultSet result = queryExecution.execSelect();
-
-
-            assertTrue("Should have a result", result.hasNext());
-
-            final QuerySolution aQuerySolution = result.next();
-
-            assertTrue("Should have no bindings", aQuerySolution.varNames().hasNext());
-            assertFalse("Should have no more results", result.hasNext());
-        }
-    }
-
-    @Test
-    public void testWrongTypeSecondArg() {
-
-        final String query = StringVocabulary.sparqlPrefix("string") +
-                "select ?result where { bind(string:containsWhitespace(\"one\", 2) as ?result) }";
+                "select ?result where { bind(string:containsWhitespace(1) as ?result) }";
 
         try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             final ResultSet result = queryExecution.execSelect();

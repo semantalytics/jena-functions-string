@@ -21,13 +21,12 @@ public final class EqualsAny extends FunctionBase {
     @Override
     public NodeValue exec(List<NodeValue> args) {
 
-
         if ( args == null )
             // The contract on the function interface is that this should not happen.
             throw new ARQInternalErrorException(Lib.className(this) + ": Null args list") ;
 
         if (!Range.atLeast(2).contains(args.size()))
-            throw new ExprEvalException(Lib.className(this)+": Wrong number of arguments: Wanted 3, got "+args.size()) ;
+            throw new ExprEvalException(Lib.className(this) + ": Wrong number of arguments: Wanted 3, got " + args.size()) ;
 
         final String string = args.get(0).asString();
         final String[] searchStrings = args.stream().skip(1).toArray(String[]::new);

@@ -28,25 +28,29 @@ public final class Initials extends FunctionBase {
         if (!Range.closed(1, 2).contains(args.size()))
             throw new ExprEvalException(Lib.className(this)+": Wrong number of arguments: Wanted 1 or 2, got " + args.size()) ;
 
-
         final String string = args.get(0).asString();
+
+        final NodeValue result;
 
         switch (args.size()) {
             case 1:
-                return makeString(initials(string));
+                result =  makeString(initials(string));
+                break;
             case 2: {
                 final String delimiters = args.get(1).asString();
-                return makeString(initials(string, delimiters.toCharArray()));
+                result = makeString(initials(string, delimiters.toCharArray()));
+                break;
             }
             default:
                 throw new ExprEvalException("Incorrect number of parameters. Valid values are 1 or 2. Found " + args.size());
         }
+        return result;
     }
 
     @Override
     public void checkBuild(String uri, ExprList args) {
-        if(!Range.closed(2, 3).contains(args.size())) {
-            throw new QueryBuildException("Function '" + Lib.className(this) + "' takes two or three arguments") ;
+        if(!Range.closed(1, 2).contains(args.size())) {
+            throw new QueryBuildException("Function '" + Lib.className(this) + "' takes one or two arguments") ;
         }
     }
 }

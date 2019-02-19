@@ -101,6 +101,8 @@ public class TestCapitalize {
 
     @Test
     public void testTooFewArgs() {
+        exception.expect(QueryBuildException.class);
+        exception.expectMessage("takes two or three arguments");
 
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:capitalize() as ?result) }";
@@ -137,6 +139,7 @@ public class TestCapitalize {
 
     @Test
     public void testArgumentWrongType() {
+        exception.expect(QueryBuildException.class);
 
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:capitalize(1) as ?result) }";

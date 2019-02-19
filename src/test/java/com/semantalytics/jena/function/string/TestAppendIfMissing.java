@@ -7,7 +7,6 @@ import org.apache.jena.sparql.function.FunctionRegistry;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
 
-import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.*;
 
 public class TestAppendIfMissing {
@@ -67,7 +66,7 @@ public class TestAppendIfMissing {
     @Test
     public void testTooFewArgs() {
         exception.expect(QueryBuildException.class);
-        exception.expectMessage(containsString("takes two or more arguments"));
+        exception.expectMessage("takes two or more arguments");
 
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:appendIfMissing(\"one\") as ?result) }";
@@ -88,7 +87,7 @@ public class TestAppendIfMissing {
     @Test
     public void testWrongTypeFirstArg() {
         exception.expect(QueryBuildException.class);
-        exception.expectMessage(containsString("all arguments must be a string literal"));
+        exception.expectMessage("all arguments must be a string literal");
 
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:appendIfMissing(1, \"two\") as ?result) }";
@@ -109,7 +108,7 @@ public class TestAppendIfMissing {
     @Test
     public void testWrongTypeSecondArg() {
         exception.expect(QueryBuildException.class);
-        exception.expectMessage(containsString("all arguments must be a string literal"));
+        exception.expectMessage("all arguments must be a string literal");
 
 
         final String query = StringVocabulary.sparqlPrefix("string") +

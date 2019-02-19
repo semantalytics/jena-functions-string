@@ -3,15 +3,15 @@ package com.semantalytics.jena.function.string;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.function.FunctionRegistry;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
 
-import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.*;
 
-public class TestAbbreviate {
+public class
+
+TestAbbreviate {
 
     private Model model;
 
@@ -86,7 +86,7 @@ public class TestAbbreviate {
     @Test
     public void testTooFewArgs() {
         exception.expect(QueryBuildException.class);
-        exception.expectMessage(containsString("takes two or three arguments"));
+        exception.expectMessage("takes two or three arguments");
 
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:abbreviate(\"one\") as ?result) }";
@@ -106,7 +106,7 @@ public class TestAbbreviate {
     @Test
     public void testTooManyArgs() {
         exception.expect(QueryBuildException.class);
-        exception.expectMessage(containsString("takes two or three arguments"));
+        exception.expectMessage("takes two or three arguments");
 
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:abbreviate(\"one\", 9, 3, \"four\") as ?result) }";
@@ -126,7 +126,7 @@ public class TestAbbreviate {
     @Test
     public void testWrongTypeFirstArgConstant() {
         exception.expect(QueryBuildException.class);
-        exception.expectMessage(containsString("first argument must be a string literal"));
+        exception.expectMessage("first argument must be a string literal");
 
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:abbreviate(4, 5) as ?result) }";
@@ -164,7 +164,7 @@ public class TestAbbreviate {
     @Test
     public void testWrongTypeSecondArgConstant() {
         exception.expect(QueryBuildException.class);
-        exception.expectMessage(containsString("second argument must be a integer literal"));
+        exception.expectMessage("second argument must be a integer literal");
 
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:abbreviate(\"one\", \"two\") as ?result) }";
@@ -202,7 +202,7 @@ public class TestAbbreviate {
     @Test
     public void testWrongTypeThirdArgConstant() {
         exception.expect(QueryBuildException.class);
-        exception.expectMessage(containsString("third argument must be a integer literal"));
+        exception.expectMessage("third argument must be a integer literal");
 
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:abbreviate(\"one\", 9, \"three\") as ?result) }";
