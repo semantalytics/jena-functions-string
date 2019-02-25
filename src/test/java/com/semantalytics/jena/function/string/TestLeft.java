@@ -126,7 +126,8 @@ public class TestLeft {
 
     @Test
     public void testWrongTypeSecondArg() {
-     
+        exception.expect(QueryBuildException.class);
+
         final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:left(\"one\", \"two\") as ?result) }";
 

@@ -107,7 +107,8 @@ public class TestRepeat {
 
     @Test
     public void testWrongTypeFirstArg() {
-      
+        exception.expect(QueryBuildException.class);
+
        final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:repeat(1, 2) as ?result) }";
 
@@ -126,6 +127,7 @@ public class TestRepeat {
 
     @Test
     public void testWrongTypeSecondArg() {
+        exception.expect(QueryBuildException.class);
 
        final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:repeat(\"one\", \"two\") as ?result) }";

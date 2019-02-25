@@ -164,6 +164,7 @@ public class TestLastIndexOfIgnoreCase {
 
     @Test
     public void testWrongTypeThirdArg() {
+        exception.expect(QueryBuildException.class);
 
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:lastIndexOfIgnoreCase(\"one\", \"two\", \"three\") as ?result) }";

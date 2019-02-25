@@ -145,7 +145,8 @@ public class TestLeftPad {
 
     @Test
     public void testWrongTypeSecondArg() {
-     
+        exception.expect(QueryBuildException.class);
+
         final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:leftPad(\"one\", \"two\") as ?result) }";
 
@@ -164,6 +165,7 @@ public class TestLeftPad {
 
     @Test
     public void testWrongTypeThirdArg() {
+        exception.expect(QueryBuildException.class);
 
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:leftPad(\"one\", 2, 3) as ?result) }";

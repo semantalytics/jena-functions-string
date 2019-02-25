@@ -36,7 +36,6 @@ public class TestLastIndexOf {
         try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             final ResultSet result = queryExecution.execSelect();
 
-
             assertTrue("Should have a result", result.hasNext());
 
             final int aValue = Integer.parseInt(result.next().getLiteral("result").getString());

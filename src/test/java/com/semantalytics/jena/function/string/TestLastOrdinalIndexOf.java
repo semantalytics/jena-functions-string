@@ -145,6 +145,7 @@ public class TestLastOrdinalIndexOf {
 
     @Test
     public void testWrongTypeThirdArg() {
+        exception.expect(QueryBuildException.class);
 
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:lastOrdinalIndexOf(\"one\", \"two\", \"three\") as ?result) }";

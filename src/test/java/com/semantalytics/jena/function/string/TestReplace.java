@@ -107,7 +107,8 @@ public class TestReplace {
 
     @Test
     public void testWrongTypeFirstArg() {
-       
+        exception.expect(QueryBuildException.class);
+
         final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:replace(1, \"two\") as ?result) }";
 
@@ -126,7 +127,8 @@ public class TestReplace {
 
     @Test
     public void testWrongTypeSecondArg() {
-     
+        exception.expect(QueryBuildException.class);
+
         final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:replace(\"one\", 2) as ?result) }";
 
@@ -145,6 +147,7 @@ public class TestReplace {
 
     @Test
     public void testWrongTypeThirdArg() {
+        exception.expect(QueryBuildException.class);
 
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:replace(\"one\", \"two\", 3) as ?result) }";

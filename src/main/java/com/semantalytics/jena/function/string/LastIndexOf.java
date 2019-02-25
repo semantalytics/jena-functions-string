@@ -54,7 +54,7 @@ public final class LastIndexOf extends FunctionBase {
         if(args.get(1).isConstant() && !args.get(1).getConstant().isString()) {
             throw new QueryBuildException("Function '" + Lib.className(this) + "' second argument must be a string literal") ;
         }
-        if(args.get(2).isConstant() && !args.get(2).getConstant().isInteger()) {
+        if(args.size() == 3 && args.get(2).isConstant() && !args.get(2).getConstant().isInteger()) {
             throw new QueryBuildException("Function '" + Lib.className(this) + "' third argument must be a integer literal") ;
         }
     }

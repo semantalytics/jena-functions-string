@@ -108,7 +108,8 @@ public class TestPrependIfMissing {
 
     @Test
     public void testWrongTypeFirstArg() {
-    
+        exception.expect(QueryBuildException.class);
+
        final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:prependIfMissing(1) as ?result) }";
 
@@ -127,7 +128,8 @@ public class TestPrependIfMissing {
 
     @Test
     public void testWrongTypeSecondArg() {
-     
+        exception.expect(QueryBuildException.class);
+
        final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:prependIfMissing(\"one\", 2) as ?result) }";
 

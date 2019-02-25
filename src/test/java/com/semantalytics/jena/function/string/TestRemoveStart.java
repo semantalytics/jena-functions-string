@@ -107,7 +107,8 @@ public class TestRemoveStart {
 
     @Test
     public void testWrongTypeFirstArg() {
-       
+        exception.expect(QueryBuildException.class);
+
         final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:removeStart() as ?result) }";
 
@@ -126,7 +127,8 @@ public class TestRemoveStart {
 
     @Test
     public void testWrongTypeSecondArg() {
-     
+        exception.expect(QueryBuildException.class);
+
         final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:removeStart(\"one\", 2) as ?result) }";
 
@@ -145,7 +147,8 @@ public class TestRemoveStart {
 
     @Test
     public void testLengthTooShort() {
-     
+        exception.expect(QueryBuildException.class);
+
         final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:removeStart(\"Stardog\", 3) as ?result) }";
 

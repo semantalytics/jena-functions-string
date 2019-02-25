@@ -109,7 +109,8 @@ public class TestRotate {
 
     @Test
     public void testWrongTypeFirstArg() {
-      
+        exception.expect(QueryBuildException.class);
+
        final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:rotate(1, 2) as ?result) }";
 
@@ -128,7 +129,8 @@ public class TestRotate {
 
     @Test
     public void testWrongTypeSecondArg() {
-        
+        exception.expect(QueryBuildException.class);
+
        final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:rotate(\"one\", \"two\") as ?result) }";
 

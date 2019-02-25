@@ -145,6 +145,7 @@ public class TestIndexOf {
 
     @Test
     public void testWrongTypeThirdArg() {
+        exception.expect(QueryBuildException.class);
 
         final String query = "prefix string: <" + StringVocabulary.NAMESPACE + "> " +
                 "select ?result where { bind(string:indexOf(\"one\", \"two\", \"three\") as ?result) }";

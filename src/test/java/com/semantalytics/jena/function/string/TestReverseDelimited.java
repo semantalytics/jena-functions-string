@@ -107,7 +107,8 @@ public class TestReverseDelimited {
 
     @Test
     public void testWrongTypeFirstArg() {
-       
+        exception.expect(QueryBuildException.class);
+
        final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:reverseDelimited(1, \"two\") as ?result) }";
 
@@ -126,7 +127,8 @@ public class TestReverseDelimited {
 
     @Test
     public void testWrongTypeSecondArg() {
-       
+        exception.expect(QueryBuildException.class);
+
        final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:reverseDelimited(\"one\", 2) as ?result) }";
 
@@ -145,7 +147,8 @@ public class TestReverseDelimited {
 
     @Test
     public void testSecondArgNotSingleChar() {
-       
+        exception.expect(QueryBuildException.class);
+
        final String query = StringVocabulary.sparqlPrefix("string") +
                     "select ?result where { bind(string:reverseDelimited(\"Stardog\", \"xx\") as ?result) }";
 
