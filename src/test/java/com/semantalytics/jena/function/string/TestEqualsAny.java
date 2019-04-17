@@ -3,6 +3,7 @@ package com.semantalytics.jena.function.string;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.function.FunctionRegistry;
 import org.junit.After;
 import org.junit.Before;
@@ -108,6 +109,7 @@ public class TestEqualsAny {
 
     @Test
     public void testWrongTypeSecondArg() {
+        exception.expect(QueryBuildException.class);
 
         final String query = StringVocabulary.sparqlPrefix("string") +
                 "select ?result where { bind(string:equalsAny(\"one\", 2) as ?result) }";
