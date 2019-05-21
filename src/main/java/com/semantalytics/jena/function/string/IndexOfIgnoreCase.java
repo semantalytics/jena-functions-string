@@ -1,7 +1,5 @@
 package com.semantalytics.jena.function.string;
 
-import org.apache.jena.atlas.lib.Lib;
-import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.function.FunctionBase2;
 
@@ -15,14 +13,8 @@ public class IndexOfIgnoreCase extends FunctionBase2 {
     @Override
     public NodeValue exec(final NodeValue arg0, final NodeValue arg1) {
 
-        if(!arg0.isString())
-            throw new ExprEvalException(Lib.className(this) + " first argument must be a string literal");
-
-        if(!arg1.isString())
-            throw new ExprEvalException(Lib.className(this) + " second argument must be a string literal");
-
-        final String string = arg0.asString();
-        final String searchChars = arg1.asString();
+        final String string = Argument.isString(arg0);
+        final String searchChars = Argument.isString(arg0);
 
         return makeInteger(indexOfIgnoreCase(string, searchChars));
     }

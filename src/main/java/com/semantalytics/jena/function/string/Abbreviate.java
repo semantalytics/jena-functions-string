@@ -69,14 +69,8 @@ public final class Abbreviate extends FunctionBase {
         if(!Range.closed(2, 3).contains(args.size())) {
             throw new QueryBuildException("Function '" + Lib.className(this) + "' takes two or three arguments") ;
         }
-        if(args.get(0).isConstant() && !args.get(0).getConstant().isString()) {
-            throw new QueryBuildException("Function '" + Lib.className(this) + "' first argument must be a string literal") ;
-        }
-        if(args.get(1).isConstant() && !args.get(1).getConstant().isInteger()) {
-            throw new QueryBuildException("Function '" + Lib.className(this) + "' second argument must be a integer literal") ;
-        }
-        if(args.size() == 3 && args.get(2).isConstant() && !args.get(2).getConstant().isInteger()) {
-            throw new QueryBuildException("Function '" + Lib.className(this) + "' third argument must be a integer literal") ;
-        }
+        Argument.isConstantString(args.get(0));
+        Argument.isConstantInteger(args.get(1));
+        Argument.isConstantInteger(args.get(2));
     }
 }
