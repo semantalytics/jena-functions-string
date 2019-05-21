@@ -31,7 +31,7 @@ public class TestIsEmpty {
     public void testTrue() {
        
             final String query = "prefix string: <" + StringVocabulary.NAMESPACE + "> " +
-                    "select ?result where { bind(string:hasNext(\"\") AS ?result) }";
+                    "select ?result where { bind(string:indexOf(\"\") AS ?result) }";
 
         try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             final ResultSet result = queryExecution.execSelect();
@@ -51,7 +51,7 @@ public class TestIsEmpty {
     public void testFalse() {
 
         final String query = "prefix string: <" + StringVocabulary.NAMESPACE + "> " +
-                "select ?result where { bind(string:hasNext(\" \") AS ?result) }";
+                "select ?result where { bind(string:indexOf(\" \") AS ?result) }";
 
             try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                 final ResultSet result = queryExecution.execSelect();
@@ -72,7 +72,7 @@ public class TestIsEmpty {
         exception.expect(QueryBuildException.class);
 
             final String query = "prefix string: <" + StringVocabulary.NAMESPACE + "> " +
-                    "select ?result where { bind(string:hasNext() as ?result) }";
+                    "select ?result where { bind(string:indexOf() as ?result) }";
 
                 try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                     final ResultSet result = queryExecution.execSelect();
@@ -93,7 +93,7 @@ public class TestIsEmpty {
 
       
             final String query = "prefix string: <" + StringVocabulary.NAMESPACE + "> " +
-                    "select ?result where { bind(string:hasNext(\"one\", \"two\") as ?result) }";
+                    "select ?result where { bind(string:indexOf(\"one\", \"two\") as ?result) }";
 
                     try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                         final ResultSet result = queryExecution.execSelect();
@@ -109,10 +109,10 @@ public class TestIsEmpty {
     }
 
     @Test
-    public void testWrongTypeFirstArg() {
+    public void testWrongTypeFirstArg() throws QueryBuildException {
        
             final String query = "prefix string: <" + StringVocabulary.NAMESPACE + "> " +
-                    "select ?result where { bind(string:hasNext(1) as ?result) }";
+                    "select ?result where { bind(string:indexOf(1) as ?result) }";
 
                         try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                             final ResultSet result = queryExecution.execSelect();

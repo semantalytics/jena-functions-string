@@ -25,15 +25,11 @@ public final class WrapIfMissing extends FunctionBase2 {
         final String string = arg0.asString();
         final String wrapWith = arg1.asString();
 
-        if (wrapWith.length() != 1) {
-            throw new ExprEvalException("Expecting a single character for second argument. Found '" + wrapWith + "'");
-        }
-
         return makeString(wrapIfMissing(string, wrapWith.charAt(0)));
     }
 
     @Override
-    public void checkBuild(String uri, ExprList args) {
+    public void checkBuild(final String uri, final ExprList args) {
         if(args.size() != 2) {
             throw new QueryBuildException("Function '" + Lib.className(this) + "' takes two arguments") ;
         }

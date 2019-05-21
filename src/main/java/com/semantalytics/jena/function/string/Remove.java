@@ -1,5 +1,6 @@
 package com.semantalytics.jena.function.string;
 
+import com.github.jsonldjava.shaded.com.google.common.collect.Range;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.function.FunctionBase2;
 import static org.apache.commons.lang3.StringUtils.*;

@@ -142,7 +142,7 @@ public enum StringVocabulary {
     upperCase,
     ;
 
-    public static final String NAMESPACE = "http://semantalytics.com/2017/09/ns/stardog/kibble/string/";
+    public static final String NAMESPACE = "http://semantalytics.com/2017/09/ns/jena/funtion/string/";
 
     public static String sparqlPrefix(String prefixName) {
         return "PREFIX " + prefixName + ": <" + NAMESPACE + "> ";

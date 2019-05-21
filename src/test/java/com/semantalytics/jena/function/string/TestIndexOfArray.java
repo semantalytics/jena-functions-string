@@ -56,7 +56,7 @@ public class TestIndexOfArray {
     public void testThreeArg() {
 
         final String query = StringVocabulary.sparqlPrefix("string") +
-                    "select ?result where { bind(string:indexOfArray(\"Stardog\u001fgraph\u001fdatabase\"), 0, 1) AS ?result) }";
+                    "select ?result where { bind(string:indexOfArray(\"Stardog\u001fgraph\u001fdatabase\", 0, 1)) AS ?result) }";
 
             try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
                 final ResultSet result = queryExecution.execSelect();

@@ -106,7 +106,7 @@ public class TestIndexOf {
     }
 
     @Test
-    public void testWrongTypeFirstArg() {
+    public void testWrongTypeFirstArg() throws QueryBuildException {
 
         final String query = "prefix string: <" + StringVocabulary.NAMESPACE + "> " +
                 "select ?result where { bind(string:indexOf(1, \"two\") as ?result) }";
@@ -125,7 +125,7 @@ public class TestIndexOf {
     }
 
     @Test
-    public void testWrongTypeSecondArg() {
+    public void testWrongTypeSecondArg() throws QueryBuildException {
        
             final String query = "prefix string: <" + StringVocabulary.NAMESPACE + "> " +
                     "select ?result where { bind(string:indexOf(\"one\", 2) as ?result) }";

@@ -148,16 +148,17 @@ public class TestWrapIfMissing {
     public void testMultiCharacterWrap() {
 
         final String query = StringVocabulary.sparqlPrefix("string") +
-                "select ?result where { bind(string:wrap(\"Jena\", \"**\") as ?result) }";
+                "select ?result where { bind(string:wrapIfMissing(\"Jena\", \"*\") as ?result) }";
 
         try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             final ResultSet result = queryExecution.execSelect();
 
             assertTrue("Should have a result", result.hasNext());
+            QuerySolution querySolution = result.next();
+            assertNotNull(querySolution.getLiteral("result"));
+            final String value = querySolution.getLiteral("result").getString();
 
-            final String value = result.next().getLiteral("result").getString();
-
-            assertEquals("**Jena**", value);
+            assertEquals("*Jena*", value);
             assertFalse("Should have no more results", result.hasNext());
         }
     }

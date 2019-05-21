@@ -1,6 +1,5 @@
 package com.semantalytics.jena.function.string;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.ext.com.google.common.collect.Range;
 import org.apache.jena.query.QueryBuildException;
